@@ -13,11 +13,15 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            // $table->string('subject');
-            $table->string('administrator');
+            $table->string('subject');
+            $table->string('email');
             $table->string('department');
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed']);
+            $table->string('location')->nullable();
+            $table->string('attachment')->nullable();
             $table->timestamps();
+            // $table->timestamp('updated_at')->change();
+           
         });
         
     }

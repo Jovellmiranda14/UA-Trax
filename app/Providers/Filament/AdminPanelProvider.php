@@ -17,6 +17,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Auth\Login;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -26,14 +27,15 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('user')
-            ->login()
+             ->brandLogo(asset('images/UATRAX-logo-dark-transparent.png'))
+            ->login(Login::class) 
             ->colors([
                 'primary' => Color::Green,
             //     'warning' => Color::Red,
             //     'info' => Color::Blue,
             //     'success' => Color::Green,
             ])
-
+            ->favicon(asset('images/UATRAX-logo-dark-transparent.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             // Wag cocooment
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages') 
@@ -64,5 +66,6 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+            
     }
 }
