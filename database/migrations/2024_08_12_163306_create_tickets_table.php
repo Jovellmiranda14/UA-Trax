@@ -13,9 +13,13 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            // $table->string('subject');
-            $table->string('administrator');
+            $table->enum('concern_type',['Equipment', 'Facility']); 
+             $table->string('subject');
+            $table->string('email');
+             $table->string('description');
             $table->string('department');
+            $table->string('type_of_Issue');
+            $table->string('property_no');
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed']);
             $table->timestamps();
         });

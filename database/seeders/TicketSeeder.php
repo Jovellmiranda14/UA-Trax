@@ -13,7 +13,8 @@ class TicketSeeder extends Seeder
     public function run(): void
     {
         Ticket::create([
-            // 'subject' => 'PC is overheating when opening...',
+            'id' => '5',
+            'subject' => 'PC is overheating when opening...',
             'administrator' => 'Eleanor Pena',
             'department' => 'CITCLS LAB',
             'status' => 'In progress',

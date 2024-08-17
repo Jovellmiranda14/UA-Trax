@@ -12,7 +12,7 @@ class TicketPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFaciltyAdmin() || $user -> isEquipmentAdmin();
+        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFaciltyAdmin() || $user -> isEquipmentAdmin() || $user ->isRegularUser();
     }
     
     /**
@@ -20,7 +20,7 @@ class TicketPolicy
      */
     public function view(User $user, Ticket $ticket): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFaciltyAdmin() || $user -> isEquipmentAdmin();
+        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFaciltyAdmin() || $user -> isEquipmentAdmin() || $user ->isRegularUser();
     }
 
     /**
@@ -28,9 +28,9 @@ class TicketPolicy
      */
     public function create(User $user): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin();
+        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() || $user ->isRegularUser();
     }
-
+    
     /**
      * Determine whether the user can update the ticket.
      */
