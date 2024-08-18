@@ -12,6 +12,6 @@ class EquipmentDashboard extends Page
 
     public function getTicketsProperty()
     {
-        return Ticket::all();
+        return Ticket::where('concern_type', 'Equipment')->get();
     }
 }

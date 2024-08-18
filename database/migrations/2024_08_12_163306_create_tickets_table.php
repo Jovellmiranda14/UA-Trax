@@ -13,12 +13,10 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-
-            $table->enum('concern_type',['Equipment', 'Facility']); 
-             $table->string('subject');
-            $table->string('email');
-             $table->string('description');
-
+            $table->enum('concern_type',['Equipment', 'Facility'])->nullable(false);; 
+            $table->string('subject')->nullable(false);;
+            $table->string('email')->nullable(false);;
+            $table->string('description');
             $table->string('subject');
             $table->string('email');
             $table->string('department');

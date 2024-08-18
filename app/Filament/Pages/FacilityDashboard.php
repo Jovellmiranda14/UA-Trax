@@ -12,6 +12,7 @@ class FacilityDashboard extends Page
     
     public function getTicketsProperty()
     {
-        return Ticket::all();
+        return Ticket::where('concern_type', 'Facility')
+                 ->get();
     }
 }
