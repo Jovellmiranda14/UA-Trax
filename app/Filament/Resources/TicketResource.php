@@ -92,12 +92,16 @@ class TicketResource extends Resource
     {
         $user = Auth::user();
         $query = Ticket::query()->where('email', $user->email);
+
         return $table
         ->query($query)
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Ticket ID')
                     ->sortable()
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('concern_type')
+                    ->label('Category')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('subject')
@@ -106,17 +110,19 @@ class TicketResource extends Resource
 
                 Tables\Columns\TextColumn::make('email')
                     ->label('Administrator')
-                    ->default(auth()->user()->email)
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('department')
                     ->label('Department')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('attachment')
+                    Tables\Columns\TextColumn::make('attachment')
                     ->label('Attachment')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->formatStateUsing(fn ($state) => $state ? '<img src="' . $state . '" alt="Attachment" style="max-width: 100px; max-height: 100px;" />' : 'No Attachment')
+                    ->html(), // Use HTML formatting to render the image
+                
 
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')

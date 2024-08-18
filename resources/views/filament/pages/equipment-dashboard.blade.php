@@ -21,7 +21,7 @@
         <tbody>
             @foreach ($this->getTicketsProperty() as $ticket)
                 <tr>
-                    <td>{{ $ticket->concern_type }}</td>
+                    <td>{{ $ticket->id}}</td>
                     <td>{{ $ticket->email }}</td>
                     <td>{{ $ticket->subject }}</td>
                     <td>{{ $ticket->description }}</td>
