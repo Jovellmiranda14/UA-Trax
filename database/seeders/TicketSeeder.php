@@ -19,14 +19,6 @@ class TicketSeeder extends Seeder
             'department' => 'CITCLS LAB',
             'status' => 'In progress',
         ]);
-        Ticket::create([
-            // 'subject' => 'PC is overheating when opening...',
-            'administrator' => 'Eleanors Pena',
-            'department' => 'CITCLS LAB',
-            'status' => 'Open',
-        ]);
- 
- 
 
     }
 }

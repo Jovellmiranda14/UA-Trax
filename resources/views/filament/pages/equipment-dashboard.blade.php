@@ -2,7 +2,6 @@
 
 <link rel="stylesheet" href="{{ asset('css/filament/filament/equipment.css') }}">
 <h1 class="custom-heading">Equipment Admin Dashboard</h1>
-    <!-- Add content here -->
 
 <!-- Ticket Queue Table -->
 <table class="ticket-queue">
@@ -11,17 +10,23 @@
             <th>Ticket ID</th>
             <th>Customer Name</th>
             <th>Subject</th>
+
             <th>Description</th> 
+=======
+
             <th>Department</th>
             <th>Location</th>
             <th>Priority</th>
             <th>Status</th>
+
             <th>Attachment</th>
+
         </tr>
     </thead>
     <tbody>
         @foreach ($this->getTicketsProperty() as $ticket)
             <tr>
+
                 <td>{{ $ticket->concern_type}}</td>
                 <td>{{ $ticket->email}}</td>
                 <td>{{ $ticket->subject}}</td>
@@ -31,6 +36,15 @@
                 <td>{{ $ticket->priority}}</td>
                 <td>{{ $ticket->status}}</td>
                 <td>{{ $ticket->attachment}}</td>
+
+                <td>{{ $ticket->id }}</td>
+                <td>{{ $ticket->email}}</td>
+                <td><a href="#" class="ticket-subject" data-id="{{ $ticket->id }}">{{ $ticket->subject }}</a></td>
+                <td>{{ $ticket->department }}</td>
+                <td>{{ $ticket->location }}</td>
+                <td>{{ $ticket->priority }}</td>
+                <td>{{ $ticket->status }}</td>
+
             </tr>
         @endforeach
     </tbody>
@@ -77,4 +91,7 @@
     }
 </style>
 
+
+
 </x-filament::page>
+
