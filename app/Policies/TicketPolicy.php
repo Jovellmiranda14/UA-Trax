@@ -20,7 +20,12 @@ class TicketPolicy
      */
     public function view(User $user, Ticket $ticket): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFaciltyAdmin() || $user -> isEquipmentAdmin() || $user ->isRegularUser();
+        return  $user->isEquipmentSuperAdmin() ||
+        $user->isFacilitySuperAdmin() ||
+        $user->isFacilityAdmin() ||
+        $user->isEquipmentAdmin() ||
+        $user->isRegularUser();
+        // $ticket->email === $user->email;
     }
 
     /**
@@ -38,7 +43,6 @@ class TicketPolicy
     {
         return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin();
     }
-
     /**
      * Determine whether the user can delete the ticket.
      */

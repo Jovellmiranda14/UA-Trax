@@ -17,9 +17,12 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\FileUpload;
 use Filament\Support\Colors\Color;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class TicketResource extends Resource
 {
+    
     protected static ?string $model = Ticket::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -87,7 +90,10 @@ class TicketResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $user = Auth::user();
+        $query = Ticket::query()->where('email', $user->email);
         return $table
+        ->query($query)
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Ticket ID')
@@ -100,6 +106,7 @@ class TicketResource extends Resource
 
                 Tables\Columns\TextColumn::make('email')
                     ->label('Administrator')
+                    ->default(auth()->user()->email)
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('department')
@@ -137,6 +144,7 @@ class TicketResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+                
             ]);
     }
 
