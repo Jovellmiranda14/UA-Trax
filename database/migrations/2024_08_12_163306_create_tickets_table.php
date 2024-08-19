@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('type_of_Issue');
             $table->string('property_no');
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed']);
+            $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High']);
             $table->string('location')->nullable();
             $table->string('attachment')->nullable();
             $table->timestamps();

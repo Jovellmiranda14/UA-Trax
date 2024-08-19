@@ -19,6 +19,7 @@ use Filament\Support\Colors\Color;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Filament\Forms\Components\Wizard\Step;
 
 class TicketResource extends Resource
 {
@@ -26,6 +27,11 @@ class TicketResource extends Resource
     protected static ?string $model = Ticket::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    // Disable Function
+    // public static function canCreate(): Bool
+    // {
+    //     return false;
+    // }
     public static function form(Form $form): Form
     {
         return $form
@@ -33,8 +39,8 @@ class TicketResource extends Resource
                 Radio::make('concern_type')
                     ->label('My concern is about:')
                     ->options([
-                        'Equipment' => 'Equipment',
-                        'Facility' => 'Facility',
+                        'Laboratory and Equipment' => 'Laboratory and Equipment',
+                        'Facility' => 'Facility', 
                     ])
                     ->reactive()
                     ->required(),
@@ -44,10 +50,6 @@ class TicketResource extends Resource
                     ->required()
                     ->visible(fn ($get) => $get('concern_type') === 'Equipment'),
 
-                TextInput::make('Type_of_Issue')
-                    ->label('Type of Issue')
-                    ->required()
-                    ->visible(fn ($get) => $get('concern_type') === 'Facility'),
 
                 TextInput::make('priority')
                     ->label('Priority')
@@ -55,10 +57,27 @@ class TicketResource extends Resource
                     ->visible(fn ($get) => in_array($get('concern_type'), ['Equipment', 'Facility']))
                     ->disabled(),
 
-                TextInput::make('department')
+                Select::make('department')
                     ->label('Department')
+                    ->options([
+                        'SAS' => 'SAS',
+                        'CEA' => 'CEA',
+                        'CONP' => 'CONP',
+                        'CITCLS' => 'CITCLS',
+                        'RSO' => 'RSO',
+                        'OFFICE' => 'OFFICE',              
+                    ])
                     ->required()
-                    ->visible(fn ($get) => in_array($get('concern_type'), ['Equipment', 'Facility'])),
+                    ->visible(fn ($get) => $get('concern_type') === 'Equipment'),
+                    
+                 Select::make('Type_of_Issue')
+                     ->label('Type of Issue')
+                     ->options([
+                        'sample' => 'sample',
+                        'sample' => 'saMPLE',
+                    ])
+                     ->required()
+                     ->visible(fn ($get) => $get('concern_type') === 'Facility'),
 
                 TextInput::make('description')
                     ->label('Description')
@@ -119,9 +138,9 @@ class TicketResource extends Resource
                     Tables\Columns\TextColumn::make('attachment')
                     ->label('Attachment')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->formatStateUsing(fn ($state) => $state ? '<img src="' . $state . '" alt="Attachment" style="max-width: 100px; max-height: 100px;" />' : 'No Attachment')
-                    ->html(), // Use HTML formatting to render the image
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    // ->formatStateUsing(fn ($state) => $state ? '<img src="' . $state . '" alt="Attachment" style="max-width: 100px; max-height: 100px;" />' : 'No Attachment')
+                    // ->html(), // Use HTML formatting to render the image
                 
 
                 Tables\Columns\BadgeColumn::make('status')

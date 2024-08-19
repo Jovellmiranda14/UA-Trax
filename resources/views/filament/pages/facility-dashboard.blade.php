@@ -11,7 +11,6 @@
             <th>Customer Name</th>
             <th>Subject</th>
             <th>Description</th>
-            <th>Department</th>
             <th>Location</th>
             <th>Priority</th>
             <th>Status</th>
@@ -24,7 +23,6 @@
                 <td>{{ $ticket->email}}</td>
                 <td>{{ $ticket->subject }}</td>
                 <td>{{ $ticket->description }}</td>
-                <td>{{ $ticket->department }}</td>
                 <td>{{ $ticket->location }}</td>
                 <td>{{ $ticket->priority }}</td>
                 <td>{{ $ticket->status }}</td>
