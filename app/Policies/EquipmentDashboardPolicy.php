@@ -3,37 +3,45 @@
 namespace App\Policies;
 
 use App\Models\User;
+use App\Models\Ticket;
 
 class EquipmentDashboardPolicy
 {
     /**
-     * Create a new policy instance.
+     * Determine whether the user can view any tickets (or the dashboard).
      */
     public function viewAny(User $user): bool
     {
-        return $user ->isEquipmentSuperAdmin() || 
-        $user ->isFacilitySuperAdmin() ||$user -> isFaciltyAdmin() || 
-        $user -> isEquipmentAdmin() || $user ->isRegularUser();
+        return $user->isEquipmentSuperAdmin() || 
+               $user->isEquipmentAdmin() || 
+               $user->isRegularUser();
     }
+
     /**
-     * Determine whether the user can view the ticket.
+     * Determine whether the user can view a specific ticket.
      */
     public function view(User $user, Ticket $ticket): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFaciltyAdmin() || $user -> isEquipmentAdmin() || $user ->isRegularUser();
+        return $user->isEquipmentSuperAdmin() || 
+               $user->isEquipmentAdmin() || 
+               $user->isRegularUser();
     }
-    public function update(User $user, Post $post): bool
-    {
+
     /**
      * Determine whether the user can update the ticket.
-     */   
-      return $user ->isEquipmentSuperAdmin() || $user -> isEquipmentAdmin();
+     */
+    public function update(User $user, Ticket $ticket): bool
+    {
+        return $user->isEquipmentSuperAdmin() || 
+               $user->isEquipmentAdmin();
     }
+
     /**
      * Determine whether the user can delete the ticket.
      */
     public function delete(User $user, Ticket $ticket): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user -> isEquipmentAdmin();
+        return $user->isEquipmentSuperAdmin() || 
+               $user->isEquipmentAdmin();
     }
 }

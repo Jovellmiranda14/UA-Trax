@@ -1,5 +1,10 @@
 <x-filament::page>
-
+     <!-- Authorization -->
+@php
+    $user = Auth::user();
+@endphp
+@if ($user->isEquipmentSuperAdmin() || $user->isEquipmentAdmin())
+ <!-- Authorization -->
     <link rel="stylesheet" href="{{ asset('css/filament/filament/equipment.css') }}">
     <h1 class="custom-heading">Equipment Admin Dashboard</h1>
 
@@ -19,22 +24,21 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($this->getTicketsProperty() as $ticket)
+             @foreach ($this->getTicketsProperty() as $ticket)
                 <tr>
                     <td>{{ $ticket->id}}</td>
-                    <td>{{ $ticket->email }}</td>
+                    <td>{{ $ticket->name }}</td>
                     <td>{{ $ticket->subject }}</td>
-                    <td>{{ $ticket->description }}</td>
+                    <td>{{ $ticket->description }}</td> 
                     <td>{{ $ticket->department }}</td>
                     <td>{{ $ticket->location }}</td>
                     <td>{{ $ticket->priority }}</td>
                     <td>{{ $ticket->status }}</td>
                     <td>{{ $ticket->attachment }}</td>
                 </tr>
-            @endforeach
+            @endforeach 
         </tbody>
     </table>
-
     <div id="ticket-details-modal" style="display:none;">
         <div class="modal-content">
             <span id="modal-close" style="cursor:pointer;">&times;</span>
@@ -42,7 +46,13 @@
             <div id="ticket-details"></div>
         </div>
     </div>
+        <!-- Authorization -->
+    @else
+    <p>Unauthorized</p>
+    @endif
 
+    <!--- Accepted Tickets---->
+     <!-- Authorization -->
     <style>
         /* Modal styles */
         #ticket-details-modal {

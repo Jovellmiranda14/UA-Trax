@@ -15,7 +15,7 @@ class TicketSeeder extends Seeder
         Ticket::create([
             'id' => '5',
             'subject' => 'PC is overheating when opening...',
-            'email' => 'Eleanor Pena',
+            'name' => 'Eleanor Pena',
             'department' => 'CITCLS LAB',
             'status' => 'In progress',
         ]);

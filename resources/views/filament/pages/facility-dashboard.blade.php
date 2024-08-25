@@ -1,5 +1,8 @@
 <x-filament::page>
-
+@php
+    $user = Auth::user();
+@endphp
+@if ($user->isFacilitySuperAdmin() || $user->isFaciltyAdmin())
 <link rel="stylesheet" href="{{ asset('css/filament/filament/equipment.css') }}">
 <h1 class="custom-heading">Facility Admin Dashboard</h1>
 
@@ -38,7 +41,9 @@
         <div id="ticket-details"></div>
     </div>
 </div>
-
+@else
+    <p>Unauthorized</p>
+    @endif
 <style>
     /* Modal styles */
     #ticket-details-modal {

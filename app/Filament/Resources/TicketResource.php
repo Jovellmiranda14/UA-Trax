@@ -44,18 +44,21 @@ class TicketResource extends Resource
                     ])
                     ->reactive()
                     ->required(),
+                    
 
-                TextInput::make('property_no')
-                    ->label('Property No.')
-                    ->required()
-                    ->visible(fn ($get) => $get('concern_type') === 'Equipment'),
+                // TextInput::make('property_no')
+                //     ->label('Property No.')
+                //     ->required()
+                //     ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
 
 
                 TextInput::make('priority')
                     ->label('Priority')
                     ->default('Moderate')
-                    ->visible(fn ($get) => in_array($get('concern_type'), ['Equipment', 'Facility']))
-                    ->disabled(),
+                    ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
+                    ->disabled()
+                    ->hidden(),
+                    
 
                 Select::make('department')
                     ->label('Department')
@@ -64,62 +67,80 @@ class TicketResource extends Resource
                         'CEA' => 'CEA',
                         'CONP' => 'CONP',
                         'CITCLS' => 'CITCLS',
-                        'RSO' => 'RSO',
-                        'OFFICE' => 'OFFICE',              
+                        'RSO' => 'RSO', // Specify the Location
+                        'OFFICE' => 'OFFICE', // Specify the Location        
+                    ])
+                    ->reactive()
+                    ->required()
+                    ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
+                                 
+                    Select::make('Type_of_Issue')
+                    ->label('Type of Issue')
+                    ->options([
+                        'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
+                        'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
+                        'connectivity_issues' => 'Connectivity issues (e.g., internet problems, network issues)',
                     ])
                     ->required()
-                    ->visible(fn ($get) => $get('concern_type') === 'Equipment'),
+                    ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
                     
-                 Select::make('Type_of_Issue')
-                     ->label('Type of Issue')
-                     ->options([
-                        'sample' => 'sample',
-                        'sample' => 'saMPLE',
+
+                    Select::make('type_of_issue')
+                    ->label('Type of Issue')
+                    ->options([
+                        'repair' => 'Repair',
+                        'air_conditioning' => 'Air Conditioning',
+                        'plumbing' => 'Plumbing',
+                        'lighting' => 'Lighting',
+                        'electricity' => 'Electricity',
                     ])
-                     ->required()
-                     ->visible(fn ($get) => $get('concern_type') === 'Facility'),
+                    ->required()
+                    ->visible(fn ($get) => $get('concern_type') === 'Facility'),
 
                 TextInput::make('description')
                     ->label('Description')
                     ->required()
-                    ->visible(fn ($get) => in_array($get('concern_type'), ['Equipment', 'Facility'])),
+                    ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
 
                 TextInput::make('subject')
                     ->label('Subject')
                     ->required()
-                    ->visible(fn ($get) => in_array($get('concern_type'), ['Equipment', 'Facility'])),
+                    ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
 
-                TextInput::make('email')
-                    ->label('Email')
-                    ->default(auth()->user()->email)
+                TextInput::make('name')
+                    ->label('Sender')
                     ->required()
-                    ->visible(fn ($get) => in_array($get('concern_type'), ['Equipment', 'Facility'])),
+                    ->default(fn () => Auth::user()->name)
+                    ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
 
-                TextInput::make('location')
+                    TextInput::make('location')
                     ->label('Location')
                     ->required()
-                    ->visible(fn ($get) => in_array($get('concern_type'), ['Equipment', 'Facility'])),
-
+                     ->visible(fn ($get) => $get('department') === 'RSO' || $get('department') === 'OFFICE'),
+                    
+        
                 FileUpload::make('attachment')
                     ->label('Upload file')
                     ->acceptedFileTypes(['image/jpeg', 'image/png'])
-                    ->visible(fn ($get) => in_array($get('concern_type'), ['Equipment', 'Facility'])),
+                    ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
             ]);
     }
 
     public static function table(Table $table): Table
     {
-        $user = Auth::user();
-        $query = Ticket::query()->where('email', $user->email);
+        $user = auth()->user();
+       
 
         return $table
-        ->query($query)
+        ->query(Ticket::query()->where('name', $user->name))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Ticket ID')
                     ->sortable()
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('concern_type')
+
+
+                Tables\Columns\TextColumn::make('concern_type')
                     ->label('Category')
                     ->searchable(),
 
@@ -127,13 +148,18 @@ class TicketResource extends Resource
                     ->label('Subject')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('email')
-                    ->label('Administrator')
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Sender')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('department')
                     ->label('Department')
                     ->searchable(),
+
+                    Tables\Columns\TextColumn::make('type_of_issue')
+                    ->label('Type of Issue')
+                    ->searchable(),
+
 
                     Tables\Columns\TextColumn::make('attachment')
                     ->label('Attachment')
@@ -153,9 +179,20 @@ class TicketResource extends Resource
                     ])
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Date Created')
-                    ->date()
+                // Tables\Columns\TextColumn::make('created_at')
+                //     ->label('Date Created')
+                //     ->date()
+                //     ->searchable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
+                    
+                // Tables\Columns\TextColumn::make('updated_at')
+                // ->label('Date Updated')
+                // ->date()
+                // ->searchable()
+                // ->toggleable(isToggledHiddenByDefault: true),
+
+                    Tables\Columns\TextColumn::make('location')
+                    ->label('Location')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -164,13 +201,14 @@ class TicketResource extends Resource
             ])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-                
             ]);
+            // ->bulkActions([
+            //     Tables\Actions\BulkActionGroup::make([
+            //         Tables\Actions\DeleteBulkAction::make(),
+                    
+            //     ]),
+                
+        
     }
 
     public static function getRelations(): array
