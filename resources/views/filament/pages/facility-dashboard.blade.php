@@ -10,25 +10,28 @@
 <table class="ticket-queue">
     <thead>
         <tr>
-            <th>Ticket ID</th>
-            <th>Customer Name</th>
-            <th>Subject</th>
-            <th>Description</th>
-            <th>Location</th>
-            <th>Priority</th>
-            <th>Status</th>
+        <th>Ticket ID</th>
+                <th>Customer Name</th>
+                <th>Subject</th>
+                <th>Description</th>
+                <th>Department</th>
+                <!-- <th>Priority</th> -->
+                <th>Status</th>
+                <th>Type of Issue</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($this->getTicketsProperty() as $ticket)
             <tr>
-                <td>{{ $ticket->id }}</td>
-                <td>{{ $ticket->email}}</td>
-                <td>{{ $ticket->subject }}</td>
-                <td>{{ $ticket->description }}</td>
-                <td>{{ $ticket->location }}</td>
-                <td>{{ $ticket->priority }}</td>
-                <td>{{ $ticket->status }}</td>
+            <td>{{ $ticket->id}}</td>
+                    <td>{{ $ticket->name }}</td>
+                    <td>{{ $ticket->subject }}</td>
+                    <td>{{ $ticket->description }}</td> 
+                    <td>{{ $ticket->department }}</td>
+                    <td>{{ $ticket->location }}</td>
+                    <!-- <td>{{ $ticket->priority }}</td> -->
+                    <td>{{ $ticket->status }}</td>
+                    <td>{{ $ticket->type_of_issue }}</td>
             </tr>
         @endforeach
     </tbody>

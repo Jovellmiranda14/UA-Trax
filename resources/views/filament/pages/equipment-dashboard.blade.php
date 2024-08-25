@@ -17,10 +17,9 @@
                 <th>Subject</th>
                 <th>Description</th>
                 <th>Department</th>
-                <th>Location</th>
-                <th>Priority</th>
+                <!-- <th>Priority</th> -->
                 <th>Status</th>
-                <th>Attachment</th>
+                <th>Type of Issue</th>
             </tr>
         </thead>
         <tbody>
@@ -32,9 +31,9 @@
                     <td>{{ $ticket->description }}</td> 
                     <td>{{ $ticket->department }}</td>
                     <td>{{ $ticket->location }}</td>
-                    <td>{{ $ticket->priority }}</td>
+                    <!-- <td>{{ $ticket->priority }}</td> -->
                     <td>{{ $ticket->status }}</td>
-                    <td>{{ $ticket->attachment }}</td>
+                    <td>{{ $ticket->type_of_issue }}</td>
                 </tr>
             @endforeach 
         </tbody>

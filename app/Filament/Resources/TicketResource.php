@@ -51,7 +51,7 @@ class TicketResource extends Resource
                 //     ->required()
                 //     ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
 
-
+                // Under Modification 
                 TextInput::make('priority')
                     ->label('Priority')
                     ->default('Moderate')
@@ -74,7 +74,7 @@ class TicketResource extends Resource
                     ->required()
                     ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
                                  
-                    Select::make('Type_of_Issue')
+                    Select::make('type_of_issue')
                     ->label('Type of Issue')
                     ->options([
                         'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
@@ -142,6 +142,7 @@ class TicketResource extends Resource
 
                 Tables\Columns\TextColumn::make('concern_type')
                     ->label('Category')
+                    ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('subject')
@@ -150,6 +151,7 @@ class TicketResource extends Resource
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Sender')
+                    ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('department')
@@ -158,6 +160,7 @@ class TicketResource extends Resource
 
                     Tables\Columns\TextColumn::make('type_of_issue')
                     ->label('Type of Issue')
+                    ->sortable()
                     ->searchable(),
 
 
