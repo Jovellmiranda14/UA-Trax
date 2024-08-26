@@ -18,6 +18,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Auth\Login;
+use Filament\Notifications\Notification;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -25,9 +26,10 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->topNavigation()
             ->id('admin')
             ->path('user')
-             ->brandLogo(asset('images/UATRAX-logo-dark-transparent.png'))
+            ->brandLogo(asset('images/UATRAX-logo-dark-transparent.png'))
             ->login(Login::class) 
             ->colors([
                 'primary' => Color::Green,
@@ -35,6 +37,7 @@ class AdminPanelProvider extends PanelProvider
             //     'info' => Color::Blue,
             //     'success' => Color::Green,
             ])
+          
             ->favicon(asset('images/UATRAX-logo-dark-transparent.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             // Wag cocooment
@@ -44,8 +47,8 @@ class AdminPanelProvider extends PanelProvider
             
             // ->pages([
             //     Pages\Dashboard::class,
-            //      Pages\FacilityDashboard::class,
-            //     Pages\EquipmentDashboard::class,
+            //     //  Pages\FacilityDashboard::class,
+            //     // Pages\EquipmentDashboard::class,
             // ])
             // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             // ->widgets([
