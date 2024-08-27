@@ -20,6 +20,13 @@ class User extends Authenticatable implements FilamentUser
      const EQUIPMENT_ADMIN = 'equipment_user';
      const REGULAR_USER = 'user';
 
+     const SAS = 'SAS';
+     const CEA = 'CEA';
+     const CONP = 'CONP';
+     const CITCLS = 'CITCLS';
+     const RSO = 'RSO';
+     const OFFICE = 'OFFICE';
+
     // Define the roles array using the constants
     const ROLES = [
          self::REGULAR_USER => 'Regular User',
@@ -28,6 +35,15 @@ class User extends Authenticatable implements FilamentUser
          self::FACILITY_ADMIN => 'Facility User',
          self::EQUIPMENT_ADMIN => 'Equipment User',
      ];
+
+     const Dept = [
+        self::SAS => 'SAS',
+        self::CEA => 'CEA',
+        self::CITCLS => 'CITCLS',
+        self::RSO => 'RSO',
+        self::OFFICE => 'OFFICE',
+        self::CONP => 'CONP',
+    ];
      public function canAccessPanel(Panel $panel): bool
     {
         return $this->isFacilitySuperAdmin() || 
@@ -61,6 +77,7 @@ class User extends Authenticatable implements FilamentUser
     protected $fillable = [
         'name', 
         'email', 
+        'dept_role',
         'password', 
         'role' // Add this line if not already added
     ];

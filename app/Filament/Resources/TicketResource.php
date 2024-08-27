@@ -11,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -20,10 +21,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Filament\Forms\Components\Wizard\Step;
+use Filament\Tables\Filters\MultiSelectFilter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
 
 class TicketResource extends Resource
 {
-    
+    protected static ?string $navigationLabel = 'My Tickets';
     protected static ?string $model = Ticket::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -43,9 +47,7 @@ class TicketResource extends Resource
                         'Facility' => 'Facility', 
                     ])
                     ->reactive()
-                    ->required(),
-                    
-
+                    ->required(),              
                 // TextInput::make('property_no')
                 //     ->label('Property No.')
                 //     ->required()
@@ -57,9 +59,7 @@ class TicketResource extends Resource
                     ->default('Moderate')
                     ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
                     ->disabled()
-                    ->hidden(),
-                    
-
+                    ->hidden(),                 
                 Select::make('department')
                     ->label('Department')
                     ->options([
@@ -82,9 +82,7 @@ class TicketResource extends Resource
                         'connectivity_issues' => 'Connectivity issues (e.g., internet problems, network issues)',
                     ])
                     ->required()
-                    ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
-                    
-
+                    ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),                
                     Select::make('type_of_issue')
                     ->label('Type of Issue')
                     ->options([
@@ -97,7 +95,7 @@ class TicketResource extends Resource
                     ->required()
                     ->visible(fn ($get) => $get('concern_type') === 'Facility'),
 
-                TextInput::make('description')
+                TextArea::make('description')
                     ->label('Description')
                     ->required()
                     ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
@@ -107,15 +105,15 @@ class TicketResource extends Resource
                     ->required()
                     ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
 
-                TextInput::make('name')
+                    TextInput::make('name')
                     ->label('Sender')
-                    ->required()
                     ->default(fn () => Auth::user()->name)
                     ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
 
                     TextInput::make('location')
                     ->label('Location')
                     ->required()
+                    ->default('N/A')
                      ->visible(fn ($get) => $get('department') === 'RSO' || $get('department') === 'OFFICE'),
                     
         
@@ -139,54 +137,62 @@ class TicketResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-
                 Tables\Columns\TextColumn::make('concern_type')
                     ->label('Category')
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('subject')
+                    Tables\Columns\TextColumn::make('subject')
                     ->label('Subject')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Sender')
-                    ->sortable()
+                    Tables\Columns\TextColumn::make('priority')
+                    ->label('Priority')
+                    ->searchable(),
+
+
+                Tables\Columns\TextColumn::make('location')
+                    ->label('Location')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('department')
-                    ->label('Department')
+                    ->label('Dept')
                     ->searchable(),
 
-                    Tables\Columns\TextColumn::make('type_of_issue')
-                    ->label('Type of Issue')
-                    ->sortable()
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Date Created')
+                    ->date(),
+
+                // Tables\Columns\TextColumn::make('name')
+                //     ->label('Sender')
+                //     ->sortable()
+                //     ->searchable(),
+
+                    // Tables\Columns\TextColumn::make('type_of_issue')
+                    // ->label('Type of Issue')
+                    // ->sortable()
+                    // ->searchable(),
 
 
-                    Tables\Columns\TextColumn::make('attachment')
-                    ->label('Attachment')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    // Tables\Columns\TextColumn::make('attachment')
+                    // ->label('Attachment')
+                    // ->searchable()
+                    // ->toggleable(isToggledHiddenByDefault: true),
                     // ->formatStateUsing(fn ($state) => $state ? '<img src="' . $state . '" alt="Attachment" style="max-width: 100px; max-height: 100px;" />' : 'No Attachment')
                     // ->html(), // Use HTML formatting to render the image
                 
 
-                Tables\Columns\BadgeColumn::make('status')
-                    ->label('Status')
-                    ->colors([
-                        'primary' => 'Open', Color::Blue,
-                        'success' => 'Resolved',
-                        'warning' => 'In progress',
-                        'info' => 'Closed',
-                    ])
-                    ->searchable(),
+                // Tables\Columns\BadgeColumn::make('status')
+                //     ->label('Status')
+                //     ->colors([
+                //         'primary' => 'Open', Color::Blue,
+                //         'success' => 'Resolved',
+                //         'warning' => 'In progress',
+                //         'info' => 'Closed',
+                //     ])
+                //     ->searchable(),
 
-                // Tables\Columns\TextColumn::make('created_at')
-                //     ->label('Date Created')
-                //     ->date()
-                //     ->searchable()
-                //     ->toggleable(isToggledHiddenByDefault: true),
+               
                     
                 // Tables\Columns\TextColumn::make('updated_at')
                 // ->label('Date Updated')
@@ -194,13 +200,13 @@ class TicketResource extends Resource
                 // ->searchable()
                 // ->toggleable(isToggledHiddenByDefault: true),
 
-                    Tables\Columns\TextColumn::make('location')
-                    ->label('Location')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // Define any filters you need
+                SelectFilter::make('status')
+                ->options([
+                    'Accepted' => 'Accepted',
+                    'Open' => 'Open Tickets',         
+                ])  
             ])
             ->actions([
                 Tables\Actions\DeleteAction::make(),

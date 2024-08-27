@@ -37,7 +37,6 @@ class AdminPanelProvider extends PanelProvider
             //     'info' => Color::Blue,
             //     'success' => Color::Green,
             ])
-          
             ->favicon(asset('images/UATRAX-logo-dark-transparent.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             // Wag cocooment

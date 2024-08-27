@@ -3,27 +3,26 @@ namespace App\Filament\Auth;
 
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Button;
+use Filament\Forms\Components\Checkbox;
 use Filament\Pages\Auth\Login as BaseAuth;
 use Illuminate\Validation\ValidationException;
-use Filament\Actions;
 
 class Login extends BaseAuth
 {
-    
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                $this->getEmailFormComponent(), 
+                $this->getEmailFormComponent(),
                 $this->getPasswordFormComponent(),
+                // $this->getRememberMeFormComponent(),
             ])
             ->statePath('data');
     }
 
-    protected function getLoginFormComponent(): \Filament\Forms\Components\TextInput 
+    protected function getEmailFormComponent(): \Filament\Forms\Components\TextInput 
     {
-        return TextInput::make('Email')
+        return TextInput::make('email')
             ->label('Email')
             ->required()
             ->autocomplete()
@@ -40,27 +39,31 @@ class Login extends BaseAuth
             ->extraInputAttributes(['tabindex' => 2]);
     }
 
+    protected function getRememberMeFormComponent(): \Filament\Forms\Components\Checkbox
+    {
+        return Checkbox::make('remember')
+            ->label('Remember Me')
+            ->extraInputAttributes(['tabindex' => 3]);
+    }
+
     protected function getFormActions(): array
     {
-        return array_merge(parent::getFormActions(), [
-            Actions\Action::make('clear')
-            ->action(function () {
-                $this->form->fill(); 
-                }) ,
-            ],
-        );
+        return parent::getFormActions();
     }
+
     protected function throwFailureValidationException(): never
     {
         throw ValidationException::withMessages([
             'data.login' => __('filament-panels::pages/auth/login.messages.failed'),
         ]);
     }
+
     protected function getCredentialsFromFormData(array $data): array
     { 
         return [
             'email' => $data['email'],
             'password'  => $data['password'],
+            // 'remember' => $data['remember'] ?? false, 
         ];
     }
 }

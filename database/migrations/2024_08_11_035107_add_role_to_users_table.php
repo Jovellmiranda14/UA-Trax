@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->enum('role', ['equipmentsuperadmin','facilitysuperadmin', 'facility_user', 'equipment_user', 'user'])->default('user');
-
+            $table->enum('dept_role', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
         });
     } 
 
@@ -24,7 +24,6 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->enum('role', ['equipmentsuperadmin','facilitysuperadmin', 'facility_user', 'equipment_user', 'user'])->default('user');
-
         });
     }
 };

@@ -6,6 +6,9 @@ use Illuminate\Support\ServiceProvider;
 use App\Filament\Pages\FacilityDashboard;
 use App\Filament\Pages\EquipmentDashboard;
 // use App\Filament\Pages\ImageModalPage;
+use App\Observers\TicketObserver;
+use App\Models\Ticket;
+use App\Models\TicketQueue;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -21,10 +24,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Filament::registerPages([
-            FacilityDashboard::class,
-            EquipmentDashboard::class,
-            //  ImageModalPage::class,
-        ]);
+        Ticket::observe(TicketObserver::class);
+
+        // Filament::registerPages([
+        //     FacilityDashboard::class,
+        //     EquipmentDashboard::class,
+        //     //  ImageModalPage::class,
+        // ]);
     }
 }

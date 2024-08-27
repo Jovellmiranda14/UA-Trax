@@ -1,0 +1,159 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\TicketQueueResource\Pages;
+use App\Models\TicketQueue;
+use App\Models\Ticket;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Filament\Support\Colors\Color;
+use Filament\Tables\Filters\SelectFilter;
+class TicketQueueResource extends Resource
+{
+    protected static ?string $model = TicketQueue::class;
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function canCreate(): bool
+    {
+        return false; // Disable the creation of new tickets from this resource
+    }
+    public static function getPluralLabel(): string
+    {
+        return 'Ticket Queue';
+    }
+
+    public static function getLabel(): string
+    {
+        return 'Ticket Queue';
+    }
+
+
+    public static function form(Form $form): Form
+    {
+        return $form->schema([
+            // Define form schema if needed
+        ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->query(Ticket::query()->whereNull('assigned')) // Only show tickets not yet assigned
+            ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('Ticket ID')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Sender')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('subject')
+                    ->label('Subject')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\BadgeColumn::make('status')
+                    ->label('Status')
+                    ->colors([
+                        'primary' => 'Open', Color::Blue,
+                        'success' => 'Resolved',
+                        'warning' => 'In progress',
+                        'info' => 'Closed',
+                    ])
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('priority')
+                    ->label('Priority')
+                    ->sortable()
+                    ->searchable(),
+           
+                Tables\Columns\TextColumn::make('location')
+                    ->label('Location')
+                    ->sortable()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('department')
+                    ->label('Dept')
+                    ->sortable()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Date Created')
+                    ->date()
+                    ->sortable(),
+
+            ])
+            ->filters([
+                SelectFilter::make('status')
+                ->options([
+                    'Accepted' => 'Accepted',
+                    'Open' => 'Open Tickets',
+                    'published' => 'Published',
+                    
+                ])
+            ])
+            ->actions([
+                Tables\Actions\Action::make('grab')
+                    ->label('')
+                    ->icon('heroicon-o-rectangle-stack')
+                    ->action(function ($record) {
+                        try {
+                            // Assign the ticket to the current user
+                            $record->update(['assigned' => auth()->user()->email]);
+            
+                            // Move the ticket to the "Tickets Accepted" list with additional modifications
+                            \App\Models\TicketsAccepted::create([
+                                'ticket_id' => $record->id, // Assuming you want to keep the ticket ID
+                                'assigned' => $record->assigned,
+                                'concern_type' => $record->concern_type,
+                                'name' => $record->name,
+                                'subject' => $record->subject,
+                                'priority' => $record->priority,
+                                'department' => $record->department,
+                                'location' => $record->location,
+                                'status' => 'In progress', // Setting status to 'In progress'
+                                'accepted_at' => now(), // Adding timestamp for when the ticket was accepted
+                                // Add other fields you want to copy from the original record
+                            ]);
+            
+                            // Delete the original ticket record
+                            $record->delete();
+                        } catch (\Exception $e) {
+                            // Handle the exception if something goes wrong
+                            // For example, log the error or notify the user
+                            \Log::error('Error grabbing ticket: ' . $e->getMessage());
+                        }
+                    })                    
+                    ->requiresConfirmation()
+                    ->modalHeading('Confirm Grab Ticket')
+                    ->modalSubheading('Are you sure you want to grab this ticket?')
+                    ->color('success')
+                    ->hidden(fn ($record) => $record->assigned !== null), // Hide the button if already grabbed
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                    // Optionally add more bulk actions
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            // Define any relationships here if needed
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListTicketQueues::route('/'),
+            // 'create' => Pages\CreateTicketQueue::route('/create'),
+            // 'edit' => Pages\EditTicketQueue::route('/{record}/edit'),
+        ];
+    }
+}

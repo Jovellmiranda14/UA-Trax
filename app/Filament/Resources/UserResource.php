@@ -9,13 +9,12 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-
+use Filament\Tables\Filters\SelectFilter;
 class UserResource extends Resource
 {
+    protected static ?string $navigationLabel = 'User';
     protected static ?string $model = User::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-user';
-
     public static function form(Form $form): Form
     {
         return $form
@@ -30,7 +29,13 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->maxLength(255)
-                    ->dehydrateStateUsing(fn ($state) => bcrypt($state)), // Ensure password is hashed
+                    ->dehydrateStateUsing(fn ($state) => bcrypt($state)),// Ensure password is hashed
+
+                // Forms\Components\Select::make('dept_role')
+                // ->label('Department Role')
+                //     ->required()
+                //     ->options(User::Dept), 
+
                 Forms\Components\Select::make('role')
                 ->required()
                 ->options(User::ROLES), // Default value for role
@@ -38,11 +43,17 @@ class UserResource extends Resource
     }
 
     public static function table(Table $table): Table
-    {
-        return $table
+    {   
+        // $user = auth()->user();
+       
+       return $table
+        // ->query(User::query()->where('role', $user->role))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
+                    // Tables\Columns\TextColumn::make('dept_role')
+                    // ->sortable()
+                    // ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                     Tables\Columns\TextColumn::make('role')
@@ -55,6 +66,12 @@ class UserResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                SelectFilter::make('role')
+                ->options(User::ROLES),
+                    
+                
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
