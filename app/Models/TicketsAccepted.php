@@ -14,6 +14,7 @@ class TicketsAccepted extends Model
 
     // Optionally define which attributes are mass-assignable
     protected $fillable = [
+        'id',
         'name',
         'subject',
         'status',

@@ -11,6 +11,7 @@ class TicketResolved extends Model
     protected $table = 'tickets_resolved';
     
     protected $fillable = [
+        'id',
         'name',
         'subject',
         'status',
