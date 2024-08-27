@@ -2,7 +2,7 @@
 @php
     $user = Auth::user();
 @endphp
-@if ($user->isFacilitySuperAdmin() || $user->isFaciltyAdmin())
+@if ($user->isFacilitySuperAdmin() || $user->isFacilityAdmin())
 <link rel="stylesheet" href="{{ asset('css/filament/filament/equipment.css') }}">
 <h1 class="custom-heading">Facility Admin Dashboard</h1>
 

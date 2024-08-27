@@ -162,9 +162,10 @@ class TicketResource extends Resource
 
                 Tables\Columns\ImageColumn::make('attachment')
                     ->label('Image')
-                    ->size(150)
+                    ->size(50)
                     // ->circular() // Remove this if you prefer square images
                     ->url(fn($record) => asset('storage/' . $record->attachment)),
+
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Date Created')

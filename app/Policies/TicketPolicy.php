@@ -12,7 +12,7 @@ class TicketPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFaciltyAdmin() || $user -> isEquipmentAdmin() || $user ->isRegularUser();
+        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFacilityAdmin() || $user -> isEquipmentAdmin() || $user ->isRegularUser();
     }
     
     /**
@@ -33,7 +33,7 @@ class TicketPolicy
      */
     public function create(User $user): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFaciltyAdmin() || $user -> isEquipmentAdmin() || $user ->isRegularUser();
+        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFacilityAdmin() || $user -> isEquipmentAdmin() || $user ->isRegularUser();
     }
     
     /**

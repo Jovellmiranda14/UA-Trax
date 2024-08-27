@@ -48,7 +48,7 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->isFacilitySuperAdmin() || 
         $this->isEquipmentSuperAdmin() || 
-        $this->isFaciltyAdmin() || 
+        $this->isFacilityAdmin() || 
         $this->isEquipmentAdmin() || 
         $this->isRegularUser();
     }
@@ -59,7 +59,7 @@ class User extends Authenticatable implements FilamentUser
     public function isEquipmentSuperAdmin(){
         return $this->role == self::EquipmentSUPER_ADMIN;
     }
-    public function isFaciltyAdmin(){
+    public function isFacilityAdmin(){
         return $this->role == self::FACILITY_ADMIN;
     }
     public function isEquipmentAdmin(){
