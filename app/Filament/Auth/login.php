@@ -20,7 +20,7 @@ class Login extends BaseAuth
             ->statePath('data');
     }
 
-    protected function getEmailFormComponent(): \Filament\Forms\Components\TextInput 
+    protected function getLoginFormComponent(): \Filament\Forms\Components\TextInput 
     {
         return TextInput::make('email')
             ->label('Email')
@@ -34,6 +34,7 @@ class Login extends BaseAuth
     {
         return TextInput::make('password')
             ->label('Password')
+            ->revealable(true)
             ->required()
             ->password()
             ->extraInputAttributes(['tabindex' => 2]);
