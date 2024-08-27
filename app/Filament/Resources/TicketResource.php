@@ -82,7 +82,8 @@ class TicketResource extends Resource
                         'connectivity_issues' => 'Connectivity issues (e.g., internet problems, network issues)',
                     ])
                     ->required()
-                    ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),                
+                    ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),            
+                        
                     Select::make('type_of_issue')
                     ->label('Type of Issue')
                     ->options([
@@ -158,6 +159,12 @@ class TicketResource extends Resource
                 Tables\Columns\TextColumn::make('department')
                     ->label('Dept')
                     ->searchable(),
+
+                Tables\Columns\ImageColumn::make('attachment')
+                    ->label('Image')
+                    ->size(150)
+                    // ->circular() // Remove this if you prefer square images
+                    ->url(fn($record) => asset('storage/' . $record->attachment)),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Date Created')

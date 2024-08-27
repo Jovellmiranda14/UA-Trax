@@ -34,6 +34,7 @@ return new class extends Migration
             $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High'])->default('Moderate');
             $table->string('location')->nullable()->default('N/A') ;  
             $table->string('attachment')->nullable()->default('N/A');
+            
             $table->string('assigned')->nullable();
             $table->timestamps();
             // $table->timestamp('updated_at')->change();
