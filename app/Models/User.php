@@ -16,8 +16,10 @@ class User extends Authenticatable implements FilamentUser
     use HasFactory, Notifiable;
      const FacilitySUPER_ADMIN = 'facilitysuperadmin';
      const EquipmentSUPER_ADMIN = 'equipmentsuperadmin';
-     const FACILITY_ADMIN = 'facility_user';
-     const EQUIPMENT_ADMIN = 'equipment_user';
+     const EQUIPMENT_ADMIN_Omiss = 'equipment_admin_omiss';
+     const EQUIPMENT_ADMIN_labcustodian = 'equipment_admin_labcustodian';
+     const FACILITY_ADMIN = 'facility_admin';
+     const EQUIPMENT_ADMIN = 'equipment_admin';
      const REGULAR_USER = 'user';
 
      const SAS = 'SAS';
@@ -27,13 +29,25 @@ class User extends Authenticatable implements FilamentUser
      const RSO = 'RSO';
      const OFFICE = 'OFFICE';
 
+     //Positions
+     const rso = 'RSO';
+     const Faculty = 'Faculty';
+     const Secretary = 'Secretary';
+     const None = 'N/A';
+
+     const Pos = [
+        self::rso => 'RSO',
+        self::Faculty => 'Faculty',
+        self::Secretary => 'Secretary',
+        self::None => 'N/A',
+    ];
     // Define the roles array using the constants
     const ROLES = [
          self::REGULAR_USER => 'Regular User',
          self::FacilitySUPER_ADMIN => 'Faciltiy Super Admin',
          self::EquipmentSUPER_ADMIN => 'Equipment Super Admin',
-         self::FACILITY_ADMIN => 'Facility User',
-         self::EQUIPMENT_ADMIN => 'Equipment User',
+         self::FACILITY_ADMIN => 'Facility Admin',
+         self::EQUIPMENT_ADMIN => 'Equipment Admin',
      ];
 
      const Dept = [
@@ -49,7 +63,9 @@ class User extends Authenticatable implements FilamentUser
         return $this->isFacilitySuperAdmin() || 
         $this->isEquipmentSuperAdmin() || 
         $this->isFacilityAdmin() || 
-        $this->isEquipmentAdmin() || 
+        $this->isEquipmentAdminOmiss() || 
+        $this->isEquipmentAdminlabcustodian() || 
+        
         $this->isRegularUser();
     }
 
@@ -68,7 +84,12 @@ class User extends Authenticatable implements FilamentUser
     public function isRegularUser(){
         return $this->role == self::REGULAR_USER;
     }
-    
+    public function isEquipmentAdminOmiss(){
+        return $this->role == self::EQUIPMENT_ADMIN_Omiss;
+    }
+    public function isEquipmentAdminlabcustodian(){
+        return $this->role == self::EQUIPMENT_ADMIN_labcustodian;
+    }
     /**
      * The attributes that are mass assignable.
      *
@@ -78,6 +99,7 @@ class User extends Authenticatable implements FilamentUser
         'name', 
         'email', 
         'dept_role',
+        'position',
         'password', 
         'role' // Add this line if not already added
     ];

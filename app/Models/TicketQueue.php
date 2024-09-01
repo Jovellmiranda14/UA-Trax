@@ -22,6 +22,7 @@ class TicketQueue extends Model
         'department',
         'location',
         'assigned',
+        'dept_role',
         'accepted_at',
         'created_at',
     ];

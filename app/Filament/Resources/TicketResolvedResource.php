@@ -131,8 +131,8 @@ class TicketResolvedResource extends Resource
     {
         return [
             'index' => Pages\ListTicketResolveds::route('/'),
-            'create' => Pages\CreateTicketResolved::route('/create'),
-            'edit' => Pages\EditTicketResolved::route('/{record}/edit'),
+            // 'create' => Pages\CreateTicketResolved::route('/create'),
+            // 'edit' => Pages\EditTicketResolved::route('/{record}/edit'),
         ];
     }
 }

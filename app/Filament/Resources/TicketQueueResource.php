@@ -11,7 +11,17 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Support\Colors\Color;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\DatePicker;
+
 class TicketQueueResource extends Resource
 {
     protected static ?string $model = TicketQueue::class;
@@ -21,6 +31,7 @@ class TicketQueueResource extends Resource
     {
         return false; // Disable the creation of new tickets from this resource
     }
+
     public static function getPluralLabel(): string
     {
         return 'Ticket Queue';
@@ -30,7 +41,6 @@ class TicketQueueResource extends Resource
     {
         return 'Ticket Queue';
     }
-
 
     public static function form(Form $form): Form
     {
@@ -44,19 +54,19 @@ class TicketQueueResource extends Resource
         return $table
             ->query(Ticket::query()->whereNull('assigned')) // Only show tickets not yet assigned
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->label('Ticket ID')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Sender')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('subject')
+                TextColumn::make('subject')
                     ->label('Subject')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\BadgeColumn::make('status')
+                BadgeColumn::make('status')
                     ->label('Status')
                     ->colors([
                         'primary' => 'Open', Color::Blue,
@@ -65,39 +75,34 @@ class TicketQueueResource extends Resource
                         'info' => 'Closed',
                     ])
                     ->searchable(),
-                Tables\Columns\TextColumn::make('priority')
+                TextColumn::make('priority')
                     ->label('Priority')
                     ->sortable()
                     ->searchable(),
-           
-                Tables\Columns\TextColumn::make('location')
+                TextColumn::make('location')
                     ->label('Location')
                     ->sortable()
                     ->searchable(),
-
-                Tables\Columns\TextColumn::make('department')
+                TextColumn::make('department')
                     ->label('Dept')
                     ->sortable()
                     ->searchable(),
-
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label('Date Created')
                     ->date()
                     ->sortable(),
-
             ])
             ->filters([
                 SelectFilter::make('status')
-                ->options([
-                    'Accepted' => 'Accepted',
-                    'Open' => 'Open Tickets',
-                    'published' => 'Published',
-                    
-                ])
+                    ->options([
+                        'Accepted' => 'Accepted',
+                        'Open' => 'Open Tickets',
+                        'published' => 'Published',
+                    ])
             ])
             ->actions([
-                Tables\Actions\Action::make('grab')
-                    ->label('')
+                Action::make('grab')
+                    ->label('Claim')
                     ->icon('heroicon-o-rectangle-stack')
                     ->action(function ($record) {
                         try {
@@ -106,7 +111,7 @@ class TicketQueueResource extends Resource
             
                             // Move the ticket to the "Tickets Accepted" list with additional modifications
                             \App\Models\TicketsAccepted::create([
-                                'ticket_id' => $record->id, // Assuming you want to keep the ticket ID
+                                'id' => $record->id, // Assuming you want to keep the ticket ID
                                 'assigned' => $record->assigned,
                                 'concern_type' => $record->concern_type,
                                 'name' => $record->name,
@@ -114,6 +119,7 @@ class TicketQueueResource extends Resource
                                 'priority' => $record->priority,
                                 'department' => $record->department,
                                 'location' => $record->location,
+                                'dept' => $record->dept_role,
                                 'status' => 'In progress', // Setting status to 'In progress'
                                 'accepted_at' => now(), // Adding timestamp for when the ticket was accepted
                                 // Add other fields you want to copy from the original record
@@ -126,19 +132,67 @@ class TicketQueueResource extends Resource
                             // For example, log the error or notify the user
                             \Log::error('Error grabbing ticket: ' . $e->getMessage());
                         }
-                    })                    
+                    })
                     ->requiresConfirmation()
                     ->modalHeading('Confirm Grab Ticket')
                     ->modalSubheading('Are you sure you want to grab this ticket?')
                     ->color('success')
                     ->hidden(fn ($record) => $record->assigned !== null), // Hide the button if already grabbed
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    // Optionally add more bulk actions
+
+                ActionGroup::make([
+                    ViewAction::make('View')
+                        ->modalHeading('Ticket Details')
+                        ->modalSubheading('Full details of the selected ticket.')
+                        ->form([
+                            Card::make([
+                                TextInput::make('id')
+                                    ->label('Ticket ID')
+                                    ->disabled()
+                                    ->required(),
+                                TextInput::make('name')
+                                    ->label('Sender')
+                                    ->disabled()
+                                    ->required(),
+                                TextInput::make('subject')
+                                    ->label('Subject')
+                                    ->disabled()
+                                    ->required(),
+                                TextInput::make('status')
+                                    ->label('Status')
+                                    ->disabled()
+                                    ->required(),
+                                TextInput::make('priority')
+                                    ->label('Priority')
+                                    ->disabled()
+                                    ->required(),
+                                TextInput::make('department')
+                                    ->label('department')
+                                    ->disabled()
+                                    ->required(),
+                                TextInput::make('location')
+                                    ->label('Location')
+                                    ->disabled()
+                                    ->required(),
+                                    TextInput::make('dept_role')
+                                    ->label('Dept Assigned')
+                                    ->disabled()
+                                    ->required(),
+                                DatePicker::make('created_at')
+                                    ->label('Date Created')
+                                    ->disabled()
+                                    ->required(),
+                            ]),
+                        ]),
+
+
                 ]),
             ]);
+            // ->bulkActions([
+            //     Tables\Actions\BulkActionGroup::make([
+            //         Tables\Actions\DeleteBulkAction::make(),
+            //         // Optionally add more bulk actions
+            //     ]),
+            // ]);
     }
 
     public static function getRelations(): array

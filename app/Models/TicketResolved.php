@@ -19,6 +19,7 @@ class TicketResolved extends Model
         'department',
         'location',
         'assigned',
+        'dept_role',
         'created_at',
         'assigned_at',
     ];

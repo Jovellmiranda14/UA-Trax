@@ -27,14 +27,14 @@ return new class extends Migration
                 'electricity',
                 'computer_issues',
                 'lab_equipment',
-                'connectivity_issues',
+                'Other_Devices',
             ]);
-            // $table->string('property_no');
+            $table->string('property_no');
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed'])->default('Open');
             $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High'])->default('Moderate');
             $table->string('location')->nullable()->default('N/A') ;  
+            $table->enum('dept_role', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
             $table->string('attachment')->nullable()->default('N/A');
-            
             $table->string('assigned')->nullable();
             $table->timestamps();
             // $table->timestamp('updated_at')->change();

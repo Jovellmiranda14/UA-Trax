@@ -20,7 +20,7 @@ use Filament\Support\Colors\Color;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use Filament\Forms\Components\Wizard\Step;
+
 use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
@@ -41,25 +41,38 @@ class TicketResource extends Resource
         return $form
             ->schema([
                 Radio::make('concern_type')
-                    ->label('My concern is about:')
-                    ->options([
-                        'Laboratory and Equipment' => 'Laboratory and Equipment',
-                        'Facility' => 'Facility', 
-                    ])
-                    ->reactive()
-                    ->required(),              
-                // TextInput::make('property_no')
-                //     ->label('Property No.')
-                //     ->required()
-                //     ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
+    ->label('My concern is about:')
+    ->options([
+        'Laboratory and Equipment' => 'Laboratory and Equipment',
+        'Facility' => 'Facility',
+    ])
+    ->reactive()
+    ->required()
+    ->default(function () {
+        // Check the user's role and return the appropriate default value
+        $user = Auth::user();
+        
+        if ($user->isEquipmentSuperAdmin()) {
+            return 'Facility'; // Automatically set to 'Facility' for Equipment Admin or User
+        }
+        
+        // Default to null or another value if needed
+        return null;
+    }), 
 
-                // Under Modification 
+                TextInput::make('property_no')
+                    ->label('Property No.')
+                    ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
+
+                // Under Modification // Based on words
                 TextInput::make('priority')
                     ->label('Priority')
                     ->default('Moderate')
                     ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
                     ->disabled()
-                    ->hidden(),                 
+                    ->hidden(),   
+                    
+                    
                 Select::make('department')
                     ->label('Department')
                     ->options([
@@ -72,14 +85,14 @@ class TicketResource extends Resource
                     ])
                     ->reactive()
                     ->required()
-                    ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
+                    ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
                                  
                     Select::make('type_of_issue')
                     ->label('Type of Issue')
                     ->options([
                         'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
                         'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
-                        'connectivity_issues' => 'Connectivity issues (e.g., internet problems, network issues)',
+                        'Other_Devices' => 'Other Devices (e.g., Printer, Projector, and TV)',
                     ])
                     ->required()
                     ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),            
@@ -111,12 +124,25 @@ class TicketResource extends Resource
                     ->default(fn () => Auth::user()->name)
                     ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
 
+                    Select::make('location')
+                    ->label('Location')
+                    ->options(fn ($get) => [
+                        'SAS' => ['SAS Building', 'SAS Lab'],
+                        'CEA' => ['CEA Hall', 'CEA Workshop'],
+                        'CONP' => ['CONP Room 1', 'CONP Room 2'],
+                        'CITCLS' => ['CITCLS Area A', 'CITCLS Area B'],
+                    ][$get('department')] ?? [])
+                    ->required()
+                    ->reactive()
+                    ->visible(fn ($get) => !in_array($get('department'), ['RSO', 'OFFICE']) 
+                                      && in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
+
                     TextInput::make('location')
                     ->label('Location')
                     ->required()
                     ->default('N/A')
-                     ->visible(fn ($get) => $get('department') === 'RSO' || $get('department') === 'OFFICE'),
-                    
+                    ->visible(fn ($get) => in_array($get('department'), ['RSO', 'OFFICE']) 
+                                      && in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
         
                 FileUpload::make('attachment')
                     ->label('Upload file')
@@ -137,7 +163,7 @@ class TicketResource extends Resource
                     ->label('Ticket ID')
                     ->sortable()
                     ->searchable(),
-
+                    // ->extraAttributes(['class' => 'border-blue-500 bg-gray-100']),
                 Tables\Columns\TextColumn::make('concern_type')
                     ->label('Category')
                     ->sortable()
@@ -160,11 +186,18 @@ class TicketResource extends Resource
                     ->label('Dept')
                     ->searchable(),
 
-                Tables\Columns\ImageColumn::make('attachment')
+                    Tables\Columns\ImageColumn::make('attachment')
                     ->label('Image')
                     ->size(50)
-                    // ->circular() // Remove this if you prefer square images
-                    ->url(fn($record) => asset('storage/' . $record->attachment)),
+                    ->circular() // Keep the image circular, remove if you want square images
+                    ->getStateUsing(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : url('/images/equipment.png'))
+                    ->url(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : null)
+                    ->extraAttributes(function ($record) {
+                        return $record->attachment ? ['class' => 'clickable-image'] : [];
+                    })
+                    ->openUrlInNewTab(),
+
+                 
 
 
                 Tables\Columns\TextColumn::make('created_at')
@@ -217,7 +250,7 @@ class TicketResource extends Resource
                 ])  
             ])
             ->actions([
-                Tables\Actions\DeleteAction::make(),
+     //
             ]);
             // ->bulkActions([
             //     Tables\Actions\BulkActionGroup::make([
@@ -243,4 +276,6 @@ class TicketResource extends Resource
             // 'edit' => Pages\EditTicket::route('/{record}/edit'),
         ];
     }
+
+
 }

@@ -11,7 +11,9 @@ class Ticket extends Model
 
     // Define fillable attributes for mass assignment
     protected $fillable = [
-        'type_of_issue','concern_type','name','description','subject', 'department', 'status', 'location', 'attachment', 'priority', 'assigned_to'
+        'type_of_issue','concern_type','name','description',
+        'subject', 'department', 'status', 'location', 'attachment', 
+        'priority', 'assigned_to','dept_role'
 
     ];
 

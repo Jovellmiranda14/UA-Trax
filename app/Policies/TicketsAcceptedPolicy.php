@@ -23,7 +23,7 @@ class TicketsAcceptedPolicy
     {
         return $user->isEquipmentSuperAdmin() || $user->isFacilitySuperAdmin() || $user->isFacilityAdmin() || $user->isEquipmentAdmin();
     }
-
+  
     /**
      * Determine whether the user can create models.
      */

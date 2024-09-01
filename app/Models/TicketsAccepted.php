@@ -22,6 +22,7 @@ class TicketsAccepted extends Model
         'department',
         'location',
         'assigned',
+        'dept_role',
         'accepted_at',
         'role',
         'created_at',
