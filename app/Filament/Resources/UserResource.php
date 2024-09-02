@@ -70,8 +70,6 @@ class UserResource extends Resource
                     // ->sortable()
                     // ->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                ->email()
-                ->unique()
                     ->searchable(),
                     Tables\Columns\TextColumn::make('role')
                     ->searchable(),
