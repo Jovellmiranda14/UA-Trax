@@ -25,131 +25,99 @@ use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Card;
+
+
+
 class TicketResource extends Resource
 {
     protected static ?string $navigationLabel = 'My Tickets';
     protected static ?string $model = Ticket::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $label = 'Open tickets';
+    protected static ?string $navigationGroup = 'Tickets';
+    protected static ?int $navigationSort = 4;
+    
     // Disable Function
     // public static function canCreate(): Bool
     // {
     //     return false;
     // }
     public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Radio::make('concern_type')
-    ->label('My concern is about:')
-    ->options([
-        'Laboratory and Equipment' => 'Laboratory and Equipment',
-        'Facility' => 'Facility',
-    ])
-    ->reactive()
-    ->required()
-    ->default(function () {
-        // Check the user's role and return the appropriate default value
-        $user = Auth::user();
-        
-        if ($user->isEquipmentSuperAdmin()) {
-            return 'Facility'; // Automatically set to 'Facility' for Equipment Admin or User
-        }
-        
-        // Default to null or another value if needed
-        return null;
-    }), 
+{
+    return $form
+        ->schema([
+            Card::make('Ticket details')
+            ->description('Enter specfic issues you have trouble with.')
+                ->schema([
+                    Grid::make(2)
+                        ->schema([
+                            TextInput::make('subject')
+                                ->label('Subject')
+                                ->required(),
 
-                TextInput::make('property_no')
+                                TextInput::make('property_no')
+                                ->label('Property No.')
+                                ->required(),
+                              
+
+                            TextInput::make('property_no')
                     ->label('Property No.')
                     ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
+                                   
+                        ]),
 
-                // Under Modification // Based on words
-                TextInput::make('priority')
-                    ->label('Priority')
-                    ->default('Moderate')
-                    ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
-                    ->disabled()
-                    ->hidden(),   
-                    
-                    
-                Select::make('department')
-                    ->label('Department')
-                    ->options([
-                        'SAS' => 'SAS',
-                        'CEA' => 'CEA',
-                        'CONP' => 'CONP',
-                        'CITCLS' => 'CITCLS',
-                        'RSO' => 'RSO', // Specify the Location
-                        'OFFICE' => 'OFFICE', // Specify the Location        
-                    ])
-                    ->reactive()
-                    ->required()
-                    ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
-                                 
-                    Select::make('type_of_issue')
-                    ->label('Type of Issue')
-                    ->options([
-                        'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
-                        'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
-                        'Other_Devices' => 'Other Devices (e.g., Printer, Projector, and TV)',
-                    ])
-                    ->required()
-                    ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),            
-                        
-                    Select::make('type_of_issue')
-                    ->label('Type of Issue')
-                    ->options([
-                        'repair' => 'Repair',
-                        'air_conditioning' => 'Air Conditioning',
-                        'plumbing' => 'Plumbing',
-                        'lighting' => 'Lighting',
-                        'electricity' => 'Electricity',
-                    ])
-                    ->required()
-                    ->visible(fn ($get) => $get('concern_type') === 'Facility'),
+                         
+                    Grid::make(2)
+                        ->schema([
+                            Textarea::make('description')
+                                ->label('Description')
+                                ->required(),
+                            
+                            FileUpload::make('attachment')
+                                ->label('Upload a file')
+                                ->acceptedFileTypes(['image/jpeg', 'image/png'])
+                                ->directory('attachments'),
+                        ]),
+                ])
+                ->label('Ticket details'),
 
-                TextArea::make('description')
-                    ->label('Description')
-                    ->required()
-                    ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
-
-                TextInput::make('subject')
-                    ->label('Subject')
-                    ->required()
-                    ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
-
-                    TextInput::make('name')
-                    ->label('Sender')
-                    ->default(fn () => Auth::user()->name)
-                    ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
-
-                    Select::make('location')
-                    ->label('Location')
-                    ->options(fn ($get) => [
-                        'SAS' => ['SAS Building', 'SAS Lab'],
-                        'CEA' => ['CEA Hall', 'CEA Workshop'],
-                        'CONP' => ['CONP Room 1', 'CONP Room 2'],
-                        'CITCLS' => ['CITCLS Area A', 'CITCLS Area B'],
-                    ][$get('department')] ?? [])
-                    ->required()
-                    ->reactive()
-                    ->visible(fn ($get) => !in_array($get('department'), ['RSO', 'OFFICE']) 
-                                      && in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
-
-                    TextInput::make('location')
-                    ->label('Location')
-                    ->required()
-                    ->default('N/A')
-                    ->visible(fn ($get) => in_array($get('department'), ['RSO', 'OFFICE']) 
-                                      && in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
-        
-                FileUpload::make('attachment')
-                    ->label('Upload file')
-                    ->acceptedFileTypes(['image/jpeg', 'image/png'])
-                    ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
-            ]);
-    }
+                Card::make('Place of issues')
+                ->description('Select where the equipment is currently located.')
+                ->schema([
+                    Grid::make(2)
+                        ->schema([
+                            Select::make('department')
+                                ->label('Department')
+                                ->options([
+                                    'SAS' => 'SAS',
+                                    'CEA' => 'CEA',
+                                    'CONP' => 'CONP',
+                                    'CITCLS' => 'CITCLS',
+                                    'RSO' => 'RSO', 
+                                    'OFFICE' => 'OFFICE', 
+                                ])
+                                ->reactive()
+                                ->required(),
+                            
+                            Select::make('location')
+                                ->label('Location')
+                                ->options(fn ($get) => [
+                                    'SAS' => ['SAS Building', 'SAS Lab'],
+                                    'CEA' => ['CEA Hall', 'CEA Workshop'],
+                                    'CONP' => ['CONP Room 1', 'CONP Room 2'],
+                                    'CITCLS' => ['CITCLS Area A', 'CITCLS Area B'],
+                                ][$get('department')] ?? [])
+                                ->required()
+                                ->reactive()
+                                ->visible(fn ($get) => !in_array($get('department'), ['RSO', 'OFFICE'])),
+                        ]),
+                ])
+               
+        ]);
+}
+    
 
     public static function table(Table $table): Table
     {
@@ -243,11 +211,32 @@ class TicketResource extends Resource
 
             ])
             ->filters([
+                // Tickets filter
                 SelectFilter::make('status')
-                ->options([
-                    'Accepted' => 'Accepted',
-                    'Open' => 'Open Tickets',         
-                ])  
+                    ->label('Tickets')
+                    ->options([
+                        'Open' => 'Open tickets',
+                        'Accepted' => 'Accepted',
+                    ]),
+                
+                // Type of issue filter
+                SelectFilter::make('issue_type')
+                    ->label('Type of issue')
+                    ->options([
+                        'Facility' => 'Facility',
+                        'Equipment' => 'Equipment',
+                    ]),
+            
+                // Department filter with checkboxes
+                MultiSelectFilter::make('department')
+                    ->label('Department')
+                    ->options([
+                        'CITCLS' => 'CITCLS',
+                        'CEA' => 'CEA',
+                        'SAS' => 'SAS',
+                        'CONP' => 'CONP',
+                        'Other offices' => 'Other offices',
+                    ]),
             ])
             ->actions([
      //

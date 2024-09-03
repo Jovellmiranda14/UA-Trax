@@ -33,3 +33,13 @@ class AppServiceProvider extends ServiceProvider
         // ]);
     }
 }
+
+class FilamentServiceProvider extends ServiceProvider
+{
+    public function boot()
+    {
+        Filament::navigation([
+            TicketHistoryResource::class,
+        ]);
+    }
+}

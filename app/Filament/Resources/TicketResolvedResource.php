@@ -19,8 +19,9 @@ class TicketResolvedResource extends Resource
 
     protected static ?string $model = TicketResolved::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Tickets';
+    protected static ?int $navigationSort = 3;
     public static function canCreate(): bool
     {
         return false;

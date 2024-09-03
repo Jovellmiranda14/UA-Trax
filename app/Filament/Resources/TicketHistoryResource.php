@@ -29,10 +29,13 @@ use Filament\Forms\Components\DatePicker;
       
 class TicketHistoryResource extends Resource
 {
-    protected static ?string $navigationLabel = 'Ticket History';
+    //protected static ?string $navigationLabel = 'Ticket History';
     protected static ?string $model = TicketHistory::class;
+    
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    
     // Disable Function
 
     public static function canCreate(): Bool

@@ -1,1 +1,1 @@
-<img src="{{ asset('/images/UATRAX-logo-dark-transparent.png') }}" alt="Logo" class="h-10">
+<img src="{{ asset('/images/') }}" alt="Logo" class="h-10">

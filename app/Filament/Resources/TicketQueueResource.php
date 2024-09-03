@@ -25,7 +25,9 @@ use Filament\Forms\Components\DatePicker;
 class TicketQueueResource extends Resource
 {
     protected static ?string $model = TicketQueue::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Tickets';
+    protected static ?int $navigationSort = 1;
 
     public static function canCreate(): bool
     {
@@ -93,7 +95,12 @@ class TicketQueueResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('status')
+                SelectFilter::make('Tickets')
+                    ->options([
+                        'Accepted' => 'Accepted',
+                        'Open' => 'Open Tickets',
+                        'published' => 'Published',
+                    ])
                     ->options([
                         'Accepted' => 'Accepted',
                         'Open' => 'Open Tickets',

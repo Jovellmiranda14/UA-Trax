@@ -20,6 +20,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Auth\Login;
 use Filament\Notifications\Notification;
 
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -43,8 +44,8 @@ class AdminPanelProvider extends PanelProvider
             // Wag cocooment
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages') 
             // Wag cocooment
-
-            
+           
+        
             // ->pages([
             //     Pages\Dashboard::class,
             //     //  Pages\FacilityDashboard::class,

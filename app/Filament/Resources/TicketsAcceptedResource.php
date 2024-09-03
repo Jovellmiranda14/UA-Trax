@@ -19,13 +19,23 @@ use Filament\Forms\Components\Card;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 
+
+use Filament\Tables\Filters\MultiSelectFilter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
+
 class TicketsAcceptedResource extends Resource
 {
     protected static ?string $navigationLabel = 'Tickets Accepted';
-    
+    protected static ?string $label = 'Open tickets';
     protected static ?string $model = TicketsAccepted::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $navigationGroup = 'Tickets';
+    protected static ?int $navigationSort = 2;
+
+
 
     public static function canCreate(): bool
     {
@@ -97,8 +107,34 @@ class TicketsAcceptedResource extends Resource
                     ->searchable(),
             ])
             ->filters([
-                // Add filters here if needed
+                // Tickets filter
+                SelectFilter::make('status')
+                    ->label('Tickets')
+                    ->options([
+                        'Open' => 'Open tickets',
+                        'Accepted' => 'Accepted',
+                    ]),
+                
+                // Type of issue filter
+                SelectFilter::make('issue_type')
+                    ->label('Type of issue')
+                    ->options([
+                        'Facility' => 'Facility',
+                        'Equipment' => 'Equipment',
+                    ]),
+            
+                // Department filter with checkboxes
+                MultiSelectFilter::make('department')
+                    ->label('Department')
+                    ->options([
+                        'CITCLS' => 'CITCLS',
+                        'CEA' => 'CEA',
+                        'SAS' => 'SAS',
+                        'CONP' => 'CONP',
+                        'Other offices' => 'Other offices',
+                    ]),
             ])
+            
             ->actions([  
                 Tables\Actions\ActionGroup::make([
                         ViewAction::make('View')
