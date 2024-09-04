@@ -35,8 +35,8 @@ class AdminUserResource extends Resource
                 ->maxLength(255),
     
             Forms\Components\TextInput::make('email')
-            ->email()
-            ->unique()
+                ->email()
+                ->unique()
                 ->required()
                 ->maxLength(255),
     
@@ -51,7 +51,7 @@ class AdminUserResource extends Resource
                  ->label('Department Role')
                  ->required()
                  ->options(User::Dept)
-                 ->visible(fn () => auth()->user()->role === 'equipment_user')
+                 ->visible(fn () => in_array(auth()->user()->role, [ 'equipment_admin_omiss', 'equipment_admin_labcustodian']))
                  ->hidden(fn () => auth()->user()->role=== 'facility_user'),
                 
                 
@@ -64,7 +64,6 @@ class AdminUserResource extends Resource
                 ->label('Role')
                 ->required()
                 ->options([
-                    'equipment_user' => 'Equipment Admin',
                     'equipment_admin_omiss' => 'Equipment OMISS',
                     'equipment_admin_labcustodian' => 'Equipment LabCustodian',
                     'facility_user' => 'Facility Admin',

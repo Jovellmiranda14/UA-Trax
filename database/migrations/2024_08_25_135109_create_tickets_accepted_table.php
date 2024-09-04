@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tickets_accepted', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();;          
+            $table->string('name');          
             $table->string('subject');        
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed'])->default('Open');      
             $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High'])->default('Moderate');   

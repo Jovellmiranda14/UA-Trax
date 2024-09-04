@@ -11,23 +11,58 @@ class Ticket extends Model
 
     // Define fillable attributes for mass assignment
     protected $fillable = [
-        'type_of_issue','concern_type','name','description',
+        'type_of_issue', 'concern_type', 'name', 'description',
         'subject', 'department', 'status', 'location', 'attachment', 
-        'priority', 'assigned_to','dept_role'
-
+        'priority', 'assigned_to', 'dept_role'
     ];
-
-    // Disable auto-incrementing for the id column
-    public $incrementing = false;
-
-    // Set the key type to string
-    protected $keyType = 'string';
 
     // Boot method to define model events
     protected static function boot()
     {
         parent::boot();
+        // static::created(function ($ticket) {
+        //     TicketQueue::create([
+        //         'id'          => $ticket->id,
+        //         'name'        => auth()->user()->name, // Make sure this is set
+        //         'subject'     => $ticket->subject,
+        //         'status'      => $ticket->status,
+        //         'priority'    => $ticket->priority,
+        //         'department'  => $ticket->department,
+        //         'location'    => $ticket->location,
+        //         'created_at'  => now(),
+        //         'updated_at'  => now(),
+        //     ]);
+        // });
 
+        // Event: When a ticket is created
+        static::created(function ($ticket) {
+            TicketHistory::create([
+                'id'   => $ticket->id,
+                'name'        => auth()->user()->name,
+                'subject'     => $ticket->subject,
+                'status'      => 'open',
+                'priority'    => 'moderate',
+                'location'    => $ticket->location,
+                'department'  => $ticket->department,
+                'created_at'  => $ticket->created_at,
+            ]);
+        });
+
+        // Event: When a ticket is updated
+        static::updated(function ($ticket) {
+            TicketHistory::create([
+                'id'   => $ticket->id,
+                'name'        => $ticket->name,
+                'subject'     => $ticket->subject,
+                'status'      => $ticket->status,
+                'priority'    => $ticket->priority,
+                'location'    => $ticket->location,
+                'department'  => $ticket->department,
+                'updated_at'  => $ticket->updated_at,
+            ]);
+        });
+
+        // Event: When a ticket is being created (for ID generation)
         static::creating(function ($ticket) {
             // Get the current year
             $year = date('Y');
@@ -49,4 +84,10 @@ class Ticket extends Model
             $ticket->id = $year . $nextNumber;
         });
     }
+
+    // Disable auto-incrementing for the id column
+    public $incrementing = false;
+
+    // Set the key type to string
+    protected $keyType = 'string';
 }

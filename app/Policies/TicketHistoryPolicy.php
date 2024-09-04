@@ -14,7 +14,7 @@ class TicketHistoryPolicy
     public function viewAny(User $user): bool
     {
         return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
-        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian();
+        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user ->isRegularUser();
     }
 
     /**
@@ -23,7 +23,7 @@ class TicketHistoryPolicy
     public function view(User $user, TicketHistory $ticketHistory): bool
     {
         return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
-        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian();
+        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user ->isRegularUser();
     }
 
     /**

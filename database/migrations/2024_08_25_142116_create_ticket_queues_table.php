@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed'])->default('Open')->nullable();
             $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High'])->default('Moderate')->nullable();
             $table->enum('department', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE'])->nullable();
-            $table->string('location')->nullable()->default('N/A');  
+            $table->string('location')->default('N/A')->nullable();
             $table->string('attachment')->nullable()->default('N/A');
             $table->string('assigned')->nullable(); // Optional field
             $table->timestamps();
