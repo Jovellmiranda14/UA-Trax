@@ -6,6 +6,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Checkbox;
 use Filament\Pages\Auth\Login as BaseAuth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
+use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 
 class Login extends BaseAuth
 {
@@ -13,7 +15,14 @@ class Login extends BaseAuth
     {
         return $form
             ->schema([
-                $this->getEmailFormComponent(),
+                $this->getEmailFormComponent()
+                ->email()
+                ->rules([
+                    'required',
+                    'email',
+                    Rule::exists('users', 'email'),
+                ])
+                ->helperText('Please provide a valid email address.'),
                 $this->getPasswordFormComponent(),
                 // $this->getRememberMeFormComponent(),
             ])
@@ -27,6 +36,7 @@ class Login extends BaseAuth
             ->required()
             ->autocomplete()
             ->autofocus()
+            
             ->extraInputAttributes(['tabindex' => 1]);
     }
 
