@@ -118,7 +118,7 @@ class TicketsAcceptedResource extends Resource
                     ]),
                 
                 // Type of issue filter
-                SelectFilter::make('issue_type')
+                SelectFilter::make('concern_type')
                     ->label('Type of issue')
                     ->options([
                         'Facility' => 'Facility',
