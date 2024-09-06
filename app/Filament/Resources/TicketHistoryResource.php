@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TicketHistoryResource\Pages;
 use App\Filament\Resources\TicketHistoryResource\RelationManagers;
 use App\Models\TicketHistory;
+use App\Models\Ticket;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -54,7 +55,9 @@ class TicketHistoryResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $user = auth()->user();
         return $table
+        ->query(Ticket::query()->where('name', $user->name))
          // Pagination 
         // ->paginated([10, 25, 50, 100, 'all']) 
         ->columns([

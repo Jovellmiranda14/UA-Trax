@@ -53,10 +53,26 @@ class TicketQueueResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
-         // Pagination 
-        // ->paginated([10, 25, 50, 100, 'all']) 
-            ->query(Ticket::query()->whereNull('assigned')) // Only show tickets not yet assigned
+        return $table    
+        ->query(function () {
+            $query = Ticket::query()->whereNull('assigned'); // Only show tickets not yet assigned
+        
+            if (auth()->user()->isEquipmentSuperAdmin() || 
+                auth()->user()->isEquipmentAdminOmiss() || 
+                auth()->user()->isEquipmentAdminlabcustodian()) 
+            {
+                
+                $query->whereIn('concern_type', ['Laboratory and Equipment'])
+                      ->orderBy('concern_type', 'asc');
+            } elseif (auth()->user()->isFacilityAdmin() || 
+                    auth()->user()->isFacilitySuperAdmin()) {
+          
+                $query->where('concern_type', 'Facility')
+                      ->orderBy('concern_type', 'asc');
+            }
+        
+            return $query;
+        })
             ->columns([
                 TextColumn::make('id')
                     ->label('Ticket ID')
@@ -85,6 +101,10 @@ class TicketQueueResource extends Resource
                     ->searchable(),
                 TextColumn::make('location')
                     ->label('Location')
+                    ->sortable()
+                    ->searchable(),
+                    TextColumn::make('concern_type')
+                    ->label('Concern Type')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('department')

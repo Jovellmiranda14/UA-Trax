@@ -225,7 +225,6 @@ class TicketResource extends Resource
                     ->label('Priority')
                     ->searchable(),
 
-
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
                     ->searchable(),
@@ -237,8 +236,8 @@ class TicketResource extends Resource
                     Tables\Columns\ImageColumn::make('attachment')
                     ->label('Image')
                     ->size(50)
-                    ->circular() // Keep the image circular, remove if you want square images
-                    ->getStateUsing(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : url('/images/equipment.png'))
+                    ->circular()
+                    ->getStateUsing(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : url('/images/XCircleOutline.png'))
                     ->url(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : null)
                     ->extraAttributes(function ($record) {
                         return $record->attachment ? ['class' => 'clickable-image'] : [];
