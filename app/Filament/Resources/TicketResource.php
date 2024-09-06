@@ -268,15 +268,15 @@ class TicketResource extends Resource
                     // ->html(), // Use HTML formatting to render the image
                 
 
-                // Tables\Columns\BadgeColumn::make('status')
-                //     ->label('Status')
-                //     ->colors([
-                //         'primary' => 'Open', Color::Blue,
-                //         'success' => 'Resolved',
-                //         'warning' => 'In progress',
-                //         'info' => 'Closed',
-                //     ])
-                //     ->searchable(),
+                Tables\Columns\BadgeColumn::make('status')
+                    ->label('Status')
+                    ->colors([
+                        'primary' => 'Open', Color::Blue,
+                        'success' => 'Resolved',
+                        'warning' => 'In progress',
+                        'info' => 'Closed',
+                    ])
+                    ->searchable(),
 
                
                     
@@ -297,7 +297,7 @@ class TicketResource extends Resource
                     ]),
                 
                 // Type of issue filter
-                SelectFilter::make('issue_type')
+                SelectFilter::make('concern_type')
                     ->label('Type of issue')
                     ->options([
                         'Facility' => 'Facility',

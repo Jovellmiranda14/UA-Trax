@@ -12,7 +12,8 @@ class TicketPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFacilityAdmin() || $user -> isEquipmentAdmin() || $user ->isRegularUser();
+        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
+        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
     }
     
     /**
@@ -20,11 +21,8 @@ class TicketPolicy
      */
     public function view(User $user, Ticket $ticket): bool
     {
-        return  $user->isEquipmentSuperAdmin() ||
-        $user->isFacilitySuperAdmin() ||
-        $user->isFacilityAdmin() ||
-        $user->isEquipmentAdmin() ||
-        $user->isRegularUser();
+        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
+        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
         // $ticket->email === $user->email;
     }
 
@@ -33,7 +31,8 @@ class TicketPolicy
      */
     public function create(User $user): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFacilityAdmin() || $user -> isEquipmentAdmin() || $user ->isRegularUser();
+        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
+        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
     }
     
     /**
@@ -41,14 +40,16 @@ class TicketPolicy
      */
     public function update(User $user, Ticket $ticket): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin();
+        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||
+        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian();
     }
     /**
      * Determine whether the user can delete the ticket.
      */
     public function delete(User $user, Ticket $ticket): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin();
+        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||
+        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian();
     }
 
     // Add more methods as needed...

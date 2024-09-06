@@ -136,12 +136,11 @@ class TicketQueueResource extends Resource
                     ->action(function ($record) {
                         try {
                             // Assign the ticket to the current user
-                            $record->update(['assigned' => auth()->user()->email]);
+                            $record->update(['assigned' => auth()->user()->name]);
             
                             // Move the ticket to the "Tickets Accepted" list with additional modifications
                             \App\Models\TicketsAccepted::create([
                                 'id' => $record->id, // Assuming you want to keep the ticket ID
-                                'assigned' => $record->assigned,
                                 'concern_type' => $record->concern_type,
                                 'name' => $record->name,
                                 'subject' => $record->subject,
@@ -150,7 +149,8 @@ class TicketQueueResource extends Resource
                                 'location' => $record->location,
                                 'dept' => $record->dept_role,
                                 'status' => 'In progress', // Setting status to 'In progress'
-                                'accepted_at' => now(), // Adding timestamp for when the ticket was accepted
+                                'accepted_at' => now(),
+                                'assigned' => auth()->user()->name, // Adding timestamp for when the ticket was accepted
                                 // Add other fields you want to copy from the original record
                             ]);
             

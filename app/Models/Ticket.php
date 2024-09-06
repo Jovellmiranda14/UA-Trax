@@ -20,7 +20,7 @@ class Ticket extends Model
     protected static function boot()
     {
         parent::boot();
-        // static::created(function ($ticket) {
+        // static::updated(function ($ticket) {
         //     TicketQueue::create([
         //         'id'          => $ticket->id,
         //         'name'        => auth()->user()->name, // Make sure this is set

@@ -93,7 +93,7 @@ class TicketsAcceptedResource extends Resource
                     ->label('Department')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('assigned')
                     ->label('Grabbed by')
                     ->sortable()
                     ->searchable(),
