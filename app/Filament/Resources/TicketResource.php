@@ -203,6 +203,8 @@ class TicketResource extends Resource
         $user = auth()->user();
        
         return $table
+        // Pagination 
+        // ->paginated([10, 25, 50, 100, 'all']) 
         ->query(Ticket::query()->where('name', $user->name))
             ->columns([
                 Tables\Columns\TextColumn::make('id')

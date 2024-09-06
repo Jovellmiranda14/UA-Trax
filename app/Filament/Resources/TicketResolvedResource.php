@@ -48,6 +48,8 @@ class TicketResolvedResource extends Resource
     {
         
             return $table
+             // Pagination 
+        // ->paginated([10, 25, 50, 100, 'all']) 
             // ->query(function (Builder $query) {
             //     // Filter to show only tickets that are accepted
             //     $query->whereNotNull('assigned');

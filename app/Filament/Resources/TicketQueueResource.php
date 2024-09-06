@@ -54,6 +54,8 @@ class TicketQueueResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+         // Pagination 
+        // ->paginated([10, 25, 50, 100, 'all']) 
             ->query(Ticket::query()->whereNull('assigned')) // Only show tickets not yet assigned
             ->columns([
                 TextColumn::make('id')

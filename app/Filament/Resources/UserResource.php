@@ -58,6 +58,8 @@ class UserResource extends Resource
         $user = auth()->user();
        
        return $table
+        // Pagination 
+        // ->paginated([10, 25, 50, 100, 'all']) 
        ->query(User::query()
        ->when($user->role === 'equipmentsuperadmin' || $user->role === 'facilitysuperadmin', function ($query) {
            $query->whereIn('role', ['equipmentsuperadmin', 'facilitysuperadmin']);

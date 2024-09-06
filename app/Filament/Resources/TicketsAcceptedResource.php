@@ -65,6 +65,8 @@ class TicketsAcceptedResource extends Resource
         // $user = auth()->user();
        
         return $table
+         // Pagination 
+        // ->paginated([10, 25, 50, 100, 'all']) 
             // ->query(Ticket::query()->where('role', $user->role))
             ->columns([
                 Tables\Columns\TextColumn::make('id')

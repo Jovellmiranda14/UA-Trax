@@ -55,6 +55,8 @@ class TicketHistoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+         // Pagination 
+        // ->paginated([10, 25, 50, 100, 'all']) 
         ->columns([
             TextColumn::make('id')
                 ->label('Ticket ID')
