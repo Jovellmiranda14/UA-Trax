@@ -53,6 +53,11 @@ class AdminUserResource extends Resource
                  ->options(User::Dept)
                  ->visible(fn () => in_array(auth()->user()->role, [ 'equipment_admin_omiss', 'equipment_admin_labcustodian']))
                  ->hidden(fn () => auth()->user()->role=== 'facility_user'),
+
+                 Forms\Components\Select::make('dept_role')
+                 ->label('Department')
+                 ->required()
+                 ->options(User::Dept),
                 
                 
                 // Uncomment if needed
@@ -91,7 +96,10 @@ class AdminUserResource extends Resource
                 Tables\Columns\TextColumn::make('dept_role')
                     ->label('Department Role')
          
-                     ->visible(fn () => auth()->user()->role === 'equipment_user'),
+                    ->visible(
+                        fn () => auth()
+                        ->user()->role === 'equipmentsuperadmin' || 'equipment_admin_omiss' || 'equipment_admin_labcustodian' ),
+
 
                     Tables\Columns\TextColumn::make('role')
                     ->label('Role')

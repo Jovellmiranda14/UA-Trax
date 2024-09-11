@@ -16,4 +16,12 @@ class RegularUser extends Model
         'password', 
         'role' // Add this line if not already added
     ];
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'dept_role');
+    }
 }

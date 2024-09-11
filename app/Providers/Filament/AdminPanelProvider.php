@@ -19,7 +19,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Auth\Login;
 use Filament\Notifications\Notification;
-
+use Filament\Notifications\Livewire\DatabaseNotifications;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -27,6 +27,19 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            // ->DatabaseNotifications::pollingInterval(null)
+            ->databaseNotifications()
+            // CREATED BY:
+            // Subject 
+            // Time 
+            // Admin(DEPARTMENT)
+
+            //Regular:
+            // Accepted Notif
+             // Time 
+            // Comment reply
+
+
             ->topNavigation()
             ->id('admin')
             ->path('user')
