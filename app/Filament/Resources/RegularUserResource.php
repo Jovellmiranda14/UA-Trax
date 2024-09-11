@@ -51,9 +51,10 @@ class RegularUserResource extends Resource
                     ->required()
                     ->options(User::Pos),
 
-                Forms\Components\Select::make('role')
+                Forms\Components\TextInput::make('role')
                     ->required()
-                    ->options(['user' => 'Regular User']), // Default value for Regular User
+                    ->disabled()
+                    ->default('user'), // Default value for Regular User
             ]);
     }
 

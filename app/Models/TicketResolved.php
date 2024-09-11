@@ -23,4 +23,14 @@ class TicketResolved extends Model
         'created_at',
         'assigned_at',
     ];
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class, 'id', 'id');
+    }
+
+    // Relationship: The user assigned to resolve the ticket
+    public function assignedUser()
+    {
+        return $this->belongsTo(User::class, 'assigned', 'id');
+    }
 }

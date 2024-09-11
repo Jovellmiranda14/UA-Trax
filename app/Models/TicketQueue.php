@@ -26,4 +26,14 @@ class TicketQueue extends Model
         'accepted_at',
         'created_at',
     ];
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class, 'id', 'id');
+    }
+
+    // Relationship: The user assigned to the ticket in the queue
+    public function assignedUser()
+    {
+        return $this->belongsTo(User::class, 'assigned', 'id');
+    }
 }

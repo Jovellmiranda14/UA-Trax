@@ -19,4 +19,14 @@ class TicketHistory extends Model
         'created_at',
         'updated_at',
     ];
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class, 'id', 'id');
+    }
+
+    // Relationship: Optionally track which user created this history entry
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'name', 'name');
+    }
 }

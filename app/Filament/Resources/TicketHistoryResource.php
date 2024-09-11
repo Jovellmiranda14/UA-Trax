@@ -57,7 +57,7 @@ class TicketHistoryResource extends Resource
     {
         $user = auth()->user();
         return $table
-        ->query(Ticket::query()->where('name', $user->name))
+        // ->query(Ticket::query()->where('name', $user->name))
          // Pagination 
         // ->paginated([10, 25, 50, 100, 'all']) 
         ->columns([

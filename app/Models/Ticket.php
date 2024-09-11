@@ -39,9 +39,9 @@ class Ticket extends Model
             TicketHistory::create([
                 'id'   => $ticket->id,
                 'name'        => auth()->user()->name,
-                'subject'     => $ticket->subject,
-                'status'      => 'open',
-                'priority'    => 'moderate',
+                'subject'     => $ticket->subject,              
+                'status'      => 'Open',
+                'priority'    => 'Moderate',
                 'location'    => $ticket->location,
                 'department'  => $ticket->department,
                 'created_at'  => $ticket->created_at,
@@ -51,7 +51,7 @@ class Ticket extends Model
         // Event: When a ticket is updated
         static::updated(function ($ticket) {
             TicketHistory::create([
-                'id'   => $ticket->id,
+                'id'          => $ticket->id,
                 'name'        => $ticket->name,
                 'subject'     => $ticket->subject,
                 'status'      => $ticket->status,
@@ -64,25 +64,28 @@ class Ticket extends Model
 
         // Event: When a ticket is being created (for ID generation)
         static::creating(function ($ticket) {
-            // Get the current year
+            // Get the current year and date
             $year = date('Y');
-
-            // Find the last ticket created this year
-            $lastTicket = static::where('id', 'LIKE', "$year%")
+            $dateCreated = date('md'); // Get the current month and day (e.g., '0907' for September 7)
+            
+            // Find the last ticket created with the same date (YYYYMMDD)
+            $lastTicket = static::where('id', 'LIKE', "$year$dateCreated%")
                 ->orderBy('id', 'desc')
                 ->first();
-
+            
             // Generate the next ticket number
             if ($lastTicket) {
-                $lastNumber = (int) substr($lastTicket->id, 4); // Extract the last 6 digits
-                $nextNumber = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+                // Extract the last number after the year and date (YYYYMMDDxxxx)
+                $lastNumber = (int) substr($lastTicket->id, 8);
+                $nextNumber = $lastNumber + 1; // Increment by 1 without padding
             } else {
-                $nextNumber = '000001'; // Start with '000001' if no ticket exists for the year
+                $nextNumber = 1;
             }
-
-            // Set the id to the year + next number
-            $ticket->id = $year . $nextNumber;
+            
+            // Set the id to year + date created + next number (YYYYMMDDxxxx)
+            $ticket->id = $year . $dateCreated . $nextNumber;
         });
+        
     }
 
     // Disable auto-incrementing for the id column
@@ -90,4 +93,38 @@ class Ticket extends Model
 
     // Set the key type to string
     protected $keyType = 'string';
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    // User who created the ticket
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    // Department the ticket belongs to
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    // Ticket history entries
+    public function history()
+    {
+        return $this->hasMany(TicketHistory::class);
+    }
+
+    // Ticket queue
+    public function ticketQueue()
+    {
+        return $this->hasOne(TicketQueue::class);
+    }
+
+    // Location the ticket is associated with
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
 }

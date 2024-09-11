@@ -126,4 +126,12 @@ class User extends Authenticatable implements FilamentUser
             'password' => 'hashed',
         ];
     }
+    public function ticketsCreated()
+{
+    return $this->hasMany(Ticket::class, 'created_by', 'id');
+}
+public function ticketsAssigned()
+{
+    return $this->hasMany(Ticket::class, 'assigned_to', 'id');
+}
 }
