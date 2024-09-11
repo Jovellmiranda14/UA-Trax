@@ -105,10 +105,10 @@ class Ticket extends Model
     }
 
     // Department the ticket belongs to
-    public function department()
-    {
-        return $this->belongsTo(Department::class);
-    }
+    // public function department()
+    // {
+    //     return $this->belongsTo(Department::class);
+    // }
 
     // Ticket history entries
     public function history()
@@ -123,8 +123,8 @@ class Ticket extends Model
     }
 
     // Location the ticket is associated with
-    public function location()
-    {
-        return $this->belongsTo(Location::class);
-    }
+    // public function location()
+    // {
+    //     return $this->belongsTo(Location::class);
+    // }
 }
