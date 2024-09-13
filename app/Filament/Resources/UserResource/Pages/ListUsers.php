@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
+use App\Filament\Resources\UserResource\Widgets\UserStatsWidget;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Forms;
@@ -16,9 +17,16 @@ class ListUsers extends ListRecords
     protected function getActions(): array
     {
         return [
-          
+
             Actions\CreateAction::make()
                 ->label('New User Admin'),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return[
+            UserStatsWidget::class
         ];
     }
 }

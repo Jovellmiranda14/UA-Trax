@@ -12,7 +12,7 @@ class Ticket extends Model
     // Define fillable attributes for mass assignment
     protected $fillable = [
         'type_of_issue', 'concern_type', 'name', 'description',
-        'subject', 'department', 'status', 'location', 'attachment', 
+        'subject', 'department', 'status', 'location', 'attachment',
         'priority', 'assigned_to', 'dept_role'
     ];
 
@@ -39,7 +39,7 @@ class Ticket extends Model
             TicketHistory::create([
                 'id'   => $ticket->id,
                 'name'        => auth()->user()->name,
-                'subject'     => $ticket->subject,              
+                'subject'     => $ticket->subject,
                 'status'      => 'Open',
                 'priority'    => 'Moderate',
                 'location'    => $ticket->location,
@@ -67,12 +67,12 @@ class Ticket extends Model
             // Get the current year and date
             $year = date('Y');
             $dateCreated = date('md'); // Get the current month and day (e.g., '0907' for September 7)
-            
+
             // Find the last ticket created with the same date (YYYYMMDD)
             $lastTicket = static::where('id', 'LIKE', "$year$dateCreated%")
                 ->orderBy('id', 'desc')
                 ->first();
-            
+
             // Generate the next ticket number
             if ($lastTicket) {
                 // Extract the last number after the year and date (YYYYMMDDxxxx)
@@ -81,11 +81,11 @@ class Ticket extends Model
             } else {
                 $nextNumber = 1;
             }
-            
+
             // Set the id to year + date created + next number (YYYYMMDDxxxx)
             $ticket->id = $year . $dateCreated . $nextNumber;
         });
-        
+
     }
 
     // Disable auto-incrementing for the id column

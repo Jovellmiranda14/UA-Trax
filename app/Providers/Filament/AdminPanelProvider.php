@@ -21,6 +21,7 @@ use App\Filament\Auth\Login;
 use Filament\Notifications\Notification;
 use Filament\Notifications\Livewire\DatabaseNotifications;
 
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -30,13 +31,13 @@ class AdminPanelProvider extends PanelProvider
             // ->DatabaseNotifications::pollingInterval(null)
             ->databaseNotifications()
             // CREATED BY:
-            // Subject 
-            // Time 
+            // Subject
+            // Time
             // Admin(DEPARTMENT)
 
             //Regular:
             // Accepted Notif
-             // Time 
+             // Time
             // Comment reply
 
 
@@ -45,7 +46,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('user')
             ->brandLogo(asset('images/UATRAX-logo-dark-transparent.png'))
             ->brandLogoHeight('3rem')
-            ->login(Login::class) 
+            ->login(Login::class)
             ->colors([
                 'primary' => '#4D68C9',
             //     'warning' => Color::Red,
@@ -55,20 +56,21 @@ class AdminPanelProvider extends PanelProvider
             ->favicon(asset('images/UATRAX-logo-dark-transparent.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             // Wag cocooment
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages') 
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             // Wag cocooment
-           
-        
-            // ->pages([
-            //     Pages\Dashboard::class,
-            //     //  Pages\FacilityDashboard::class,
-            //     // Pages\EquipmentDashboard::class,
-            // ])
-            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            // ->widgets([
-            //     Widgets\AccountWidget::class,
-            //     Widgets\FilamentInfoWidget::class,
-            // ])
+
+
+             ->pages([
+                 Pages\Dashboard::class,
+                 //  Pages\FacilityDashboard::class,
+                 // Pages\EquipmentDashboard::class,
+            ])
+             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+             ->widgets([
+                //Widgets\UserStatsWidget::class,
+                //Widgets\AccountWidget::class,
+                //Widgets\FilamentInfoWidget::class,
+             ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -83,6 +85,6 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
-            
+
     }
 }
