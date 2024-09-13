@@ -20,8 +20,8 @@ class RegularUser extends Model
     {
         return $this->hasMany(Ticket::class);
     }
-    public function department()
-    {
-        return $this->belongsTo(Department::class, 'dept_role');
-    }
+    // public function department()
+    // {
+    //     return $this->belongsTo(Department::class, 'dept_role');
+    // }
 }

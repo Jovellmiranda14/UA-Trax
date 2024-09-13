@@ -21,8 +21,8 @@ class Login extends BaseAuth
                     'required',
                     'email',
                     Rule::exists('users', 'email'),
-                ])
-                ->helperText('Please provide a valid email address.'),
+                ]),
+                // ->helperText('Please provide a valid email address.'),
                 $this->getPasswordFormComponent(),
                 // $this->getRememberMeFormComponent(),
             ])
