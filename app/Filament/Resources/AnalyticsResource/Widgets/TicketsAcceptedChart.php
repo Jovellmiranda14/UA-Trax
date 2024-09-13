@@ -15,30 +15,33 @@ class TicketsAcceptedChart extends ChartWidget
 
     protected function getData(): array
     {
+// Visible only for Laboratory and Equipment 
         $ticketsAcceptedData = Trend::query(
             TicketsAccepted::query()
-                ->where('department', 'Equipment')
+            ->where('concern_type', 'Laboratory and Equipment')
+                // ->where('department')
                 //concern_type dapat then by department
-                ->where('accepted_at', 'Accepted')
+                // ->where('accepted_at', 'Accepted')
         )
         ->between(now()->startOfMonth(), now()->endOfMonth())
-        ->perDay()
+        ->perMonth()
         ->count();
-
+// Visible only for Facility 
         $facilityAcceptedData = Trend::query(
             TicketsAccepted::query()
-                ->where('department', 'Facility')
+            ->where('concern_type', 'Facility')
+                // ->where('department')
                 //concern_type dapat
-                ->where('accepted_at', 'Accepted')
+                // ->where('accepted_at', 'Accepted')
         )
         ->between(now()->startOfMonth(), now()->endOfMonth())
-        ->perDay()
+        ->perMonth()
         ->count();
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Accepted Tickets - Equipment',
+                    'label' => 'Accepted Tickets - Laboratory and Equipment',
                     'data' => $ticketsAcceptedData->map(fn (TrendValue $value) => $value->aggregate),
                 ],
                 [
@@ -52,6 +55,6 @@ class TicketsAcceptedChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'pie';
+        return 'bar'; 
     }
 }

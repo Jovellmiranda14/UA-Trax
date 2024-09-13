@@ -6,6 +6,7 @@ use App\Filament\Resources\TicketResource\Pages;
 use App\Models\Ticket;
 use Filament\Forms;
 use Filament\Forms\Form;
+use App\Models\TicketCreated;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -130,6 +131,16 @@ class TicketResource extends Resource
                                 ->required()
                                 ->reactive()
                                 ->visible(fn ($get) => $get('concern_type') === 'Facility'),
+                                
+                                Select::make('type_of_issue')
+                                ->label('Type of Issue')
+                                ->options([
+                                    'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
+                                    'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
+                                    'Other_Devices' => 'Other Devices (e.g., Printer, Projector, and TV)',
+                                ])
+                                ->required()
+                                ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),   
                         ]),
 
                     Grid::make(2)

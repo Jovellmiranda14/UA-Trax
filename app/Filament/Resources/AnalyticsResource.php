@@ -22,6 +22,11 @@ class AnalyticsResource extends Resource
     protected static ?string $model = Analytics::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    public static function canCreate(): Bool
+    {
+        return false;
+    }
+
 
     public static function form(Form $form): Form
     {

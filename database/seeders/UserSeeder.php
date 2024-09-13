@@ -25,11 +25,13 @@ class UserSeeder extends Seeder
             'name' => 'Equipment Admin',
             'email' => 'equipment_admin_labcustodian@example.com',
             'password' => Hash::make('password'),
+            'dept_role' => 'SAS',
             'role' => 'equipment_admin_labcustodian',
         ]);
         User::create([
             'name' => 'Equipment Admin',
             'email' => 'equipmentadmin@example.com',
+            'dept_role' => 'CEA',
             'password' => Hash::make('password'),
             'role' => 'equipment_admin_omiss',
         ]);
@@ -37,6 +39,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Facility Admin',
             'email' => 'facility_admin@example.com',
+              'dept_role' => 'OFFICE',
             'password' => Hash::make('password'),
             'role' => 'facility_admin',
         ]);

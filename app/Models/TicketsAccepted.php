@@ -19,6 +19,7 @@ class TicketsAccepted extends Model
         'subject',
         'status',
         'priority',
+        'concern_type',
         'department',
         'location',
         'assigned',
