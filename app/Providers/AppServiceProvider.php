@@ -41,5 +41,9 @@ class FilamentServiceProvider extends ServiceProvider
         Filament::navigation([
             TicketHistoryResource::class,
         ]);
+
+      
+            Ticket::observe(TicketObserver::class);
+      
     }
 }

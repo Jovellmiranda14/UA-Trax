@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use Illuminate\Support\Facades\Date;
 use App\Filament\Resources\TicketResource\Pages;
 use App\Models\Ticket;
 use Filament\Forms;
 use Filament\Forms\Form;
-use App\Models\TicketCreated;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,7 +20,7 @@ use Filament\Support\Colors\Color;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-
+use App\Notifications\TicketCreated;
 use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
@@ -202,6 +201,11 @@ class TicketResource extends Resource
                                 ->required()
                                 ->default('N/A')
                                 ->visible(fn ($get) => in_array($get('department'), ['RSO', 'OFFICE'])),
+                                // TextInput::make('created_at')
+                                // ->label('Date Created')
+                                // ->default(Date::now()->format('Y-m-d')) // Set default value to current date
+                                // ->hidden(),
+
                         ]),
                 ]),
         ]) ;
@@ -256,8 +260,9 @@ class TicketResource extends Resource
                     ->openUrlInNewTab(),
 
                 
-                Tables\Columns\TextColumn::make('created_at')
+                    Tables\Columns\TextColumn::make('created_at')
                     ->label('Date Created')
+                    ->formatStateUsing(fn () => Date::now()->format('Y-m-d H:i:s')) // Format date and time
                     ->date(),
 
                 // Tables\Columns\TextColumn::make('name')

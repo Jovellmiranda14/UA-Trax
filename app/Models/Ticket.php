@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Observers\TicketObserver;
 
+#[ObservedBy([TicketObserver::class])]
 class Ticket extends Model
 {
     use HasFactory;
@@ -13,7 +15,7 @@ class Ticket extends Model
     protected $fillable = [
         'type_of_issue', 'concern_type', 'name', 'description',
         'subject', 'department', 'status', 'location', 'attachment',
-        'priority', 'assigned_to', 'dept_role'
+        'priority', 'assigned_to', 'dept_role', 'created_at'
     ];
 
     // Boot method to define model events

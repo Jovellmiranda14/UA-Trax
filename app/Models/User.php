@@ -15,11 +15,13 @@ class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
      const FacilitySUPER_ADMIN = 'facilitysuperadmin';
+     const FACILITY_ADMIN = 'facility_admin';
+
      const EquipmentSUPER_ADMIN = 'equipmentsuperadmin';
      const EQUIPMENT_ADMIN_Omiss = 'equipment_admin_omiss';
      const EQUIPMENT_ADMIN_labcustodian = 'equipment_admin_labcustodian';
-     const FACILITY_ADMIN = 'facility_admin';
      const EQUIPMENT_ADMIN = 'equipment_admin';
+
      const REGULAR_USER = 'user';
 
      const SAS = 'SAS';
