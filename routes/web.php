@@ -15,7 +15,7 @@ return the login.php to the web.php
 
 // Redirect the root ('/') route to the login page
 Route::get('/', function () {
-    return redirect('/user/login');
+    return redirect('/login');
 });
 
 // Define the login route to point to your custom login logic

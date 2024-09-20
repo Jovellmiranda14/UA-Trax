@@ -43,7 +43,7 @@ class AdminPanelProvider extends PanelProvider
 
             ->topNavigation()
             ->id('admin')
-            ->path('user')
+            // ->path('')
             ->brandLogo(asset('images/UATRAX-logo-dark-transparent.png'))
             ->brandLogoHeight('4rem')
             ->login(Login::class)
