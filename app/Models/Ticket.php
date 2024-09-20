@@ -32,7 +32,7 @@ class Ticket extends Model
         //         'department'  => $ticket->department,
         //         'location'    => $ticket->location,
         //         'created_at'  => now(),
-        //         'updated_at'  => now(),
+        //         'updated_at'  => 
         //     ]);
         // });
 
@@ -46,7 +46,8 @@ class Ticket extends Model
                 'priority'    => 'Moderate', 
                 'location'    => $ticket->location,
                 'department'  => $ticket->department,
-                'created_at'  => $ticket->created_at,
+                'created_at'  => now(),
+                'assigned_at'  => $ticket->assigned,
             ]);
         });
 
@@ -97,7 +98,7 @@ class Ticket extends Model
     protected $keyType = 'string';
     public function user()
     {
-        return $this->belongsTo(User::class, 'assigned_to');
+        return $this->belongsTo(User::class, 'id');
     }
 
     // User who created the ticket
@@ -124,9 +125,4 @@ class Ticket extends Model
         return $this->hasOne(TicketQueue::class);
     }
 
-    // Location the ticket is associated with
-    // public function location()
-    // {
-    //     return $this->belongsTo(Location::class);
-    // }
 }

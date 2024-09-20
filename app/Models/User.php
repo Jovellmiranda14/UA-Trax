@@ -50,6 +50,8 @@ class User extends Authenticatable implements FilamentUser
          self::EquipmentSUPER_ADMIN => 'Equipment Super Admin',
          self::FACILITY_ADMIN => 'Facility Admin',
          self::EQUIPMENT_ADMIN => 'Equipment Admin',
+         self::EQUIPMENT_ADMIN_Omiss => 'equipment_admin_omiss',
+         self::EQUIPMENT_ADMIN_labcustodian => 'equipment_admin_labcustodian',
      ];
 
      const Dept = [
@@ -67,7 +69,6 @@ class User extends Authenticatable implements FilamentUser
         $this->isFacilityAdmin() || 
         $this->isEquipmentAdminOmiss() || 
         $this->isEquipmentAdminlabcustodian() || 
-        
         $this->isRegularUser();
     }
 

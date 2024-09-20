@@ -70,8 +70,8 @@ class RegularUserResource extends Resource
                 Forms\Components\TextInput::make('role')
                     ->label('Role')
                     ->required()
-                    // ->disabled()
-                    // ->default('user'), // Default value for Regular User
+                    ->disabled()
+                    ->default('user'), // Default value for Regular User
                     ])
                     ])
             ]);

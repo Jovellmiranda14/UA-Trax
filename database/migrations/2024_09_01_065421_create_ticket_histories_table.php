@@ -21,7 +21,8 @@ return new class extends Migration
             $table->string('location')->nullable(); // Column to store the location related to the ticket
             $table->enum('department', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE'])->nullable(); // Column to store the department related to the ticket
             $table->timestamps(); // Created at and updated at timestamps
-
+            $table->string('assigned_at')->nullable();
+            $table->string('assigned')->nullable(); 
             // Foreign key constraint
             $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
         });

@@ -204,7 +204,7 @@ class TicketsAcceptedResource extends Resource
                         Tables\Actions\Action::make('comment')
                             ->label('Comment')
                             ->icon('heroicon-o-rectangle-stack'),
-                        Tables\Actions\DeleteAction::make(),
+                        // Tables\Actions\DeleteAction::make(),
                     ])
                         ]);
             

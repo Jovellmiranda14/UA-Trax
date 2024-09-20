@@ -5,7 +5,12 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TicketQueueResource\Pages;
 use App\Models\TicketQueue;
 use App\Models\Ticket;
+use App\Models\TicketsAccepted;
+use App\Models\User;
+use App\Notifications\TicketGrabbedNotification;
+use Filament\Notifications\Events\DatabaseNotificationsSent;
 use Filament\Forms;
+use Carbon\Carbon;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -53,26 +58,22 @@ class TicketQueueResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table    
-        ->query(function () {
-            $query = Ticket::query()->whereNull('assigned'); // Only show tickets not yet assigned
-        
-            if (auth()->user()->isEquipmentSuperAdmin() || 
-                auth()->user()->isEquipmentAdminOmiss() || 
-                auth()->user()->isEquipmentAdminlabcustodian()) 
-            {
-                
-                $query->whereIn('concern_type', ['Laboratory and Equipment'])
-                      ->orderBy('concern_type', 'asc');
-            } elseif (auth()->user()->isFacilityAdmin() || 
-                    auth()->user()->isFacilitySuperAdmin()) {
-          
-                $query->where('concern_type', 'Facility')
-                      ->orderBy('concern_type', 'asc');
-            }
-        
-            return $query;
-        })
+        return $table
+            ->query(function () {
+                $query = Ticket::query()->whereNull('assigned'); // Only show tickets not yet assigned
+
+                if (auth()->user()->isEquipmentSuperAdmin() ||
+                    auth()->user()->isEquipmentAdminOmiss() ||
+                    auth()->user()->isEquipmentAdminlabcustodian()) {
+                    $query->whereIn('concern_type', ['Laboratory and Equipment'])
+                          ->orderBy('concern_type', 'asc');
+                } elseif (auth()->user()->isFacilityAdmin() ||
+                        auth()->user()->isFacilitySuperAdmin()) {
+                    $query->where('concern_type', 'Facility')
+                          ->orderBy('concern_type', 'asc');
+                }
+                return $query;
+            })
             ->columns([
                 TextColumn::make('id')
                     ->label('Ticket ID')
@@ -122,12 +123,7 @@ class TicketQueueResource extends Resource
                         'Accepted' => 'Accepted',
                         'Open' => 'Open Tickets',
                         'published' => 'Published',
-                    ])
-                    ->options([
-                        'Accepted' => 'Accepted',
-                        'Open' => 'Open Tickets',
-                        'published' => 'Published',
-                    ])
+                    ]),
             ])
             ->actions([
                 Action::make('grab')
@@ -150,6 +146,7 @@ class TicketQueueResource extends Resource
                                 'dept' => $record->dept_role,
                                 'status' => 'In progress', // Setting status to 'In progress'
                                 'accepted_at' => now(),
+                                'created_at' => $record->created_at,
                                 'assigned' => auth()->user()->name, // Adding timestamp for when the ticket was accepted
                                 // Add other fields you want to copy from the original record
                             ]);
@@ -212,16 +209,8 @@ class TicketQueueResource extends Resource
                                     ->required(),
                             ]),
                         ]),
-
-
                 ]),
             ]);
-            // ->bulkActions([
-            //     Tables\Actions\BulkActionGroup::make([
-            //         Tables\Actions\DeleteBulkAction::make(),
-            //         // Optionally add more bulk actions
-            //     ]),
-            // ]);
     }
 
     public static function getRelations(): array

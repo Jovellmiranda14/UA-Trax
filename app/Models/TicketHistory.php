@@ -18,6 +18,7 @@ class TicketHistory extends Model
         'department',
         'created_at',
         'updated_at',
+        'assigned',
     ];
     public function ticket()
     {
