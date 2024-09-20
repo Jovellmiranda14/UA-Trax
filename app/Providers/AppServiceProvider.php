@@ -9,6 +9,10 @@ use App\Filament\Pages\EquipmentDashboard;
 use App\Observers\TicketObserver;
 use App\Models\Ticket;
 use App\Models\TicketQueue;
+
+
+
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -31,19 +35,25 @@ class AppServiceProvider extends ServiceProvider
         //     EquipmentDashboard::class,
         //     //  ImageModalPage::class,
         // ]);
+
+
     }
 }
+
 
 class FilamentServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+
+        Ticket::observe(TicketObserver::class);
+           
+
         Filament::navigation([
             TicketHistoryResource::class,
         ]);
 
       
-            Ticket::observe(TicketObserver::class);
-      
+            
     }
 }

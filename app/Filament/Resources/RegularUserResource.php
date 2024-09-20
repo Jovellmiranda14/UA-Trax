@@ -11,12 +11,16 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Card;
+
 class RegularUserResource extends Resource
 {
     protected static ?int $navigationSort = 1;
     protected static ?string $model = RegularUser::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Users Account';
     // Uncomment the following method if you want to disable the creation of new Regular Users
     // public static function canCreate(): bool
     // {
@@ -26,35 +30,50 @@ class RegularUserResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+        
             ->schema([
+                Card::make('User info')
+                ->description('Register a user in the system.')
+                ->schema([
+                    Grid::make(2)
+                    ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Full Name')
                     ->required()
                     ->maxLength(255),
 
                 Forms\Components\TextInput::make('email')
+                    ->label('Email')
                     ->email()
                     ->unique()
                     ->required()
                     ->maxLength(255),
 
                 Forms\Components\TextInput::make('password')
+                    ->label('Password')
+                    ->revealable(true)
+                    ->required()
                     ->password()
                     ->maxLength(255)
                     ->dehydrateStateUsing(fn ($state) => bcrypt($state)), // Ensure password is hashed
 
-                Forms\Components\Select::make('dept_role')
-                    ->label('Department')
-                    ->required()
-                    ->options(User::Dept),
+                 Forms\Components\Select::make('dept_role')
+                ->label('Department')
+                ->required()
+                ->options(User::Dept),
 
                 Forms\Components\Select::make('position')
+                    ->label('Position')
                     ->required()
                     ->options(User::Pos),
 
                 Forms\Components\TextInput::make('role')
+                    ->label('Role')
                     ->required()
-                    ->disabled()
-                    ->default('user'), // Default value for Regular User
+                    // ->disabled()
+                    // ->default('user'), // Default value for Regular User
+                    ])
+                    ])
             ]);
     }
 

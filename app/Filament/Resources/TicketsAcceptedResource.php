@@ -19,10 +19,12 @@ use Filament\Forms\Components\Card;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 
-
 use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
+
+
+
 
 class TicketsAcceptedResource extends Resource
 {
@@ -30,7 +32,7 @@ class TicketsAcceptedResource extends Resource
     protected static ?string $label = 'Open tickets';
     protected static ?string $model = TicketsAccepted::class;
 
-    //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    // protected static ?string $navigationIcon = 'heroicon-o-ticket';
 
     protected static ?string $navigationGroup = 'Tickets';
     protected static ?int $navigationSort = 2;
@@ -77,14 +79,31 @@ class TicketsAcceptedResource extends Resource
                     ->label('Subject')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('priority')
+                    Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
                     ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status')
+                    ->colors([
+                        'success' => 'Low',        // Green
+                        'warning' => 'Moderate',   // Yellow
+                        'danger'  => 'Urgent',     // Orange
+                        'danger'  => 'High',       // Red (same as Urgent in this case)
+                    ]),
+                Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    // ->colors([
+                        // 'info'     => 'Open',        // Light Blue for Open
+                        // 'danger'   => 'In progress', // Orange for In progress
+                        // 'success'  => 'Resolved',    // Green for Resolved
+                        // 'muted'    => 'Closed',      // Dark Gray for Closed
+                    // ]),
+                    ->colors([
+                        'primary'  => 'Open',        // Blue for Open
+                        'warning'  => 'In progress', // Yellow for In progress
+                        'success'  => 'Resolved',    // Green for Resolved
+                        'secondary'=> 'Closed',      // Gray for Closed
+                    ]), 
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
                     ->sortable()

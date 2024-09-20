@@ -13,12 +13,18 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\User;
+
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Card;
+
+
+
 class AdminUserResource extends Resource
 {
     protected static ?string $model = AdminUser::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    // protected static ?string $navigationGroupIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationGroup = 'Users Account';
     protected static ?int $navigationSort = 2;
     // public static function canCreate(): Bool
     // {
@@ -30,21 +36,39 @@ class AdminUserResource extends Resource
     {
         return $form
         ->schema([
+            Card::make('User info')
+            ->description('Register a user in the system.')
+            ->schema([
+                Grid::make(3)
+                ->schema([
             Forms\Components\TextInput::make('name')
+                ->label('Full Name')
+                ->extraAttributes(['style' => 'width: 250px;'])
                 ->required()
                 ->maxLength(255),
     
             Forms\Components\TextInput::make('email')
+            ->label('Email')
+            ->extraAttributes(['style' => 'width: 250px;'])
                 ->email()
                 ->unique()
                 ->required()
                 ->maxLength(255),
     
-            Forms\Components\TextInput::make('password')
+                Forms\Components\TextInput::make('password')
+                ->label('Password')
+                ->extraAttributes(['style' => 'width: 250px;'])
+                ->revealable(true)
+                ->required()
                 ->password()
                 ->maxLength(255)
                 ->dehydrateStateUsing(fn ($state) => bcrypt($state)), // Ensure password is hashed
-    
+                    
+            ]),
+
+            // Lower part: Department, Role
+            Grid::make(2) // Split into two columns for the bottom part
+                ->schema([
                 // This should be hidden for facility admin
                  // Visible only for Equipment admin
                  Forms\Components\Select::make('dept_role')
@@ -72,9 +96,13 @@ class AdminUserResource extends Resource
                     'equipment_admin_omiss' => 'Equipment OMISS',
                     'equipment_admin_labcustodian' => 'Equipment LabCustodian',
                     'facility_user' => 'Facility Admin',
-                ]),
+                ])
+                ])
+                ])
+
         ]);
     }
+
     public static function table(Table $table): Table
     {
            $user = auth()->user();

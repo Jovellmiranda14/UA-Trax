@@ -30,12 +30,12 @@ use Filament\Forms\Components\DatePicker;
       
 class TicketHistoryResource extends Resource
 {
-    //protected static ?string $navigationLabel = 'Ticket History';
+    protected static ?string $navigationLabel = 'Ticket History';
     protected static ?string $model = TicketHistory::class;
     
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationIcon = 'heroicon-s-rectangle-stack';
+    // protected static ?string $navigationGroup = 'Users Account';
     
     // Disable Function
 
@@ -85,6 +85,7 @@ class TicketHistoryResource extends Resource
             TextColumn::make('priority')
                 ->label('Priority')
                 ->sortable()
+
                 ->searchable(),
             TextColumn::make('location')
                 ->label('Location')

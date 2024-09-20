@@ -28,13 +28,15 @@ use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Card;
 
+use Filament\Forms\Components\Button;
+use Filament\Forms\Components\Modal;
 
 
 class TicketResource extends Resource
 {
     protected static ?string $navigationLabel = 'My Tickets';
     protected static ?string $model = Ticket::class;
-    //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    // protected static ?string $navigationIcon = 'heroicon-s-user-circle';
     protected static ?string $label = 'Open tickets';
     protected static ?string $navigationGroup = 'Tickets';
     protected static ?int $navigationSort = 4;
@@ -67,6 +69,7 @@ class TicketResource extends Resource
                 //     // Default to null or another value if needed
                 //     return null;
                 // }), 
+                
                 Radio::make('concern_type')
                 ->label('My concern is about:')
                 ->options(function () {
@@ -238,6 +241,12 @@ class TicketResource extends Resource
 
                     Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
+                    ->colors([
+                        'success' => 'Low',        // Green
+                        'warning' => 'Moderate',   // Yellow
+                        'danger'  => 'Urgent',     // Orange
+                        'danger'  => 'High',       // Red (same as Urgent in this case)
+                    ])
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('location')
@@ -287,11 +296,12 @@ class TicketResource extends Resource
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
                     ->colors([
-                        'primary' => 'Open', Color::Blue,
+                        'primary' => 'Open', 
                         'success' => 'Resolved',
                         'warning' => 'In progress',
                         'info' => 'Closed',
                     ])
+                    
                     ->searchable(),
 
                

@@ -10,37 +10,59 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
+
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Card;
+
+
 class UserResource extends Resource
 {
     protected static ?string $navigationLabel = 'Super Admin';
     protected static ?string $model = User::class;
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    //protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationGroup = 'Users Account';
 
+    
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Card::make('User info')
+                ->description('Register a user in the system.')
+                ->schema([
+                    Grid::make(2)
+                    ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                ->label('Full Name')
+                ->required()
+                ->maxLength(255),
                 
                 Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
+                ->label('Email')
+                ->email()
+                ->unique()
+                ->required()
+                ->maxLength(255),
+
                 Forms\Components\TextInput::make('password')
+                    ->label('Password')
+                    ->revealable(true)
+                    ->required()
                     ->password()
                     ->maxLength(255)
-                    ->dehydrateStateUsing(fn ($state) => bcrypt($state)),// Ensure password is hashed
+                    ->dehydrateStateUsing(fn ($state) => bcrypt($state)), // Ensure password is hashed
 
                 Forms\Components\Select::make('dept_role')
-                ->label('Department Assigned')
+                    ->label('Department Assigned')
                     ->required()
-                    ->options(User::Dept), 
+                    ->options(User::Dept),
+
                 Forms\Components\Select::make('position')
                 ->required()
                 ->options(User::Pos),
+
                 Forms\Components\Select::make('role')
+                ->label('Role')
                 ->required()
                 ->options([
                     'equipmentsuperadmin' => 'Equipment Super Admin',
@@ -50,6 +72,8 @@ class UserResource extends Resource
                 //Equipment Admin LabCustodian -> Faculty (All Depts)
                 // Display Position IF MERON SYA
                 // Default value for role
+                    ])
+                ])
             ]);
     }
 

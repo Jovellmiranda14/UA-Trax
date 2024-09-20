@@ -43,7 +43,7 @@ class Ticket extends Model
                 'name'        => auth()->user()->name,
                 'subject'     => $ticket->subject,
                 'status'      => 'Open',
-                'priority'    => 'Moderate',
+                'priority'    => 'Moderate', 
                 'location'    => $ticket->location,
                 'department'  => $ticket->department,
                 'created_at'  => $ticket->created_at,

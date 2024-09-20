@@ -24,7 +24,7 @@ class Login extends BaseAuth
                 ]),
                 // ->helperText('Please provide a valid email address.'),
                 $this->getPasswordFormComponent(),
-                // $this->getRememberMeFormComponent(),
+                //  $this->getRememberMeFormComponent(),
             ])
             ->statePath('data');
     }
