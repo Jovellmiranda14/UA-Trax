@@ -12,17 +12,15 @@ class TicketPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
-        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
+        return $user->isRegularUser();
     }
-    
+
     /**
      * Determine whether the user can view the ticket.
      */
     public function view(User $user, Ticket $ticket): bool
     {
-        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
-        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
+        return $user->isRegularUser();
         // $ticket->email === $user->email;
     }
 
@@ -43,6 +41,7 @@ class TicketPolicy
         return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||
         $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian();
     }
+
     /**
      * Determine whether the user can delete the ticket.
      */

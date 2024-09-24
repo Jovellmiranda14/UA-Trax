@@ -33,7 +33,7 @@ class TicketHistoryResource extends Resource
     protected static ?string $navigationLabel = 'Ticket History';
     protected static ?string $model = TicketHistory::class;
     
-
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationIcon = 'heroicon-s-rectangle-stack';
     // protected static ?string $navigationGroup = 'Users Account';
     
@@ -55,7 +55,7 @@ class TicketHistoryResource extends Resource
 
     public static function table(Table $table): Table
     {
-        $user = auth()->user();
+        // $user = auth()->user();
         return $table
         // ->query(Ticket::query()->where('name', $user->name))
          // Pagination 
@@ -80,13 +80,20 @@ class TicketHistoryResource extends Resource
                     'success' => 'Resolved',
                     'warning' => 'In progress',
                     'info' => 'Closed',
+                    'black' => 'On-Hold',
                 ])
                 ->searchable(),
-            TextColumn::make('priority')
+                Tables\Columns\TextColumn::make('priority')
                 ->label('Priority')
                 ->sortable()
-
-                ->searchable(),
+                ->searchable()
+                ->colors([
+                    'info' => 'Low',
+                    'warning' => 'Moderate',
+                    'danger'  => 'Urgent',
+                    'urgent'  => 'High',
+                    'important' => 'Escalated',
+                ]),
             TextColumn::make('location')
                 ->label('Location')
                 ->sortable()

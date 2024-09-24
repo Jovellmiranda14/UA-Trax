@@ -36,10 +36,10 @@ class TicketResource extends Resource
 {
     protected static ?string $navigationLabel = 'My Tickets';
     protected static ?string $model = Ticket::class;
-    // protected static ?string $navigationIcon = 'heroicon-s-user-circle';
+     protected static ?string $navigationIcon = 'heroicon-s-ticket';
     protected static ?string $label = 'Open tickets';
-    protected static ?string $navigationGroup = 'Tickets';
-    protected static ?int $navigationSort = 4;
+    //protected static ?string $navigationGroup = 'Tickets';
+    protected static ?int $navigationSort = 1;
     
     // Disable Function
     // public static function canCreate(): Bool
