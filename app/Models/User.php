@@ -16,12 +16,9 @@ class User extends Authenticatable implements FilamentUser
     use HasFactory, Notifiable;
      const FacilitySUPER_ADMIN = 'facilitysuperadmin';
      const FACILITY_ADMIN = 'facility_admin';
-
      const EquipmentSUPER_ADMIN = 'equipmentsuperadmin';
      const EQUIPMENT_ADMIN_Omiss = 'equipment_admin_omiss';
      const EQUIPMENT_ADMIN_labcustodian = 'equipment_admin_labcustodian';
-     const EQUIPMENT_ADMIN = 'equipment_admin';
-
      const REGULAR_USER = 'user';
 
      const SAS = 'SAS';
@@ -49,7 +46,6 @@ class User extends Authenticatable implements FilamentUser
          self::FacilitySUPER_ADMIN => 'Faciltiy Super Admin',
          self::EquipmentSUPER_ADMIN => 'Equipment Super Admin',
          self::FACILITY_ADMIN => 'Facility Admin',
-         self::EQUIPMENT_ADMIN => 'Equipment Admin',
          self::EQUIPMENT_ADMIN_Omiss => 'equipment_admin_omiss',
          self::EQUIPMENT_ADMIN_labcustodian => 'equipment_admin_labcustodian',
      ];
@@ -80,9 +76,6 @@ class User extends Authenticatable implements FilamentUser
     }
     public function isFacilityAdmin(){
         return $this->role == self::FACILITY_ADMIN;
-    }
-    public function isEquipmentAdmin(){
-        return $this->role == self::EQUIPMENT_ADMIN;
     }
     public function isRegularUser(){
         return $this->role == self::REGULAR_USER;

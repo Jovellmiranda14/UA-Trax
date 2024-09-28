@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AdminUserResource\Pages;
 use App\Filament\Resources\AdminUserResource\RelationManagers;
-use App\Models\AdminUser;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -21,7 +20,8 @@ use Filament\Forms\Components\Card;
 
 class AdminUserResource extends Resource
 {
-    protected static ?string $model = AdminUser::class;
+    protected static ?string $model = User::class;
+    protected static ?string $label = 'Admin User';
 
     // protected static ?string $navigationGroupIcon = 'heroicon-o-user-group';
     protected static ?string $navigationGroup = 'Users Account';
@@ -105,37 +105,31 @@ class AdminUserResource extends Resource
 
     public static function table(Table $table): Table
     {
-           $user = auth()->user();
         return $table
-         // Pagination 
-        // ->paginated([10, 25, 50, 100, 'all']) 
-              // ->query(Ticket::query()->where('role', $user->role))
+            // Filter users based on the specified roles
+            ->query(User::whereIn('role', ['equipment_admin_omiss', 'equipment_admin_labcustodian', 'facility_user']))
+            
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Name')
                     ->searchable()
                     ->sortable(),
-
+    
                 Tables\Columns\TextColumn::make('email')
                     ->label('Email')
                     ->searchable()
                     ->sortable(),
-
+    
                 Tables\Columns\TextColumn::make('dept_role')
-                    ->label('Department Role')
-         
-                    ->visible(
-                        fn () => auth()
-                        ->user()->role === 'equipmentsuperadmin' || 'equipment_admin_omiss' || 'equipment_admin_labcustodian' ),
-
-
-                    Tables\Columns\TextColumn::make('role')
+                    ->label('Department Role'),
+    
+                Tables\Columns\TextColumn::make('role')
                     ->label('Role')
                     ->searchable()
                     ->sortable(),
             ])
             ->filters([
-                //
+                // Define filters if needed
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -146,7 +140,6 @@ class AdminUserResource extends Resource
                 ]),
             ]);
     }
-
     public static function getRelations(): array
     {
         return [

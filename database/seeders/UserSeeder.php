@@ -22,14 +22,14 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'name' => 'Equipment Admin',
+            'name' => 'Equipment Admin Labcustodian',
             'email' => 'equipment_admin_labcustodian@example.com',
             'password' => Hash::make('password'),
             'dept_role' => 'SAS',
             'role' => 'equipment_admin_labcustodian',
         ]);
         User::create([
-            'name' => 'Equipment Admin',
+            'name' => 'Equipment Admin OMISS',
             'email' => 'equipmentadmin@example.com',
             'dept_role' => 'CEA',
             'password' => Hash::make('password'),

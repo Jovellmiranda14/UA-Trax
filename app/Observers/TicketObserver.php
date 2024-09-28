@@ -30,7 +30,6 @@ class TicketObserver
         $admins = User::where(function ($query) use ($category) {
             if ($category === 'Laboratory and Equipment') {
                 $query->whereIn('role', [
-                    User::EQUIPMENT_ADMIN, 
                     User::EQUIPMENT_ADMIN_Omiss,
                     User::EQUIPMENT_ADMIN_labcustodian,
                     User::EquipmentSUPER_ADMIN,

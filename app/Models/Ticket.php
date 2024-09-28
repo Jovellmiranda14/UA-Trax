@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Observers\TicketObserver;
 
-#[ObservedBy([TicketObserver::class])]
+// #[ObservedBy([TicketObserver::class])]
 class Ticket extends Model
 {
     use HasFactory;
@@ -40,7 +40,7 @@ class Ticket extends Model
         static::created(function ($ticket) {
             TicketHistory::create([
                 'id'   => $ticket->id,
-                'name'        => auth()->user()->name,
+                'name'        => $ticket->name,
                 'subject'     => $ticket->subject,
                 'status'      => 'Open',
                 'priority'    => 'Moderate', 

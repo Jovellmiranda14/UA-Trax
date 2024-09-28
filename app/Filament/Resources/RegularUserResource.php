@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\RegularUserResource\Pages;
-use App\Models\RegularUser;
+
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -17,7 +17,8 @@ use Filament\Forms\Components\Card;
 class RegularUserResource extends Resource
 {
     protected static ?int $navigationSort = 1;
-    protected static ?string $model = RegularUser::class;
+    protected static ?string $model = User::class;
+    protected static ?string $label = 'Regular User';
     //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Users Account';
@@ -82,7 +83,7 @@ class RegularUserResource extends Resource
         return $table
          // Pagination 
         // ->paginated([10, 25, 50, 100, 'all']) 
-            ->query(RegularUser::query())
+        ->query(User::where('role', 'user'))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()

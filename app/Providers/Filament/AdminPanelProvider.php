@@ -46,7 +46,7 @@ class AdminPanelProvider extends PanelProvider
             // ->path('')
             ->brandLogo(asset('images/UATRAX-logo-dark-transparent.png'))
             ->brandLogoHeight('4rem')
-            ->login(Login::class)
+            ->login()
             ->colors([
                 'primary' => '#4D68C9',
             //     'warning' => Color::Red,

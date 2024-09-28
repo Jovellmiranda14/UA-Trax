@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('subject');
             $table->enum('concern_type', ['Laboratory and Equipment', 'Facility']);        
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed'])->default('Open');      
-            $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High'])->default('Moderate');   
+            $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High','Escalated'])->default('Moderate');   
             $table->enum('department', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE'])->nullable();;
             $table->string('location')->nullable()->default('N/A');
             $table->enum('dept_role', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);

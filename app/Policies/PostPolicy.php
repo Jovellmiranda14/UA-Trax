@@ -49,7 +49,7 @@ class PostPolicy
     public function delete(User $user, Post $post): bool
     {
         
-       return $user -> isEquipmentAdmin() || $user -> isFacilityAdmin();
+       return $user -> isFacilityAdmin();
     }
 
     /**

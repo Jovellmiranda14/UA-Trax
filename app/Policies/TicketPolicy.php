@@ -29,7 +29,7 @@ class TicketPolicy
      */
     public function create(User $user): bool
     {
-        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
+        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||
         $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
     }
     

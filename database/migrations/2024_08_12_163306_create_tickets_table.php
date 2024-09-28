@@ -33,7 +33,7 @@ return new class extends Migration
             ]);
             $table->string('property_no')->nullable();
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed'])->default('Open');
-            $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High'])->default('Moderate') ;
+            $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High','Escalated'])->default('Moderate') ;
             $table->string('location');
             $table->enum('dept_role', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
             $table->string('attachment')->nullable()->default('N/A');

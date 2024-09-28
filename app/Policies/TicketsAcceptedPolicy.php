@@ -13,7 +13,7 @@ class TicketsAcceptedPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
+        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() ||  $user ->isFacilitySuperAdmin() ||
         $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
     }
 
@@ -22,7 +22,7 @@ class TicketsAcceptedPolicy
      */
     public function view(User $user, TicketsAccepted $ticketsAccepted): bool
     {
-        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
+        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() ||  $user ->isFacilitySuperAdmin() ||
         $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
     }
 
@@ -31,7 +31,7 @@ class TicketsAcceptedPolicy
      */
     public function create(User $user): bool
     {
-        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
+        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||
         $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
     }
 
@@ -40,7 +40,7 @@ class TicketsAcceptedPolicy
      */
     public function update(User $user, TicketsAccepted $ticketsAccepted): bool
     {
-        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
+        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() ||$user ->isFacilitySuperAdmin() ||
         $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
     }
 
@@ -49,7 +49,7 @@ class TicketsAcceptedPolicy
      */
     public function delete(User $user, TicketsAccepted $ticketsAccepted): bool
     {
-        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
+        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||
         $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
     }
 
@@ -58,7 +58,7 @@ class TicketsAcceptedPolicy
      */
     public function restore(User $user, TicketsAccepted $ticketsAccepted): bool
     {
-        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
+        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||
         $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
     }
 
@@ -67,7 +67,7 @@ class TicketsAcceptedPolicy
      */
     public function forceDelete(User $user, TicketsAccepted $ticketsAccepted): bool
     {
-        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isEquipmentAdmin() || $user ->isFacilitySuperAdmin() ||
+        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||
         $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
     }
 }
