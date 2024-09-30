@@ -118,9 +118,6 @@ class TicketResolvedResource extends Resource
                     ->icon('heroicon-o-rectangle-stack')
                 ])
                 ->bulkActions([
-                    Tables\Actions\BulkActionGroup::make([
-                        Tables\Actions\DeleteBulkAction::make(),
-                    ]),
                 ]);
         }
     public static function getRelations(): array

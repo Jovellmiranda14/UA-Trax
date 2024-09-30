@@ -141,7 +141,7 @@ class TicketsAcceptedResource extends Resource
                     ->label('Type of issue')
                     ->options([
                         'Facility' => 'Facility',
-                        'Equipment' => 'Equipment',
+                        'Laboratory and Equipment' => 'Laboratory and Equipment',
                     ]),
             
                 // Department filter with checkboxes

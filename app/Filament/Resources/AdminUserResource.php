@@ -26,10 +26,6 @@ class AdminUserResource extends Resource
     // protected static ?string $navigationGroupIcon = 'heroicon-o-user-group';
     protected static ?string $navigationGroup = 'Users Account';
     protected static ?int $navigationSort = 2;
-    // public static function canCreate(): Bool
-    // {
-    //     return false;
-    // }
 
 
     public static function form(Form $form): Form
@@ -105,10 +101,31 @@ class AdminUserResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
-            // Filter users based on the specified roles
-            ->query(User::whereIn('role', ['equipment_admin_omiss', 'equipment_admin_labcustodian', 'facility_admin']))
-            
+        $user = auth()->user(); // Get the authenticated user
+
+        $query = User::query();
+    
+        if (in_array($user->role, ['equipmentsuperadmin', 'facilitysuperadmin'])) {
+            // If the user is either 'equipmentsuperadmin' or 'facilitysuperadmin', show all three roles
+            $query->whereIn('role', [
+                'facility_admin', 
+                'equipment_admin_omiss', 
+                'equipment_admin_labcustodian'
+            ]);
+        } elseif ($user->role === 'facility_admin') {
+            // If the user is 'facility_admin', only show 'facility_admin'
+            $query->where('role', 'facility_admin');
+        } elseif ($user->role === 'equipment_admin_omiss') {
+            // Department Role for 'equipment_admin_omiss'
+            $query->where('role', 'equipment_admin_omiss')
+                  ->where('dept_role', $user->dept_role);
+        } elseif ($user->role === 'equipment_admin_labcustodian') {
+            // Department Role for 'equipment_admin_labcustodian'
+            $query->where('role', 'equipment_admin_labcustodian')
+                  ->where('dept_role', $user->dept_role);
+        }
+            return $table
+            ->query($query) 
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Name')

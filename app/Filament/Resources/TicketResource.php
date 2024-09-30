@@ -99,7 +99,6 @@ class TicketResource extends Resource
                     return $user->isEquipmentSuperAdmin() ? 'Facility' : null;
                 }),
                 
-            
             // Ticket Details Card
             Card::make('Ticket details')
                 ->description('Enter specific issues you have trouble with.')
@@ -239,6 +238,15 @@ class TicketResource extends Resource
                     ->label('Subject')
                     ->searchable(),
 
+                    Tables\Columns\BadgeColumn::make('status')
+                    ->label('Status')
+                    ->colors([
+                        'primary' => 'Open', 
+                        'success' => 'Resolved',
+                        'warning' => 'In progress',
+                        'info' => 'Closed',
+                    ])
+                    ->searchable(),
                     Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
                     ->colors([
@@ -293,16 +301,6 @@ class TicketResource extends Resource
                     // ->html(), // Use HTML formatting to render the image
                 
 
-                Tables\Columns\BadgeColumn::make('status')
-                    ->label('Status')
-                    ->colors([
-                        'primary' => 'Open', 
-                        'success' => 'Resolved',
-                        'warning' => 'In progress',
-                        'info' => 'Closed',
-                    ])
-                    
-                    ->searchable(),
 
                
                     
@@ -314,31 +312,13 @@ class TicketResource extends Resource
 
             ])
             ->filters([
-                // Tickets filter
-                SelectFilter::make('status')
-                    ->label('Tickets')
-                    ->options([
-                        'Open' => 'Open tickets',
-                        'Accepted' => 'Accepted',
-                    ]),
                 
                 // Type of issue filter
                 SelectFilter::make('concern_type')
                     ->label('Type of issue')
                     ->options([
                         'Facility' => 'Facility',
-                        'Equipment' => 'Equipment',
-                    ]),
-            
-                // Department filter with checkboxes
-                MultiSelectFilter::make('department')
-                    ->label('Department')
-                    ->options([
-                        'CITCLS' => 'CITCLS',
-                        'CEA' => 'CEA',
-                        'SAS' => 'SAS',
-                        'CONP' => 'CONP',
-                        'Other offices' => 'Other offices',
+                        'Laboratory and Equipment' => 'Laboratory and Equipment',
                     ]),
             ])
             ->actions([

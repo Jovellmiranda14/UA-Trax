@@ -27,6 +27,7 @@ class User extends Authenticatable implements FilamentUser
      const CITCLS = 'CITCLS';
      const RSO = 'RSO';
      const OFFICE = 'OFFICE';
+     const PPGS = 'PPGS';
 
      //Positions
      const rso = 'RSO';
@@ -57,6 +58,7 @@ class User extends Authenticatable implements FilamentUser
         self::RSO => 'RSO',
         self::OFFICE => 'OFFICE',
         self::CONP => 'CONP',
+        self::PPGS => 'PPGS',
     ];
      public function canAccessPanel(Panel $panel): bool
     {
