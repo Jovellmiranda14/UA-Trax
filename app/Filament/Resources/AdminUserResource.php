@@ -95,7 +95,7 @@ class AdminUserResource extends Resource
                 ->options([
                     'equipment_admin_omiss' => 'Equipment OMISS',
                     'equipment_admin_labcustodian' => 'Equipment LabCustodian',
-                    'facility_user' => 'Facility Admin',
+                    'facility_admin' => 'Facility Admin',
                 ])
                 ])
                 ])
@@ -107,7 +107,7 @@ class AdminUserResource extends Resource
     {
         return $table
             // Filter users based on the specified roles
-            ->query(User::whereIn('role', ['equipment_admin_omiss', 'equipment_admin_labcustodian', 'facility_user']))
+            ->query(User::whereIn('role', ['equipment_admin_omiss', 'equipment_admin_labcustodian', 'facility_admin']))
             
             ->columns([
                 Tables\Columns\TextColumn::make('name')
@@ -135,9 +135,9 @@ class AdminUserResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
     public static function getRelations(): array
