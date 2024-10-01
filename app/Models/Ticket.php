@@ -65,30 +65,40 @@ class Ticket extends Model
             ]);
         });
 
-        // Event: When a ticket is being created (for ID generation)
         static::creating(function ($ticket) {
-            // Get the current year and date
+
             $year = date('Y');
-            $dateCreated = date('md'); // Get the current month and day (e.g., '0907' for September 7)
-
-            // Find the last ticket created with the same date (YYYYMMDD)
+            $dateCreated = date('md');
+        
             $lastTicket = static::where('id', 'LIKE', "$year$dateCreated%")
-                ->orderBy('id', 'desc')
+                ->orderBy('id', 'desc') 
                 ->first();
-
-            // Generate the next ticket number
+        
             if ($lastTicket) {
-                // Extract the last number after the year and date (YYYYMMDDxxxx)
+          
                 $lastNumber = (int) substr($lastTicket->id, 8);
-                $nextNumber = $lastNumber + 1; // Increment by 1 without padding
+                $nextNumber = $lastNumber + 1; 
             } else {
-                $nextNumber = 1;
+                $nextNumber = 1; 
             }
+        
 
-            // Set the id to year + date created + next number (YYYYMMDDxxxx)
-            $ticket->id = $year . $dateCreated . $nextNumber;
+            do {
+            
+                $newTicketId = $year . $dateCreated . $nextNumber;// YYYYMMDDxxxx
+        
+                // Check if the generated ID already exists
+                $ticketExists = static::where('id', $newTicketId)->exists();
+        
+                if ($ticketExists) {
+                    // Increment the number to try again
+                    $nextNumber++;
+                }
+            } while ($ticketExists); // Repeat until a unique ID is found
+        
+            // Set the ticket id to the unique ID
+            $ticket->id = $newTicketId;
         });
-
     }
 
     // Disable auto-incrementing for the id column
