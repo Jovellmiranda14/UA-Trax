@@ -114,7 +114,8 @@ class AdminUserResource extends Resource
             ]);
         } elseif ($user->role === 'facility_admin') {
             // If the user is 'facility_admin', only show 'facility_admin'
-            $query->where('role', 'facility_admin');
+            $query->where('role', 'facility_admin')
+             ->where('dept_role', $user->dept_role);
         } elseif ($user->role === 'equipment_admin_omiss') {
             // Department Role for 'equipment_admin_omiss'
             $query->where('role', 'equipment_admin_omiss')

@@ -19,6 +19,8 @@ class TicketHistory extends Model
         'created_at',
         'updated_at',
         'assigned',
+        'attachment',
+        'attachment',
     ];
     public function ticket()
     {

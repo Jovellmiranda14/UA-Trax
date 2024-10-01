@@ -22,6 +22,8 @@ return new class extends Migration
             $table->enum('department', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE'])->nullable(); // Column to store the department related to the ticket
             $table->timestamps(); // Created at and updated at timestamps
             $table->string('assigned_at')->nullable();
+            $table->enum('dept_role', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
+            $table->enum('position', ['RSO', 'Faculty','Secretary', 'N/A']);
             $table->string('assigned')->nullable(); 
             // Foreign key constraint
         });

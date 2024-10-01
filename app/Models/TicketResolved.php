@@ -22,6 +22,7 @@ class TicketResolved extends Model
         'dept_role',
         'created_at',
         'assigned_at',
+        'attachment',
     ];
     public function ticket()
     {

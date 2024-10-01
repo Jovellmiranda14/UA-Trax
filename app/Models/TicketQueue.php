@@ -25,6 +25,7 @@ class TicketQueue extends Model
         'dept_role',
         'accepted_at',
         'created_at',
+        'attachment',
     ];
     public function ticket()
     {
