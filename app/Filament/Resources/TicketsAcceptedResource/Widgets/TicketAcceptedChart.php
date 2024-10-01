@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Filament\Resources\AnalyticsResource\Widgets;
+namespace App\Filament\Resources\TicketsAcceptedResource\Widgets;
 
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 use App\Models\TicketsAccepted;
 
-class TicketsAcceptedChart extends ChartWidget
+class TicketAcceptedChart extends ChartWidget
 {
     protected static ?string $heading = 'Tickets Accepted';
 

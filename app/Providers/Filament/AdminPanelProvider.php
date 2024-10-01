@@ -61,7 +61,7 @@ class AdminPanelProvider extends PanelProvider
 
 
              ->pages([
-                //  Pages\Dashboard::class,
+                  //Pages\Dashboard::class,
                  //  Pages\FacilityDashboard::class,
                  // Pages\EquipmentDashboard::class,
             ])

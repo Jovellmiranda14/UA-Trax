@@ -32,7 +32,7 @@ class Ticket extends Model
         //         'department'  => $ticket->department,
         //         'location'    => $ticket->location,
         //         'created_at'  => now(),
-        //         'updated_at'  => 
+        //         'updated_at'  =>
         //     ]);
         // });
 
@@ -43,7 +43,7 @@ class Ticket extends Model
                 'name'        => $ticket->name,
                 'subject'     => $ticket->subject,
                 'status'      => 'Open',
-                'priority'    => 'Moderate', 
+                'priority'    => 'Moderate',
                 'location'    => $ticket->location,
                 'department'  => $ticket->department,
                 'created_at'  => now(),

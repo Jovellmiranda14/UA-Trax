@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\AnalyticsResource\Widgets;
+namespace App\Filament\Resources\TicketResource\Widgets;
 
 use Filament\Widgets\ChartWidget;
 use App\Models\Ticket;
@@ -8,7 +8,7 @@ use App\Models\TicketsAccepted; // Add this model if accepted tickets are tracke
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
-class TicketsQueueChart extends ChartWidget
+class TicketVolumeChart extends ChartWidget
 {
     protected static ?string $heading = 'Ticket Volume';
 

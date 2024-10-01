@@ -21,7 +21,7 @@ class AnalyticsResource extends Resource
 {
     protected static ?string $model = Analytics::class;
     protected static ?int $navigationSort = 3;
-    protected static ?string $navigationIcon = 'heroicon-s-chart-bar'; 
+    protected static ?string $navigationIcon = 'heroicon-s-chart-bar';
     public static function canCreate(): Bool
     {
         return false;

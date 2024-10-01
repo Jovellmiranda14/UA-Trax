@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\AnalyticsResource\Widgets;
+namespace App\Filament\Resources\TicketResource\Widgets;
 
 use Filament\Widgets\ChartWidget;
 use App\Models\Ticket;
 use Illuminate\Support\Collection;
 
-class TypeOfIssueChart extends ChartWidget
+class IssueTypeChart extends ChartWidget
 {
     protected static ?string $heading = 'Issue Types';
 

@@ -3,8 +3,12 @@
 namespace App\Filament\Resources\AdminUserResource\Pages;
 
 use App\Filament\Resources\AdminUserResource;
-use Filament\Actions;
+use App\Filament\Resources\AdminUserResource\Widgets\AdminUserOverview;
+use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Forms;
+use App\Models\User;
+use Filament\Notifications\Notification;
 
 class ListAdminUsers extends ListRecords
 {
@@ -15,6 +19,12 @@ class ListAdminUsers extends ListRecords
         return [
             Actions\CreateAction::make()
             ->label('New Admin User'),
+        ];
+    }
+    protected function getHeaderWidgets(): array
+    {
+        return[
+            AdminUserOverview::class
         ];
     }
 }
