@@ -22,7 +22,7 @@ class ListTickets extends ListRecords
     {
         return [
             Actions\CreateAction::make('Tickets')
-                ->label('Create New Ticket')
+                ->label('Create new ticket')
                 // ->modalHeading('Create New Ticket')
                 // ->modalDescription('Please fill out the form below to create a new ticket.')
         ];    

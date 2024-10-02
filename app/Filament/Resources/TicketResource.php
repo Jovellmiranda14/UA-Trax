@@ -34,9 +34,9 @@ use Filament\Forms\Components\Modal;
 
 class TicketResource extends Resource
 {
-    protected static ?string $navigationLabel = 'My Tickets';
+    protected static ?string $navigationLabel = 'My tickets';
     protected static ?string $model = Ticket::class;
-     protected static ?string $navigationIcon = 'heroicon-s-ticket';
+    // protected static ?string $navigationIcon = 'heroicon-s-ticket';
     protected static ?string $label = 'Open tickets';
     //protected static ?string $navigationGroup = 'Tickets';
     protected static ?int $navigationSort = 1;
@@ -98,13 +98,19 @@ class TicketResource extends Resource
                     $user = Auth::user();
                     return $user->isEquipmentSuperAdmin() ? 'Facility' : null;
                 }),
+             
                 
             // Ticket Details Card
             Card::make('Ticket details')
                 ->description('Enter specific issues you have trouble with.')
+                ->extraAttributes([
+                    'class' => 'sticky-card', // Add a class to apply sticky styles
+                    'style' => 'max-height: 25vh; max-width: 60vw; overflow: auto; position: -webkit-sticky; position: sticky; top: 10px;' // Sticky behavior
+                ]) 
                 ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
                 ->schema([
-                    Grid::make(2)
+                    Grid::make(3)
+                    ->extraAttributes(['class' => 'scrollable-content'])
                         ->schema([
                             TextInput::make('name')
                                 ->label('Sender')
@@ -112,13 +118,14 @@ class TicketResource extends Resource
                                 ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
                             
                             TextInput::make('subject')
-                                ->label('Subject')
+                                ->label('Concern')
                                 ->required()
+                                
                                 ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
 
-                            TextInput::make('property_no')
-                                ->label('Property No.')
-                                ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
+                            // TextInput::make('property_no')
+                                // ->label('Property No.')
+                                // ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
 
                             Select::make('type_of_issue')
                                 ->label('Type of Issue')
@@ -131,6 +138,7 @@ class TicketResource extends Resource
                                 ])
                                 ->required()
                                 ->reactive()
+                                
                                 ->visible(fn ($get) => $get('concern_type') === 'Facility'),
                                 
                                 Select::make('type_of_issue')
@@ -141,14 +149,17 @@ class TicketResource extends Resource
                                     'Other_Devices' => 'Other Devices (e.g., Printer, Projector, and TV)',
                                 ])
                                 ->required()
+                                
                                 ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),   
                         ]),
 
                     Grid::make(2)
-                        ->schema([
+                    ->extraAttributes(['class' => 'scrollable-content'])
+                        ->schema([  
                             Textarea::make('description')
                                 ->label('Description')
                                 ->required()
+                                
                                 ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
                             
                             FileUpload::make('attachment')
@@ -162,9 +173,14 @@ class TicketResource extends Resource
             // Place of Issues Card
             Card::make('Place of issues')
                 ->description('Select where the equipment is currently located.')
+                ->extraAttributes([
+                    'class' => 'sticky-card', // Add a class to apply sticky styles
+                    'style' => 'max-height: 25vh; max-width: 60vw; overflow: auto; position: -webkit-sticky; position: sticky; top: 10px;' // Sticky behavior
+                ]) 
                 ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
                 ->schema([
                     Grid::make(2)
+                    ->extraAttributes(['class' => 'scrollable-content'])
                         ->schema([
                             Select::make('department')
                                 ->label('Department')
@@ -177,6 +193,7 @@ class TicketResource extends Resource
                                     'OFFICE' => 'OFFICE',
                                 ])
                                 ->reactive()
+                                
                                 ->required(),
                             
                                 Select::make('location')
@@ -189,6 +206,7 @@ class TicketResource extends Resource
                                     // mapWithKeys
                                 ][$get('department')] ?? [])->mapWithKeys(fn($value) => [$value => $value]))
                                 ->required()
+                                
                                 ->reactive()
                                 // ->afterStateUpdated(function ($state, $set) {
                                 //     if (is_array($state)) {
@@ -201,13 +219,18 @@ class TicketResource extends Resource
                             TextInput::make('location')
                                 ->label('Location')
                                 ->required()
+                                
                                 ->default('N/A')
                                 ->visible(fn ($get) => in_array($get('department'), ['RSO', 'OFFICE'])),
                                 // TextInput::make('created_at')
                                 // ->label('Date Created')
                                 // ->default(Date::now()->format('Y-m-d')) // Set default value to current date
                                 // ->hidden(),
-
+                            
+                            // TextInput::make('property_no')
+                                // ->label('Property No.')
+                                
+                                // ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
                         ]),
                 ]),
         ]) ;
@@ -235,7 +258,7 @@ class TicketResource extends Resource
                     ->searchable(),
 
                     Tables\Columns\TextColumn::make('subject')
-                    ->label('Subject')
+                    ->label('Concern')
                     ->searchable(),
 
                     Tables\Columns\BadgeColumn::make('status')

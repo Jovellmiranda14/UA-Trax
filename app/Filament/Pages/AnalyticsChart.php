@@ -12,8 +12,9 @@ use App\Filament\Resources\TicketResource\Widgets\IssueTypeChart;
 
 class AnalyticsChart extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    // protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static string $view = 'filament.pages.analytics-chart';
+    protected static ?int $navigationSort = 4;
 
     public function getHeaderWidgets(): array
     {

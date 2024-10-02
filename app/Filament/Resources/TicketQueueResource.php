@@ -90,7 +90,7 @@ class TicketQueueResource extends Resource
                 BadgeColumn::make('status')
                     ->label('Status')
                     ->colors([
-                        'primary' => 'Open', Color::Blue,
+                        'primary' => 'Open',
                         'success' => 'Resolved',
                         'warning' => 'In progress',
                         'info' => 'Closed',
@@ -98,6 +98,14 @@ class TicketQueueResource extends Resource
                     ->searchable(),
                 TextColumn::make('priority')
                     ->label('Priority')
+                    ->colors([
+                        'primary' => 'Low', 
+                        'success' => 'Moderate',
+                        'warning' => 'In progress',
+                        'warning' => 'High',
+                        'warning' => 'Urgent',
+                        'info' => 'Closed',
+                    ])
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('location')

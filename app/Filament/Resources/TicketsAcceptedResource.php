@@ -28,13 +28,13 @@ use Filament\Tables\Filters\Filter;
 
 class TicketsAcceptedResource extends Resource
 {
-    protected static ?string $navigationLabel = 'Tickets Accepted';
-    protected static ?string $label = 'Open tickets';
+    protected static ?string $navigationLabel = 'Accepted tickets';
+    protected static ?string $label = 'Open Tickets';
     protected static ?string $model = TicketsAccepted::class;
 
     // protected static ?string $navigationIcon = 'heroicon-o-ticket';
 
-    protected static ?string $navigationGroup = 'Tickets';
+    // protected static ?string $navigationGroup = 'Tickets';
     protected static ?int $navigationSort = 2;
 
 
@@ -76,7 +76,7 @@ class TicketsAcceptedResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('subject')
-                    ->label('Subject')
+                    ->label('Concern')
                     ->sortable()
                     ->searchable(),
                     Tables\Columns\TextColumn::make('priority')
@@ -132,7 +132,7 @@ class TicketsAcceptedResource extends Resource
                 SelectFilter::make('status')
                     ->label('Tickets')
                     ->options([
-                        'Open' => 'Open tickets',
+                        'Open' => 'Open Tickets',
                         'Accepted' => 'Accepted',
                     ]),
                 
