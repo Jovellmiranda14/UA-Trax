@@ -12,7 +12,11 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use Filament\Tables\Actions\ViewAction;
+use Filament\Forms\Components\Card;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
 class TicketResolvedResource extends Resource
 {
     protected static ?string $navigationLabel = 'Closed Tickets';
@@ -112,11 +116,57 @@ class TicketResolvedResource extends Resource
                 ->filters([
                     //
                 ])
-                ->actions([
-                    Tables\Actions\Action::make('grab')
-                    ->label('')
-                    ->icon('heroicon-o-rectangle-stack')
-                ])
+                ->actions([  
+                    Tables\Actions\ActionGroup::make([
+                            ViewAction::make('View')
+                                ->modalHeading('Ticket Details')
+                                ->modalSubheading('Full details of the selected ticket.')
+                                ->form([
+                                    Card::make([
+                                        TextInput::make('id')
+                                            ->label('Ticket ID')
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('name')
+                                            ->label('Sender')
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('subject')
+                                            ->label('Subject')
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('status')
+                                            ->label('Status')
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('priority')
+                                            ->label('Priority')
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('location')
+                                            ->label('Location')
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('department')
+                                            ->label('Department')
+                                            ->disabled()
+                                            ->required(),
+                                        // TextInput::make('dept_role')
+                                        //     ->label('Dept')
+                                        //     ->disabled()
+                                        //     ->required(),
+                                        DatePicker::make('created_at')
+                                            ->label('Date Created')
+                                            ->disabled()
+                                            ->required(),
+                                    ]),
+                                ]),
+                            Tables\Actions\Action::make('comment')
+                                ->label('Comment')
+                                ->icon('heroicon-o-rectangle-stack'),
+                            // Tables\Actions\DeleteAction::make(),
+                        ])
+                            ])
                 ->bulkActions([
                 ]);
         }

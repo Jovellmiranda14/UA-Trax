@@ -74,12 +74,6 @@ class AdminUserResource extends Resource
                  ->visible(fn () => in_array(auth()->user()->role, [ 'equipment_admin_omiss', 'equipment_admin_labcustodian']))
                  ->hidden(fn () => auth()->user()->role=== 'facility_user'),
 
-                 Forms\Components\Select::make('dept_role')
-                 ->label('Department')
-                 ->required()
-                 ->options(User::Dept),
-                
-                
                 // Uncomment if needed
             // Forms\Components\Select::make('position')
             //     ->required()

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('attachment')->nullable()->default('N/A');
             $table->string('assigned_to')->nullable();
             $table->timestamps();
+            $table->timestamp('accepted_at');
         });
     }
 

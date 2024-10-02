@@ -31,7 +31,7 @@ return new class extends Migration
                 'lab_equipment',
                 'Other_Devices',
             ]);
-            $table->string('property_no')->nullable();
+   
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed'])->default('Open');
             $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High','Escalated'])->default('Moderate') ;
             $table->string('location');
