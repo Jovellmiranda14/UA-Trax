@@ -10,9 +10,6 @@ use App\Observers\TicketObserver;
 use App\Models\Ticket;
 use App\Models\TicketQueue;
 
-
-
-
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -47,13 +44,10 @@ class FilamentServiceProvider extends ServiceProvider
     {
 
         Ticket::observe(TicketObserver::class);
-           
+
 
         Filament::navigation([
             TicketHistoryResource::class,
         ]);
-
-      
-            
     }
 }

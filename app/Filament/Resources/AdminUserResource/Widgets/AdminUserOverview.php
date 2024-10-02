@@ -14,6 +14,7 @@ class AdminUserOverview extends BaseWidget
             Stat::make('Total Admin User', User::whereIn('role', [User::EQUIPMENT_ADMIN_Omiss, User::EQUIPMENT_ADMIN_labcustodian, User::FACILITY_ADMIN])->count()),
             Stat::make('Total Equipment Admin OMISS', User::where('role', User::EQUIPMENT_ADMIN_Omiss)->count()),
             Stat::make('Total Equipment Admin Lab Custodian', User::where('role', User::EQUIPMENT_ADMIN_labcustodian)->count()),
+            Stat::make('Total Facility Admin', User::where('role', User::FACILITY_ADMIN)->count()),
         ];
     }
 }

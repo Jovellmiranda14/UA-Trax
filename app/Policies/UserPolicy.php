@@ -12,10 +12,10 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isFacilityAdmin() || 
-        $user->isEquipmentSuperAdmin() || 
+        return $user->isFacilityAdmin() ||
+        $user->isEquipmentSuperAdmin() ||
         $user->isFacilitySuperAdmin() ||
-        $user->isEquipmentAdminOmiss() || 
+        $user->isEquipmentAdminOmiss() ||
         $user->isEquipmentAdminlabcustodian();
     }
 
