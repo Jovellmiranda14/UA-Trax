@@ -12,10 +12,10 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\User;
-
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Card;
-
+use Filament\Forms\Components\TextInput;
 
 
 class AdminUserResource extends Resource
@@ -63,17 +63,11 @@ class AdminUserResource extends Resource
             ]),
 
             // Lower part: Department, Role
-            Grid::make(2) // Split into two columns for the bottom part
+            Grid::make(3) // Split into two columns for the bottom part
                 ->schema([
                 // This should be hidden for facility admin
                  // Visible only for Equipment admin
-                 Forms\Components\Select::make('dept_role')
-                 ->label('Department Role')
-                 ->required()
-                 ->options(User::Dept)
-                 ->visible(fn () => in_array(auth()->user()->role, [ 'equipment_admin_omiss', 'equipment_admin_labcustodian']))
-                 ->hidden(fn () => auth()->user()->role=== 'facility_user'),
-
+                 
                 // Uncomment if needed
             // Forms\Components\Select::make('position')
             //     ->required()
@@ -86,9 +80,40 @@ class AdminUserResource extends Resource
                     'equipment_admin_omiss' => 'Equipment OMISS',
                     'equipment_admin_labcustodian' => 'Equipment LabCustodian',
                     'facility_admin' => 'Facility Admin',
+                ]),
+                Forms\Components\Select::make('dept_role')
+                ->label('Department Role')
+                ->required()
+                ->options(User::Dept)
+                ->reactive()  // Make the field reactive to trigger location updates
+                ->visible(fn () => in_array(auth()->user()->role, ['equipment_admin_omiss', 'equipmentsuperadmin', 'equipment_admin_labcustodian']))
+                ->hidden(fn () => auth()->user()->role === 'facility_admin'),
+                
+                Select::make('location')
+                    ->label('Location')
+                    ->options(fn ($get) => collect([
+                        'SAS' => ['SAS Building', 'SAS Lab'],
+                        'CEA' => ['CEA Hall', 'CEA Workshop'],
+                        'CONP' => ['CONP Room 1', 'CONP Room 2'],
+                        'CITCLS' => ['CITCLS Area A', 'CITCLS Area B'],
+                    ][$get('dept_role')] ?? [])->mapWithKeys(fn($value) => [$value => $value]))
+                    ->required()
+                    ->multiple()
+                    ->reactive()
+                    ->visible(fn ($get) => !in_array($get('dept_role'), ['RSO', 'OFFICE'])),
+
+                TextInput::make('location') // Changed field name to avoid conflict
+                    ->label('Location')
+                    ->required()
+                    ->default('N/A')
+                    ->visible(fn ($get) => in_array($get('dept_role'), ['RSO', 'OFFICE'])),
+
+            
                 ])
-                ])
-                ])
+                
+                ]),
+               
+
 
         ]);
     }
@@ -137,6 +162,10 @@ class AdminUserResource extends Resource
     
                 Tables\Columns\TextColumn::make('role')
                     ->label('Role')
+                    ->searchable()
+                    ->sortable(),
+                    Tables\Columns\TextColumn::make('location')
+                    ->label('location')
                     ->searchable()
                     ->sortable(),
             ])
