@@ -49,7 +49,9 @@ class TicketResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+        
             ->schema([
+                
                 // Radio::make('concern_type')
                 // ->label('My concern is about:')
                 // ->options([
@@ -70,8 +72,12 @@ class TicketResource extends Resource
                 //     return null;
                 // }), 
                 
+                
+
+
                 Radio::make('concern_type')
                 ->label('My concern is about:')
+                
                 ->options(function () {
                     $user = auth()->user();
                     // Restrict options based on user role
@@ -98,25 +104,29 @@ class TicketResource extends Resource
                     $user = Auth::user();
                     return $user->isEquipmentSuperAdmin() ? 'Facility' : null;
                 }),
-             
+            
+                Card::make('')
+                ->description('')
+                ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
+                ->extraAttributes([
+                    'style' => 'max-height: 40vh; max-width: 60vw; overflow: auto; position: -webkit-sticky; position: sticky; top: 10px;' // Sticky behavior
+                ])
+                ->schema([
+              
                 
             // Ticket Details Card
-            Card::make('Ticket details')
-                ->description('Enter specific issues you have trouble with.')
-                ->extraAttributes([
-                    'class' => 'sticky-card', // Add a class to apply sticky styles
-                    'style' => 'max-height: 25vh; max-width: 60vw; overflow: auto; position: -webkit-sticky; position: sticky; top: 10px;' // Sticky behavior
-                ]) 
+            Card::make('Ticket details') 
+                ->description('Enter specific issues you have trouble with.') 
                 ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
                 ->schema([
                     Grid::make(3)
-                    ->extraAttributes(['class' => 'scrollable-content'])
+                    
                         ->schema([
                             TextInput::make('name')
                                 ->label('Sender')
                                 ->default(fn () => auth()->user()->name)
                                 ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
-                            
+                                
                             TextInput::make('subject')
                                 ->label('Concern')
                                 ->required()
@@ -154,7 +164,7 @@ class TicketResource extends Resource
                         ]),
 
                     Grid::make(2)
-                    ->extraAttributes(['class' => 'scrollable-content'])
+                    
                         ->schema([  
                             Textarea::make('description')
                                 ->label('Description')
@@ -173,14 +183,11 @@ class TicketResource extends Resource
             // Place of Issues Card
             Card::make('Place of issues')
                 ->description('Select where the equipment is currently located.')
-                ->extraAttributes([
-                    'class' => 'sticky-card', // Add a class to apply sticky styles
-                    'style' => 'max-height: 25vh; max-width: 60vw; overflow: auto; position: -webkit-sticky; position: sticky; top: 10px;' // Sticky behavior
-                ]) 
+
                 ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
                 ->schema([
                     Grid::make(2)
-                    ->extraAttributes(['class' => 'scrollable-content'])
+                    
                         ->schema([
                             Select::make('department')
                                 ->label('Department')
@@ -232,8 +239,12 @@ class TicketResource extends Resource
                                 
                                 // ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
                         ]),
-                ]),
+                ])
+                  
+            ]),
+                
         ]) ;
+        
     }
     
     
@@ -264,19 +275,21 @@ class TicketResource extends Resource
                     Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
                     ->colors([
-                        'primary' => 'Open', 
-                        'success' => 'Resolved',
-                        'warning' => 'In progress',
-                        'info' => 'Closed',
+                        'success' => 'Resolved',   
+                        'primary' => 'Open',      
+                        'warning' => 'In progress', 
+                        'black' => 'On-hold', 
+                        'grey' => 'Close',        
                     ])
                     ->searchable(),
                     Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
                     ->colors([
-                        'success' => 'Low',        // Green
-                        'warning' => 'Moderate',   // Yellow
-                        'danger'  => 'Urgent',     // Orange
-                        'danger'  => 'High',       // Red (same as Urgent in this case)
+                        'info' => 'Low',
+                        'warning' => 'Moderate',
+                        'danger'  => 'Urgent',
+                        'danger'  => 'High',
+                        'important' => 'Escalated',
                     ])
                     ->searchable(),
 

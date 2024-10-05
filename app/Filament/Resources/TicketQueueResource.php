@@ -84,27 +84,27 @@ class TicketQueueResource extends Resource
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('subject')
-                    ->label('Subject')
+                    ->label('Concern')
                     ->sortable()
                     ->searchable(),
                 BadgeColumn::make('status')
                     ->label('Status')
                     ->colors([
-                        'primary' => 'Open',
-                        'success' => 'Resolved',
-                        'warning' => 'In progress',
-                        'info' => 'Closed',
+                        'success' => 'Resolved',   
+                        'primary' => 'Open',      
+                        'warning' => 'In progress', 
+                        'black' => 'On-hold', 
+                        'grey' => 'Close',        
                     ])
                     ->searchable(),
                 TextColumn::make('priority')
                     ->label('Priority')
                     ->colors([
-                        'primary' => 'Low', 
-                        'success' => 'Moderate',
-                        'warning' => 'In progress',
-                        'warning' => 'High',
-                        'warning' => 'Urgent',
-                        'info' => 'Closed',
+                        'info' => 'Low',
+                        'warning' => 'Moderate',
+                        'danger'  => 'Urgent',
+                        'danger'  => 'High',
+                        'important' => 'Escalated',
                     ])
                     ->sortable()
                     ->searchable(),
@@ -188,7 +188,7 @@ class TicketQueueResource extends Resource
                                     ->disabled()
                                     ->required(),
                                 TextInput::make('subject')
-                                    ->label('Subject')
+                                    ->label('Concern')
                                     ->disabled()
                                     ->required(),
                                 TextInput::make('status')

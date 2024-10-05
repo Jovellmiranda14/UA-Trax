@@ -70,17 +70,17 @@ class TicketHistoryResource extends Resource
                 ->sortable()
                 ->searchable(),
             TextColumn::make('subject')
-                ->label('Subject')
+                ->label('Concern')
                 ->sortable()
                 ->searchable(),
             BadgeColumn::make('status')
                 ->label('Status')
                 ->colors([
-                    'primary' => 'Open', Color::Blue,
-                    'success' => 'Resolved',
-                    'warning' => 'In progress',
-                    'info' => 'Closed',
-                    'black' => 'On-Hold',
+                    'success' => 'Resolved',   
+                    'primary' => 'Open',      
+                    'warning' => 'In progress', 
+                    'black' => 'On-hold', 
+                    'grey' => 'Close',        
                 ])
                 ->searchable(),
                 Tables\Columns\TextColumn::make('priority')
@@ -91,7 +91,7 @@ class TicketHistoryResource extends Resource
                     'info' => 'Low',
                     'warning' => 'Moderate',
                     'danger'  => 'Urgent',
-                    'urgent'  => 'High',
+                    'danger'  => 'High',
                     'important' => 'Escalated',
                 ]),
             TextColumn::make('location')

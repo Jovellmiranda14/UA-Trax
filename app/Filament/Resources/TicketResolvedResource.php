@@ -70,16 +70,30 @@ class TicketResolvedResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('subject')
-                    ->label('Subject')
+                    ->label('Concern')
                     ->sortable()
                     ->searchable(),
                     
                     Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->sortable()
+                    ->colors([
+                        'success' => 'Resolved',   
+                        'primary' => 'Open',      
+                        'warning' => 'In progress', 
+                        'black' => 'On-hold', 
+                        'grey' => 'Close',        
+                    ])
                     ->searchable(),
                     Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
+                    ->colors([
+                        'info' => 'Low',
+                        'warning' => 'Moderate',
+                        'danger'  => 'Urgent',
+                        'danger'  => 'High',
+                        'important' => 'Escalated',
+                    ])
                     ->sortable()
                     ->searchable(),
                     
@@ -132,7 +146,7 @@ class TicketResolvedResource extends Resource
                                             ->disabled()
                                             ->required(),
                                         TextInput::make('subject')
-                                            ->label('Subject')
+                                            ->label('Concern')
                                             ->disabled()
                                             ->required(),
                                         TextInput::make('status')

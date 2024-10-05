@@ -1,48 +1,17 @@
-/* Sticky behavior for the card */
-.sticky-card {
-    position: -webkit-sticky; /* For Safari */
-    position: sticky;
-    top: 0; /* Adjust the distance from the top of the modal */
-    z-index: 10; /* Make sure it stays above other content */
-    background-color: white; /* Ensure the sticky section blends with the modal */
-    padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Adds subtle shadow to the sticky element */
+/* Make Ticket Details scrollable */
+.ticket-details-card {
+    max-height: 300px; /* Adjust the height as necessary */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 15px;
+    border: 1px solid #ddd; /* Optional: Adds border for visual clarity */
+    margin-bottom: 20px; /* Optional: Adds spacing */
 }
 
-/* Scrollable content within the modal */
-.scrollable-content {
-    max-height: 400px; /* Adjust this to fit your modal height */
-    overflow-y: auto; /* Allow vertical scrolling */
-    padding-right: 10px; /* Optional: Adds spacing on the right for the scrollbar */
-    scrollbar-width: thin; /* Thin scrollbar for Firefox */
-    -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
-}
-
-/* For WebKit browsers (Chrome, Safari) */
-.scrollable-content::-webkit-scrollbar {
-    width: 6px;
-}
-
-.scrollable-content::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.scrollable-content::-webkit-scrollbar-thumb {
-    background-color: #ccc; /* Customize scrollbar color */
-    border-radius: 3px;
-    border: none; /* Remove default border */
-}
-
-/* Extra suggestion: Modal layout */
-.modal-body {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem; /* Space between elements */
-}
-
-/* Optional: Make the modal content more responsive */
-@media (max-width: 768px) {
-    .scrollable-content {
-        max-height: 300px; /* Adjust height for smaller screens */
-    }
+/* Make Place of Issues scrollable */
+.place-of-issues-card {
+    max-height: 300px; /* Adjust the height as necessary */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 15px;
+    border: 1px solid #ddd; /* Optional */
+    margin-bottom: 20px; /* Optional */
 }

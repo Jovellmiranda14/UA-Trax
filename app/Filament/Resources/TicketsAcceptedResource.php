@@ -29,13 +29,14 @@ use Filament\Tables\Filters\Filter;
 class TicketsAcceptedResource extends Resource
 {
     protected static ?string $navigationLabel = 'Accepted tickets';
-    protected static ?string $label = 'Open Tickets';
+    // protected static ?string $label = 'Open tickets';
     protected static ?string $model = TicketsAccepted::class;
 
     // protected static ?string $navigationIcon = 'heroicon-o-ticket';
 
     // protected static ?string $navigationGroup = 'Tickets';
     protected static ?int $navigationSort = 2;
+
 
 
 
@@ -81,28 +82,25 @@ class TicketsAcceptedResource extends Resource
                     ->searchable(),
                     Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
-                    ->sortable()
                     ->colors([
-                        'success' => 'Low',        // Green
-                        'warning' => 'Moderate',   // Yellow
-                        'danger'  => 'Urgent',     // Orange
-                        'danger'  => 'High',       // Red (same as Urgent in this case)
-                    ]),
+                        'info' => 'Low',
+                        'warning' => 'Moderate',
+                        'danger'  => 'Urgent',
+                        'danger'  => 'High',
+                        'important' => 'Escalated',
+                    ])
+                    ->sortable(),
+                    
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
                     ->sortable()
                     ->searchable()
-                    // ->colors([
-                        // 'info'     => 'Open',        // Light Blue for Open
-                        // 'danger'   => 'In progress', // Orange for In progress
-                        // 'success'  => 'Resolved',    // Green for Resolved
-                        // 'muted'    => 'Closed',      // Dark Gray for Closed
-                    // ]),
                     ->colors([
-                        'primary'  => 'Open',        // Blue for Open
-                        'warning'  => 'In progress', // Yellow for In progress
-                        'success'  => 'Resolved',    // Green for Resolved
-                        'secondary'=> 'Closed',      // Gray for Closed
+                        'success' => 'Resolved',   
+                        'primary' => 'Open',      
+                        'warning' => 'In progress', 
+                        'black' => 'On-hold', 
+                        'grey' => 'Close',        
                     ]), 
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
@@ -172,7 +170,7 @@ class TicketsAcceptedResource extends Resource
                                         ->disabled()
                                         ->required(),
                                     TextInput::make('subject')
-                                        ->label('Subject')
+                                        ->label('Concern')
                                         ->disabled()
                                         ->required(),
                                     TextInput::make('status')
