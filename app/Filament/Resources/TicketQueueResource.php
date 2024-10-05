@@ -26,7 +26,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
-
+use App\Filament\Resources\UserResource\RelationManagers;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 class TicketQueueResource extends Resource
 {
     protected static ?string $model = TicketQueue::class;
@@ -126,12 +128,6 @@ class TicketQueueResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('Tickets')
-                    ->options([
-                        'Accepted' => 'Accepted',
-                        'Open' => 'Open Tickets',
-                        'published' => 'Published',
-                    ]),
             ])
             ->actions([
                 Action::make('grab')
@@ -174,49 +170,62 @@ class TicketQueueResource extends Resource
                     ->hidden(fn ($record) => $record->assigned !== null), // Hide the button if already grabbed
 
                 ActionGroup::make([
-                    ViewAction::make('View')
+                    Action::make('View')
+                        ->icon('heroicon-o-rectangle-stack')
+                        ->color('success')
                         ->modalHeading('Ticket Details')
                         ->modalSubheading('Full details of the selected ticket.')
-                        ->form([
+                        ->form(function ($record) {
+                            return [
                             Card::make([
                                 TextInput::make('id')
                                     ->label('Ticket ID')
                                     ->disabled()
+                                    ->default($record->id) 
                                     ->required(),
                                 TextInput::make('name')
                                     ->label('Sender')
                                     ->disabled()
+                                    ->default($record->name)
                                     ->required(),
                                 TextInput::make('subject')
                                     ->label('Concern')
                                     ->disabled()
+                                    ->default($record->subject)
                                     ->required(),
                                 TextInput::make('status')
                                     ->label('Status')
                                     ->disabled()
+                                    ->default($record->status) 
                                     ->required(),
                                 TextInput::make('priority')
                                     ->label('Priority')
                                     ->disabled()
+                                    ->default($record->priority)
                                     ->required(),
                                 TextInput::make('department')
                                     ->label('department')
                                     ->disabled()
+                                    ->default($record->department)
                                     ->required(),
                                 TextInput::make('location')
                                     ->label('Location')
                                     ->disabled()
+                                    ->default($record->location)
                                     ->required(),
                                     TextInput::make('dept_role')
                                     ->label('Dept Assigned')
                                     ->disabled()
+                                    ->default($record->dept_role) 
                                     ->required(),
                                 DatePicker::make('created_at')
                                     ->label('Date Created')
                                     ->disabled()
+                                    ->default($record->created_at)
                                     ->required(),
                             ]),
-                        ]),
+                            ];
+                    }),
                 ]),
             ]);
     }

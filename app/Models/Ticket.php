@@ -22,19 +22,19 @@ class Ticket extends Model
     protected static function boot()
     {
         parent::boot();
-        // static::updated(function ($ticket) {
-        //     TicketQueue::create([
-        //         'id'          => $ticket->id,
-        //         'name'        => auth()->user()->name, // Make sure this is set
-        //         'subject'     => $ticket->subject,
-        //         'status'      => $ticket->status,
-        //         'priority'    => $ticket->priority,
-        //         'department'  => $ticket->department,
-        //         'location'    => $ticket->location,
-        //         'created_at'  => now(),
-        //         'updated_at'  =>
-        //     ]);
-        // });
+        static::updated(function ($ticket) {
+            TicketQueue::create([
+                'id'          => $ticket->id,
+                'name'        => auth()->user()->name, // Make sure this is set
+                'subject'     => $ticket->subject,
+                'status'      => $ticket->status,
+                'priority'    => $ticket->priority,
+                'department'  => $ticket->department,
+                'location'    => $ticket->location,
+                'created_at'  => now(),
+                 //'updated_at'  =>
+            ]);
+        });
 
         // Event: When a ticket is created
         static::created(function ($ticket) {
@@ -52,18 +52,18 @@ class Ticket extends Model
         });
 
         // Event: When a ticket is updated
-        static::updated(function ($ticket) {
-            TicketHistory::create([
-                'id'          => $ticket->id,
-                'name'        => $ticket->name,
-                'subject'     => $ticket->subject,
-                'status'      => $ticket->status,
-                'priority'    => $ticket->priority,
-                'location'    => $ticket->location,
-                'department'  => $ticket->department,
-                'updated_at'  => $ticket->updated_at,
-            ]);
-        });
+        // static::updated(function ($ticket) {
+        //     TicketHistory::create([
+        //         'id'          => $ticket->id,
+        //         'name'        => $ticket->name,
+        //         'subject'     => $ticket->subject,
+        //         'status'      => $ticket->status,
+        //         'priority'    => $ticket->priority,
+        //         'location'    => $ticket->location,
+        //         'department'  => $ticket->department,
+        //         'updated_at'  => $ticket->updated_at,
+        //     ]);
+        // });
 
         static::creating(function ($ticket) {
 
