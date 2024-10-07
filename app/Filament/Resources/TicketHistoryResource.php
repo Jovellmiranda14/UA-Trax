@@ -91,7 +91,7 @@ class TicketHistoryResource extends Resource
                     'info' => 'Low',
                     'warning' => 'Moderate',
                     'danger'  => 'Urgent',
-                    'danger'  => 'High',
+                    'primary'  => 'High',
                     'important' => 'Escalated',
                 ]),
             TextColumn::make('location')
@@ -99,7 +99,7 @@ class TicketHistoryResource extends Resource
                 ->sortable()
                 ->searchable(),
             TextColumn::make('department')
-                ->label('Dept')
+                ->label('Department')
                 ->sortable()
                 ->searchable(),
             TextColumn::make('created_at')

@@ -63,16 +63,20 @@ class TicketQueueResource extends Resource
         return $table
             ->query(function () {
                 $query = Ticket::query()->whereNull('assigned'); // Only show tickets not yet assigned
-
-                if (auth()->user()->isEquipmentSuperAdmin() ||
+    
+                if (
+                    auth()->user()->isEquipmentSuperAdmin() ||
                     auth()->user()->isEquipmentAdminOmiss() ||
-                    auth()->user()->isEquipmentAdminlabcustodian()) {
+                    auth()->user()->isEquipmentAdminlabcustodian()
+                ) {
                     $query->whereIn('concern_type', ['Laboratory and Equipment'])
-                          ->orderBy('concern_type', 'asc');
-                } elseif (auth()->user()->isFacilityAdmin() ||
-                        auth()->user()->isFacilitySuperAdmin()) {
+                        ->orderBy('concern_type', 'asc');
+                } elseif (
+                    auth()->user()->isFacilityAdmin() ||
+                    auth()->user()->isFacilitySuperAdmin()
+                ) {
                     $query->where('concern_type', 'Facility')
-                          ->orderBy('concern_type', 'asc');
+                        ->orderBy('concern_type', 'asc');
                 }
                 return $query;
             })
@@ -92,11 +96,11 @@ class TicketQueueResource extends Resource
                 BadgeColumn::make('status')
                     ->label('Status')
                     ->colors([
-                        'success' => 'Resolved',   
-                        'primary' => 'Open',      
-                        'warning' => 'In progress', 
-                        'black' => 'On-hold', 
-                        'grey' => 'Close',        
+                        'success' => 'Resolved',
+                        'primary' => 'Open',
+                        'warning' => 'In progress',
+                        'black' => 'On-hold',
+                        'grey' => 'Close',
                     ])
                     ->searchable(),
                 TextColumn::make('priority')
@@ -104,8 +108,8 @@ class TicketQueueResource extends Resource
                     ->colors([
                         'info' => 'Low',
                         'warning' => 'Moderate',
-                        'danger'  => 'Urgent',
-                        'danger'  => 'High',
+                        'danger' => 'Urgent',
+                        'primary' => 'High',
                         'important' => 'Escalated',
                     ])
                     ->sortable()
@@ -114,12 +118,12 @@ class TicketQueueResource extends Resource
                     ->label('Location')
                     ->sortable()
                     ->searchable(),
-                    TextColumn::make('concern_type')
+                TextColumn::make('concern_type')
                     ->label('Concern Type')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('department')
-                    ->label('Dept')
+                    ->label('Department')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('created_at')
@@ -137,9 +141,9 @@ class TicketQueueResource extends Resource
                         try {
                             // Assign the ticket to the current user
                             $record->update(['assigned' => auth()->user()->name]);
-            
+
                             // Move the ticket to the "Tickets Accepted" list with additional modifications
-                            \App\Models\TicketsAccepted::create([
+                            TicketsAccepted::create([
                                 'id' => $record->id, // Assuming you want to keep the ticket ID
                                 'concern_type' => $record->concern_type,
                                 'name' => $record->name,
@@ -154,7 +158,7 @@ class TicketQueueResource extends Resource
                                 'assigned' => auth()->user()->name, // Adding timestamp for when the ticket was accepted
                                 // Add other fields you want to copy from the original record
                             ]);
-            
+
                             // Delete the original ticket record
                             $record->delete();
                         } catch (\Exception $e) {
@@ -167,7 +171,7 @@ class TicketQueueResource extends Resource
                     ->modalHeading('Confirm Grab Ticket')
                     ->modalSubheading('Are you sure you want to grab this ticket?')
                     ->color('success')
-                    ->hidden(fn ($record) => $record->assigned !== null), // Hide the button if already grabbed
+                    ->hidden(fn($record) => $record->assigned !== null), // Hide the button if already grabbed
 
                 ActionGroup::make([
                     Action::make('View')
@@ -177,55 +181,55 @@ class TicketQueueResource extends Resource
                         ->modalSubheading('Full details of the selected ticket.')
                         ->form(function ($record) {
                             return [
-                            Card::make([
-                                TextInput::make('id')
-                                    ->label('Ticket ID')
-                                    ->disabled()
-                                    ->default($record->id) 
-                                    ->required(),
-                                TextInput::make('name')
-                                    ->label('Sender')
-                                    ->disabled()
-                                    ->default($record->name)
-                                    ->required(),
-                                TextInput::make('subject')
-                                    ->label('Concern')
-                                    ->disabled()
-                                    ->default($record->subject)
-                                    ->required(),
-                                TextInput::make('status')
-                                    ->label('Status')
-                                    ->disabled()
-                                    ->default($record->status) 
-                                    ->required(),
-                                TextInput::make('priority')
-                                    ->label('Priority')
-                                    ->disabled()
-                                    ->default($record->priority)
-                                    ->required(),
-                                TextInput::make('department')
-                                    ->label('department')
-                                    ->disabled()
-                                    ->default($record->department)
-                                    ->required(),
-                                TextInput::make('location')
-                                    ->label('Location')
-                                    ->disabled()
-                                    ->default($record->location)
-                                    ->required(),
+                                Card::make([
+                                    TextInput::make('id')
+                                        ->label('Ticket ID')
+                                        ->disabled()
+                                        ->default($record->id)
+                                        ->required(),
+                                    TextInput::make('name')
+                                        ->label('Sender')
+                                        ->disabled()
+                                        ->default($record->name)
+                                        ->required(),
+                                    TextInput::make('subject')
+                                        ->label('Concern')
+                                        ->disabled()
+                                        ->default($record->subject)
+                                        ->required(),
+                                    TextInput::make('status')
+                                        ->label('Status')
+                                        ->disabled()
+                                        ->default($record->status)
+                                        ->required(),
+                                    TextInput::make('priority')
+                                        ->label('Priority')
+                                        ->disabled()
+                                        ->default($record->priority)
+                                        ->required(),
+                                    TextInput::make('department')
+                                        ->label('department')
+                                        ->disabled()
+                                        ->default($record->department)
+                                        ->required(),
+                                    TextInput::make('location')
+                                        ->label('Location')
+                                        ->disabled()
+                                        ->default($record->location)
+                                        ->required(),
                                     TextInput::make('dept_role')
-                                    ->label('Dept Assigned')
-                                    ->disabled()
-                                    ->default($record->dept_role) 
-                                    ->required(),
-                                DatePicker::make('created_at')
-                                    ->label('Date Created')
-                                    ->disabled()
-                                    ->default($record->created_at)
-                                    ->required(),
-                            ]),
+                                        ->label('Dept Assigned')
+                                        ->disabled()
+                                        ->default($record->dept_role)
+                                        ->required(),
+                                    DatePicker::make('created_at')
+                                        ->label('Date Created')
+                                        ->disabled()
+                                        ->default($record->created_at)
+                                        ->required(),
+                                ]),
                             ];
-                    }),
+                        }),
                 ]),
             ]);
     }

@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+// namespace App\Http\Controllers;
 
-use App\Models\Ticket;
-use Illuminate\Http\Request;
+// // use App\Models\Ticket;
+// // use Illuminate\Http\Request;
 
-class TicketController extends Controller
-{
-    public function show($id)
-    {
-        $ticket = Ticket::findOrFail($id);
-        return response()->json($ticket);
-    }
-}
+// // class TicketController extends Controller
+// // {
+// //     public function show($id)
+// //     {
+// //         $ticket = Ticket::findOrFail($id);
+// //         return response()->json($ticket);
+// //     }
+// // }

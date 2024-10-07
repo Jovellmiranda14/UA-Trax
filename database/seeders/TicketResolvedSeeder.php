@@ -26,7 +26,7 @@ class TicketResolvedSeeder extends Seeder
         ];
 
         // Seed 10 resolved tickets
-        foreach (range(1, 25) as $index) {
+        foreach (range(1, 50) as $index) {
             // Randomly select a department for each ticket
             $department = $faker->randomElement(array_keys($departmentLocations));
 

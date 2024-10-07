@@ -22,6 +22,6 @@ Route::get('/', function () {
 // Route::get('/login', [Login::class, 'render'])
 //     ->name('login');
 
-  use App\Http\Controllers\TicketController;
+  // use App\Http\Controllers\TicketController;
 
-  Route::get('/tickets/{id}', [TicketController::class, 'show']);
+  // Route::get('/tickets/{id}', [TicketController::class, 'show']);

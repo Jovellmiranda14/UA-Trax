@@ -86,7 +86,7 @@ class TicketsAcceptedResource extends Resource
                         'info' => 'Low',
                         'warning' => 'Moderate',
                         'danger'  => 'Urgent',
-                        'danger'  => 'High',
+                        'primary'  => 'High',
                         'important' => 'Escalated',
                     ])
                     ->sortable(),

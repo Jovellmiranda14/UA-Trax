@@ -288,7 +288,7 @@ class TicketResource extends Resource
                         'info' => 'Low',
                         'warning' => 'Moderate',
                         'danger'  => 'Urgent',
-                        'danger'  => 'High',
+                        'primary'  => 'High',
                         'important' => 'Escalated',
                     ])
                     ->searchable(),
@@ -298,7 +298,7 @@ class TicketResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('department')
-                    ->label('Dept')
+                    ->label('Deptartment')
                     ->searchable(),
 
                     Tables\Columns\ImageColumn::make('attachment')

@@ -91,7 +91,7 @@ class TicketResolvedResource extends Resource
                         'info' => 'Low',
                         'warning' => 'Moderate',
                         'danger'  => 'Urgent',
-                        'danger'  => 'High',
+                        'primary'  => 'High', // Temporary color
                         'important' => 'Escalated',
                     ])
                     ->sortable()
