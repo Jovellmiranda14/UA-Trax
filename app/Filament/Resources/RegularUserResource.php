@@ -31,49 +31,49 @@ class RegularUserResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-        
+
             ->schema([
                 Card::make('User info')
-                ->description('Register a user in the system.')
-                ->schema([
-                    Grid::make(2)
+                    ->description('Register a user in the system.')
                     ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Full Name')
-                    ->required()
-                    ->maxLength(255),
+                        Grid::make(2)
+                            ->schema([
+                                Forms\Components\TextInput::make('name')
+                                    ->label('Full Name')
+                                    ->required()
+                                    ->maxLength(255),
 
-                Forms\Components\TextInput::make('email')
-                    ->label('Email')
-                    ->email()
-                    ->unique()
-                    ->required()
-                    ->maxLength(255),
+                                Forms\Components\TextInput::make('email')
+                                    ->label('Email')
+                                    ->email()
+                                    ->unique()
+                                    ->required()
+                                    ->maxLength(255),
 
-                Forms\Components\TextInput::make('password')
-                    ->label('Password')
-                    ->revealable(true)
-                    ->required()
-                    ->password()
-                    ->maxLength(255)
-                    ->dehydrateStateUsing(fn ($state) => bcrypt($state)), // Ensure password is hashed
+                                Forms\Components\TextInput::make('password')
+                                    ->label('Password')
+                                    ->revealable(true)
+                                    ->required()
+                                    ->password()
+                                    ->maxLength(255)
+                                    ->dehydrateStateUsing(fn($state) => bcrypt($state)), // Ensure password is hashed
 
-                 Forms\Components\Select::make('dept_role')
-                ->label('Department')
-                ->required()
-                ->options(User::Dept),
+                                Forms\Components\Select::make('dept_role')
+                                    ->label('Department')
+                                    ->required()
+                                    ->options(User::Dept),
 
-                Forms\Components\Select::make('position')
-                    ->label('Position')
-                    ->required()
-                    ->options(User::Pos),
+                                Forms\Components\Select::make('position')
+                                    ->label('Position')
+                                    ->required()
+                                    ->options(User::Pos),
 
-                Forms\Components\TextInput::make('role')
-                    ->label('Role')
-                    ->required()
-                    ->disabled()
-                    ->default('user'), // Default value for Regular User
-                    ])
+                                Forms\Components\TextInput::make('role')
+                                    ->label('Role')
+                                    ->required()
+                                    ->disabled()
+                                    ->default('user'), // Default value for Regular User
+                            ])
                     ])
             ]);
     }
@@ -81,9 +81,9 @@ class RegularUserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-         // Pagination 
-        // ->paginated([10, 25, 50, 100, 'all']) 
-        ->query(User::where('role', 'user'))
+            // Pagination 
+            // ->paginated([10, 25, 50, 100, 'all']) 
+            ->query(User::where('role', 'user'))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()

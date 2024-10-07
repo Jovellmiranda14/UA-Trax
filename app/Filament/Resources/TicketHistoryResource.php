@@ -27,19 +27,19 @@ use Filament\Forms\Components\DatePicker;
 // Admin = By Dept
 // User = Sarili 
 
-      
+
 class TicketHistoryResource extends Resource
 {
     protected static ?string $navigationLabel = 'Ticket history';
     protected static ?string $model = TicketHistory::class;
-    
+
     protected static ?int $navigationSort = 3;
     // protected static ?string $navigationIcon = 'heroicon-s-rectangle-stack';
     // protected static ?string $navigationGroup = 'Users Account';
-    
+
     // Disable Function
 
-    public static function canCreate(): Bool
+    public static function canCreate(): bool
     {
         return false;
     }
@@ -57,67 +57,67 @@ class TicketHistoryResource extends Resource
     {
         // $user = auth()->user();
         return $table
-        // ->query(Ticket::query()->where('name', $user->name))
-         // Pagination 
-        // ->paginated([10, 25, 50, 100, 'all']) 
-        ->columns([
-            TextColumn::make('id')
-                ->label('Ticket ID')
-                ->sortable()
-                ->searchable(),
-            TextColumn::make('name')
-                ->label('Sender')
-                ->sortable()
-                ->searchable(),
-            TextColumn::make('subject')
-                ->label('Concern')
-                ->sortable()
-                ->searchable(),
-            BadgeColumn::make('status')
-                ->label('Status')
-                ->colors([
-                    'success' => 'Resolved',   
-                    'primary' => 'Open',      
-                    'warning' => 'In progress', 
-                    'black' => 'On-hold', 
-                    'grey' => 'Close',        
-                ])
-                ->searchable(),
+            // ->query(Ticket::query()->where('name', $user->name))
+            // Pagination 
+            // ->paginated([10, 25, 50, 100, 'all']) 
+            ->columns([
+                TextColumn::make('id')
+                    ->label('Ticket ID')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('name')
+                    ->label('Sender')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('subject')
+                    ->label('Concern')
+                    ->sortable()
+                    ->searchable(),
+                BadgeColumn::make('status')
+                    ->label('Status')
+                    ->colors([
+                        'success' => 'Resolved',
+                        'primary' => 'Open',
+                        'warning' => 'In progress',
+                        'black' => 'On-hold',
+                        'grey' => 'Close',
+                    ])
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('priority')
-                ->label('Priority')
-                ->sortable()
-                ->searchable()
-                ->colors([
-                    'info' => 'Low',
-                    'warning' => 'Moderate',
-                    'danger'  => 'Urgent',
-                    'primary'  => 'High',
-                    'important' => 'Escalated',
-                ]),
-            TextColumn::make('location')
-                ->label('Location')
-                ->sortable()
-                ->searchable(),
-            TextColumn::make('department')
-                ->label('Department')
-                ->sortable()
-                ->searchable(),
-            TextColumn::make('created_at')
-                ->label('Date Created')
-                ->date()
-                ->sortable(),
-        ])
-                //
-            
+                    ->label('Priority')
+                    ->sortable()
+                    ->searchable()
+                    ->colors([
+                        'info' => 'Low',
+                        'warning' => 'Moderate',
+                        'danger' => 'Urgent',
+                        'primary' => 'High',
+                        'important' => 'Escalated',
+                    ]),
+                TextColumn::make('location')
+                    ->label('Location')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('department')
+                    ->label('Department')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('created_at')
+                    ->label('Date Created')
+                    ->date()
+                    ->sortable(),
+            ])
+            //
+
             ->filters([
                 SelectFilter::make('status')
-                ->options([
+                    ->options([
                         'Accepted' => 'Accepted',
                         'Open' => 'Open Tickets',
                         'Closed' => 'Closed Tickets',
-                        'In progress' => 'In Progress Tickets',             
-                    ])  
-                ])
+                        'In progress' => 'In Progress Tickets',
+                    ])
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

@@ -50,10 +50,10 @@ class TicketResolvedResource extends Resource
 
     public static function table(Table $table): Table
     {
-        
-            return $table
-             // Pagination 
-        // ->paginated([10, 25, 50, 100, 'all']) 
+
+        return $table
+            // Pagination 
+            // ->paginated([10, 25, 50, 100, 'all']) 
             // ->query(function (Builder $query) {
             //     // Filter to show only tickets that are accepted
             //     $query->whereNotNull('assigned');
@@ -64,7 +64,7 @@ class TicketResolvedResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                    Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')
                     ->label('Sender')
                     ->sortable()
                     ->searchable(),
@@ -73,32 +73,32 @@ class TicketResolvedResource extends Resource
                     ->label('Concern')
                     ->sortable()
                     ->searchable(),
-                    
-                    Tables\Columns\TextColumn::make('status')
+
+                Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->sortable()
                     ->colors([
-                        'success' => 'Resolved',   
-                        'primary' => 'Open',      
-                        'warning' => 'In progress', 
-                        'black' => 'On-hold', 
-                        'grey' => 'Close',        
+                        'success' => 'Resolved',
+                        'primary' => 'Open',
+                        'warning' => 'In progress',
+                        'black' => 'On-hold',
+                        'grey' => 'Close',
                     ])
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('priority')
+                Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
                     ->colors([
                         'info' => 'Low',
                         'warning' => 'Moderate',
-                        'danger'  => 'Urgent',
-                        'primary'  => 'High', // Temporary color
+                        'danger' => 'Urgent',
+                        'primary' => 'High', // Temporary color
                         'important' => 'Escalated',
                     ])
                     ->sortable()
                     ->searchable(),
-                    
-               
-               
+
+
+
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
                     ->sortable()
@@ -112,78 +112,78 @@ class TicketResolvedResource extends Resource
                     ->label('Assigned To')
                     ->sortable()
                     ->searchable(),
-    
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created On')
                     ->date()
                     ->sortable()
                     ->searchable(),
-    
-                    // Unfinished
+
+                // Unfinished
                 Tables\Columns\TextColumn::make('accepted_at')
                     ->label('Accepted On')
                     ->date()
                     ->sortable()
                     ->searchable(),
             ])
-            
-                ->filters([
-                    //
+
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\ActionGroup::make([
+                    ViewAction::make('View')
+                        ->modalHeading('Ticket Details')
+                        ->modalSubheading('Full details of the selected ticket.')
+                        ->form([
+                            Card::make([
+                                TextInput::make('id')
+                                    ->label('Ticket ID')
+                                    ->disabled()
+                                    ->required(),
+                                TextInput::make('name')
+                                    ->label('Sender')
+                                    ->disabled()
+                                    ->required(),
+                                TextInput::make('subject')
+                                    ->label('Concern')
+                                    ->disabled()
+                                    ->required(),
+                                TextInput::make('status')
+                                    ->label('Status')
+                                    ->disabled()
+                                    ->required(),
+                                TextInput::make('priority')
+                                    ->label('Priority')
+                                    ->disabled()
+                                    ->required(),
+                                TextInput::make('location')
+                                    ->label('Location')
+                                    ->disabled()
+                                    ->required(),
+                                TextInput::make('department')
+                                    ->label('Department')
+                                    ->disabled()
+                                    ->required(),
+                                // TextInput::make('dept_role')
+                                //     ->label('Dept')
+                                //     ->disabled()
+                                //     ->required(),
+                                DatePicker::make('created_at')
+                                    ->label('Date Created')
+                                    ->disabled()
+                                    ->required(),
+                            ]),
+                        ]),
+                    Tables\Actions\Action::make('comment')
+                        ->label('Comment')
+                        ->icon('heroicon-o-rectangle-stack'),
+                    // Tables\Actions\DeleteAction::make(),
                 ])
-                ->actions([  
-                    Tables\Actions\ActionGroup::make([
-                            ViewAction::make('View')
-                                ->modalHeading('Ticket Details')
-                                ->modalSubheading('Full details of the selected ticket.')
-                                ->form([
-                                    Card::make([
-                                        TextInput::make('id')
-                                            ->label('Ticket ID')
-                                            ->disabled()
-                                            ->required(),
-                                        TextInput::make('name')
-                                            ->label('Sender')
-                                            ->disabled()
-                                            ->required(),
-                                        TextInput::make('subject')
-                                            ->label('Concern')
-                                            ->disabled()
-                                            ->required(),
-                                        TextInput::make('status')
-                                            ->label('Status')
-                                            ->disabled()
-                                            ->required(),
-                                        TextInput::make('priority')
-                                            ->label('Priority')
-                                            ->disabled()
-                                            ->required(),
-                                        TextInput::make('location')
-                                            ->label('Location')
-                                            ->disabled()
-                                            ->required(),
-                                        TextInput::make('department')
-                                            ->label('Department')
-                                            ->disabled()
-                                            ->required(),
-                                        // TextInput::make('dept_role')
-                                        //     ->label('Dept')
-                                        //     ->disabled()
-                                        //     ->required(),
-                                        DatePicker::make('created_at')
-                                            ->label('Date Created')
-                                            ->disabled()
-                                            ->required(),
-                                    ]),
-                                ]),
-                            Tables\Actions\Action::make('comment')
-                                ->label('Comment')
-                                ->icon('heroicon-o-rectangle-stack'),
-                            // Tables\Actions\DeleteAction::make(),
-                        ])
-                            ])
-                ->bulkActions([
-                ]);
-        }
+            ])
+            ->bulkActions([
+            ]);
+    }
     public static function getRelations(): array
     {
         return [

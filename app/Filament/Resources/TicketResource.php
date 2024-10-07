@@ -40,7 +40,7 @@ class TicketResource extends Resource
     protected static ?string $label = 'Open tickets';
     //protected static ?string $navigationGroup = 'Tickets';
     protected static ?int $navigationSort = 1;
-    
+
     // Disable Function
     // public static function canCreate(): Bool
     // {
@@ -49,9 +49,9 @@ class TicketResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-        
+
             ->schema([
-                
+
                 // Radio::make('concern_type')
                 // ->label('My concern is about:')
                 // ->options([
@@ -63,232 +63,232 @@ class TicketResource extends Resource
                 // ->default(function () {
                 //     // Check the user's role and return the appropriate default value
                 //     $user = Auth::user();
-                    
+
                 //     if ($user->isEquipmentSuperAdmin()) {
                 //         return 'Facility'; // Automatically set to 'Facility' for Equipment Admin or User
                 //     }
-                    
+
                 //     // Default to null or another value if needed
                 //     return null;
                 // }), 
-                
-                
+
+
 
 
                 Radio::make('concern_type')
-                ->label('My concern is about:')
-                
-                ->options(function () {
-                    $user = auth()->user();
-                    // Restrict options based on user role
-                    // || $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian()
+                    ->label('My concern is about:')
 
-                    if ($user->isEquipmentSuperAdmin() ) {
-                        return [
-                            'Facility' => 'Facility',
-                        ];
-                    }
-                    if ($user->isFacilitySuperAdmin() ) {
+                    ->options(function () {
+                        $user = auth()->user();
+                        // Restrict options based on user role
+                        // || $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian()
+            
+                        if ($user->isEquipmentSuperAdmin()) {
+                            return [
+                                'Facility' => 'Facility',
+                            ];
+                        }
+                        if ($user->isFacilitySuperAdmin()) {
+                            return [
+                                'Laboratory and Equipment' => 'Laboratory and Equipment',
+                            ];
+                        }
                         return [
                             'Laboratory and Equipment' => 'Laboratory and Equipment',
+                            'Facility' => 'Facility',
                         ];
-                    }
-                    return [
-                        'Laboratory and Equipment' => 'Laboratory and Equipment',
-                        'Facility' => 'Facility',
-                    ];
-                })
-                ->reactive()
-                ->required()
-                ->default(function () {
-                    $user = Auth::user();
-                    return $user->isEquipmentSuperAdmin() ? 'Facility' : null;
-                }),
-            
+                    })
+                    ->reactive()
+                    ->required()
+                    ->default(function () {
+                        $user = Auth::user();
+                        return $user->isEquipmentSuperAdmin() ? 'Facility' : null;
+                    }),
+
                 Card::make('')
-                ->description('')
-                ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
-                ->extraAttributes([
-                    'style' => 'max-height: 40vh; max-width: 60vw; overflow: auto; position: -webkit-sticky; position: sticky; top: 10px;' // Sticky behavior
-                ])
-                ->schema([
-              
-                
-            // Ticket Details Card
-            Card::make('Ticket details') 
-                ->description('Enter specific issues you have trouble with.') 
-                ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
-                ->schema([
-                    Grid::make(3)
-                    
-                        ->schema([
-                            TextInput::make('name')
-                                ->label('Sender')
-                                ->default(fn () => auth()->user()->name)
-                                ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
-                                
-                            TextInput::make('subject')
-                                ->label('Concern')
-                                ->required()
-                                
-                                ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
+                    ->description('')
+                    ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
+                    ->extraAttributes([
+                        'style' => 'max-height: 40vh; max-width: 60vw; overflow: auto; position: -webkit-sticky; position: sticky; top: 10px;' // Sticky behavior
+                    ])
+                    ->schema([
 
-                            // TextInput::make('property_no')
-                                // ->label('Property No.')
-                                // ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
 
-                            Select::make('type_of_issue')
-                                ->label('Type of Issue')
-                                ->options([
-                                    'repair' => 'Repair',
-                                    'air_conditioning' => 'Air Conditioning',
-                                    'plumbing' => 'Plumbing',
-                                    'lighting' => 'Lighting',
-                                    'electricity' => 'Electricity',
-                                ])
-                                ->required()
-                                ->reactive()
-                                
-                                ->visible(fn ($get) => $get('concern_type') === 'Facility'),
-                                
-                                Select::make('type_of_issue')
-                                ->label('Type of Issue')
-                                ->options([
-                                    'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
-                                    'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
-                                    'Other_Devices' => 'Other Devices (e.g., Printer, Projector, and TV)',
-                                ])
-                                ->required()
-                                
-                                ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),   
-                        ]),
+                        // Ticket Details Card
+                        Card::make('Ticket details')
+                            ->description('Enter specific issues you have trouble with.')
+                            ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
+                            ->schema([
+                                Grid::make(3)
 
-                    Grid::make(2)
-                    
-                        ->schema([  
-                            Textarea::make('description')
-                                ->label('Description')
-                                ->required()
-                                
-                                ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
-                            
-                            FileUpload::make('attachment')
-                                ->label('Upload a file')
-                                ->acceptedFileTypes(['image/jpeg', 'image/png'])
-                                ->directory('attachments')
-                                ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
-                        ]),
-                ]),
+                                    ->schema([
+                                        TextInput::make('name')
+                                            ->label('Sender')
+                                            ->default(fn() => auth()->user()->name)
+                                            ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
 
-            // Place of Issues Card
-            Card::make('Place of issues')
-                ->description('Select where the equipment is currently located.')
+                                        TextInput::make('subject')
+                                            ->label('Concern')
+                                            ->required()
 
-                ->visible(fn ($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
-                ->schema([
-                    Grid::make(2)
-                    
-                        ->schema([
-                            Select::make('department')
-                                ->label('Department')
-                                ->options([
-                                    'SAS' => 'SAS',
-                                    'CEA' => 'CEA',
-                                    'CONP' => 'CONP',
-                                    'CITCLS' => 'CITCLS',
-                                    'RSO' => 'RSO',
-                                    'OFFICE' => 'OFFICE',
-                                ])
-                                ->reactive()
-                                
-                                ->required(),
-                            
-                                Select::make('location')
-                                ->label('Location')
-                                ->options(fn ($get) => collect([
-                                    'SAS' => ['SAS Building', 'SAS Lab'],
-                                    'CEA' => ['CEA Hall', 'CEA Workshop'],
-                                    'CONP' => ['CONP Room 1', 'CONP Room 2'],
-                                    'CITCLS' => ['CITCLS Area A', 'CITCLS Area B'],
-                                    // mapWithKeys
-                                ][$get('department')] ?? [])->mapWithKeys(fn($value) => [$value => $value]))
-                                ->required()
-                                
-                                ->reactive()
-                                // ->afterStateUpdated(function ($state, $set) {
-                                //     if (is_array($state)) {
-                                //         $locationString = implode(', ', $state);
-                                //         $set('location', $locationString);
-                                //     }
-                                // })
-                                ->visible(fn ($get) => !in_array($get('department'), ['RSO', 'OFFICE'])),
-                            
-                            TextInput::make('location')
-                                ->label('Location')
-                                ->required()
-                                
-                                ->default('N/A')
-                                ->visible(fn ($get) => in_array($get('department'), ['RSO', 'OFFICE'])),
-                                // TextInput::make('created_at')
-                                // ->label('Date Created')
-                                // ->default(Date::now()->format('Y-m-d')) // Set default value to current date
-                                // ->hidden(),
-                            
-                            // TextInput::make('property_no')
-                                // ->label('Property No.')
-                                
-                                // ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
-                        ]),
-                ])
-                  
-            ]),
-                
-        ]) ;
-        
+                                            ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
+
+                                        // TextInput::make('property_no')
+                                        // ->label('Property No.')
+                                        // ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
+
+                                        Select::make('type_of_issue')
+                                            ->label('Type of Issue')
+                                            ->options([
+                                                'repair' => 'Repair',
+                                                'air_conditioning' => 'Air Conditioning',
+                                                'plumbing' => 'Plumbing',
+                                                'lighting' => 'Lighting',
+                                                'electricity' => 'Electricity',
+                                            ])
+                                            ->required()
+                                            ->reactive()
+
+                                            ->visible(fn($get) => $get('concern_type') === 'Facility'),
+
+                                        Select::make('type_of_issue')
+                                            ->label('Type of Issue')
+                                            ->options([
+                                                'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
+                                                'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
+                                                'Other_Devices' => 'Other Devices (e.g., Printer, Projector, and TV)',
+                                            ])
+                                            ->required()
+
+                                            ->visible(fn($get) => $get('concern_type') === 'Laboratory and Equipment'),
+                                    ]),
+
+                                Grid::make(2)
+
+                                    ->schema([
+                                        Textarea::make('description')
+                                            ->label('Description')
+                                            ->required()
+
+                                            ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
+
+                                        FileUpload::make('attachment')
+                                            ->label('Upload a file')
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png'])
+                                            ->directory('attachments')
+                                            ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
+                                    ]),
+                            ]),
+
+                        // Place of Issues Card
+                        Card::make('Place of issues')
+                            ->description('Select where the equipment is currently located.')
+
+                            ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
+                            ->schema([
+                                Grid::make(2)
+
+                                    ->schema([
+                                        Select::make('department')
+                                            ->label('Department')
+                                            ->options([
+                                                'SAS' => 'SAS',
+                                                'CEA' => 'CEA',
+                                                'CONP' => 'CONP',
+                                                'CITCLS' => 'CITCLS',
+                                                'RSO' => 'RSO',
+                                                'OFFICE' => 'OFFICE',
+                                            ])
+                                            ->reactive()
+
+                                            ->required(),
+
+                                        Select::make('location')
+                                            ->label('Location')
+                                            ->options(fn($get) => collect([
+                                                'SAS' => ['SAS Building', 'SAS Lab'],
+                                                'CEA' => ['CEA Hall', 'CEA Workshop'],
+                                                'CONP' => ['CONP Room 1', 'CONP Room 2'],
+                                                'CITCLS' => ['CITCLS Area A', 'CITCLS Area B'],
+                                            // mapWithKeys
+                                            ][$get('department')] ?? [])->mapWithKeys(fn($value) => [$value => $value]))
+                                            ->required()
+
+                                            ->reactive()
+                                            // ->afterStateUpdated(function ($state, $set) {
+                                            //     if (is_array($state)) {
+                                            //         $locationString = implode(', ', $state);
+                                            //         $set('location', $locationString);
+                                            //     }
+                                            // })
+                                            ->visible(fn($get) => !in_array($get('department'), ['RSO', 'OFFICE'])),
+
+                                        TextInput::make('location')
+                                            ->label('Location')
+                                            ->required()
+
+                                            ->default('N/A')
+                                            ->visible(fn($get) => in_array($get('department'), ['RSO', 'OFFICE'])),
+                                        // TextInput::make('created_at')
+                                        // ->label('Date Created')
+                                        // ->default(Date::now()->format('Y-m-d')) // Set default value to current date
+                                        // ->hidden(),
+
+                                        // TextInput::make('property_no')
+                                        // ->label('Property No.')
+
+                                        // ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
+                                    ]),
+                            ])
+
+                    ]),
+
+            ]);
+
     }
-    
-    
+
+
 
     public static function table(Table $table): Table
     {
         $user = auth()->user();
-       
+
         return $table
-        // Pagination 
-        // ->paginated([10, 25, 50, 100, 'all']) 
-        ->query(Ticket::query()->where('name', $user->name))
+            // Pagination 
+            // ->paginated([10, 25, 50, 100, 'all']) 
+            ->query(Ticket::query()->where('name', $user->name))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Ticket ID')
                     ->sortable()
                     ->searchable(),
-        
+
                 Tables\Columns\TextColumn::make('concern_type')
                     ->label('Category')
                     ->sortable()
                     ->searchable(),
 
-                    Tables\Columns\TextColumn::make('subject')
+                Tables\Columns\TextColumn::make('subject')
                     ->label('Concern')
                     ->searchable(),
 
-                    Tables\Columns\BadgeColumn::make('status')
+                Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
                     ->colors([
-                        'success' => 'Resolved',   
-                        'primary' => 'Open',      
-                        'warning' => 'In progress', 
-                        'black' => 'On-hold', 
-                        'grey' => 'Close',        
+                        'success' => 'Resolved',
+                        'primary' => 'Open',
+                        'warning' => 'In progress',
+                        'black' => 'On-hold',
+                        'grey' => 'Close',
                     ])
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('priority')
+                Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
                     ->colors([
                         'info' => 'Low',
                         'warning' => 'Moderate',
-                        'danger'  => 'Urgent',
-                        'primary'  => 'High',
+                        'danger' => 'Urgent',
+                        'primary' => 'High',
                         'important' => 'Escalated',
                     ])
                     ->searchable(),
@@ -301,7 +301,7 @@ class TicketResource extends Resource
                     ->label('Deptartment')
                     ->searchable(),
 
-                    Tables\Columns\ImageColumn::make('attachment')
+                Tables\Columns\ImageColumn::make('attachment')
                     ->label('Image')
                     ->size(50)
                     ->circular()
@@ -312,10 +312,10 @@ class TicketResource extends Resource
                     })
                     ->openUrlInNewTab(),
 
-                
-                    Tables\Columns\TextColumn::make('created_at')
+
+                Tables\Columns\TextColumn::make('created_at')
                     ->label('Date Created')
-                    ->formatStateUsing(fn () => Date::now()->format('Y-m-d H:i:s')) // Format date and time
+                    ->formatStateUsing(fn() => Date::now()->format('Y-m-d H:i:s')) // Format date and time
                     ->date(),
 
                 // Tables\Columns\TextColumn::make('name')
@@ -323,23 +323,23 @@ class TicketResource extends Resource
                 //     ->sortable()
                 //     ->searchable(),
 
-                    // Tables\Columns\TextColumn::make('type_of_issue')
-                    // ->label('Type of Issue')
-                    // ->sortable()
-                    // ->searchable(),
+                // Tables\Columns\TextColumn::make('type_of_issue')
+                // ->label('Type of Issue')
+                // ->sortable()
+                // ->searchable(),
 
 
-                    // Tables\Columns\TextColumn::make('attachment')
-                    // ->label('Attachment')
-                    // ->searchable()
-                    // ->toggleable(isToggledHiddenByDefault: true),
-                    // ->formatStateUsing(fn ($state) => $state ? '<img src="' . $state . '" alt="Attachment" style="max-width: 100px; max-height: 100px;" />' : 'No Attachment')
-                    // ->html(), // Use HTML formatting to render the image
-                
+                // Tables\Columns\TextColumn::make('attachment')
+                // ->label('Attachment')
+                // ->searchable()
+                // ->toggleable(isToggledHiddenByDefault: true),
+                // ->formatStateUsing(fn ($state) => $state ? '<img src="' . $state . '" alt="Attachment" style="max-width: 100px; max-height: 100px;" />' : 'No Attachment')
+                // ->html(), // Use HTML formatting to render the image
 
 
-               
-                    
+
+
+
                 // Tables\Columns\TextColumn::make('updated_at')
                 // ->label('Date Updated')
                 // ->date()
@@ -348,7 +348,7 @@ class TicketResource extends Resource
 
             ])
             ->filters([
-                
+
                 // Type of issue filter
                 SelectFilter::make('concern_type')
                     ->label('Type of issue')
@@ -358,15 +358,15 @@ class TicketResource extends Resource
                     ]),
             ])
             ->actions([
-     //
+                //
             ]);
-            // ->bulkActions([
-            //     Tables\Actions\BulkActionGroup::make([
-            //         Tables\Actions\DeleteBulkAction::make(),
-                    
-            //     ]),
-                
-        
+        // ->bulkActions([
+        //     Tables\Actions\BulkActionGroup::make([
+        //         Tables\Actions\DeleteBulkAction::make(),
+
+        //     ]),
+
+
     }
 
     public static function getRelations(): array
