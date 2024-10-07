@@ -25,7 +25,7 @@ class TicketObserver
 
         // Get the recipient user
         $recipient = auth()->user();
-        
+
         // Get the admins based on category
         $admins = User::where(function ($query) use ($category) {
             if ($category === 'Laboratory and Equipment') {
@@ -33,7 +33,7 @@ class TicketObserver
                     User::EQUIPMENT_ADMIN_Omiss,
                     User::EQUIPMENT_ADMIN_labcustodian,
                     User::EquipmentSUPER_ADMIN,
-                ]); 
+                ]);
             } elseif ($category === 'Facility') {
                 $query->whereIn('role', [
                     User::FACILITY_ADMIN,
@@ -48,34 +48,26 @@ class TicketObserver
             'message' => $ticket->subject,
             'category' => $ticket->concern_type,
         ]);
-        $notification = new TicketCreated($ticket);
 
-        $recipient->notify($notification);
+        // Notify the recipient
+        $recipient->notify(new TicketCreated($ticket));
         Notification::make()
-        ->title('Regular: Ticket Created:')
-        ->body(
-            // 'Admin: ' . $admin->name . "\n" .  // Admin name
-            // 'Category: ' . $ticket->concern_type . "\n" .
-            'Created a ticket: ' . $ticket->description
-        ) 
-        ->sendToDatabase($recipient, true); 
-        
-        // Send notification to admins
+            ->title('Regular: Ticket Created:')
+            ->body('Created a ticket: ' . $ticket->description)
+            ->sendToDatabase($recipient, true);
+
+        // Send notifications to the admins
         foreach ($admins as $admin) {
             $admin->notify(new TicketCreated($ticket));
             Notification::make()
-            ->title('Admin: Ticket Created:')
-            ->body(
-                'Created a ticket: ' . $ticket->description
-            )
-  
-            ->sendToDatabase($admin, true); 
+                ->title('Admin: Ticket Created:')
+                ->body('Created a ticket: ' . $ticket->description)
+                ->sendToDatabase($admin, true);
         }
-        
+
         // Dispatch the event after sending notifications
         event(new DatabaseNotificationsSent($recipient));
     }
-
     /**
      * Handle the Ticket "updated" event.
      *

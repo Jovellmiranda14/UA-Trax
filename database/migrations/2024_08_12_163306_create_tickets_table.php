@@ -32,7 +32,7 @@ return new class extends Migration
                 'Other_Devices',
             ]);
    
-            $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed'])->default('Open');
+            $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed', 'On-Hold'])->default('Open');
             $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High','Escalated'])->default('Moderate') ;
             $table->string('location');
             $table->enum('dept_role', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
