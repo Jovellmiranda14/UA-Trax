@@ -29,6 +29,15 @@ use Filament\Forms\Components\DatePicker;
 use App\Filament\Resources\UserResource\RelationManagers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+use Filament\Support\Facades\FilamentColor;
+
+class UTicketColors
+{
+    const Gray = '#808080';
+    const Black = '#000000';
+}
+
 class TicketQueueResource extends Resource
 {
     protected static ?string $model = TicketQueue::class;
@@ -95,23 +104,61 @@ class TicketQueueResource extends Resource
                     ->searchable(),
                 BadgeColumn::make('status')
                     ->label('Status')
-                    ->colors([
-                        'success' => 'Resolved',
-                        'primary' => 'Open',
-                        'warning' => 'In progress',
-                        'black' => 'On-hold',
-                        'grey' => 'Close',
-                    ])
+                    ->getStateUsing(function ($record) {
+                        switch ($record->status) {
+                            case 'open':
+                                return 'Open';
+                            case 'in progress':
+                                return 'In progress';
+                            case 'on-hold':
+                                return 'On-hold';
+                            case 'resolved':
+                                return 'Resolved';
+                            case 'close':
+                                return 'Close';
+                            default:
+                                return $record->status;
+                        }
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'Open' => Color::Blue,
+                            'In progress' => Color::Yellow,
+                            'On-hold' => UTicketColors::Black,
+                            'Resolved' => Color::Green,
+                            'Close' => UTicketColors::Gray,
+                            default => null,
+                        };
+                    })
                     ->searchable(),
-                TextColumn::make('priority')
+                BadgeColumn::make('priority')
                     ->label('Priority')
-                    ->colors([
-                        'info' => 'Low',
-                        'warning' => 'Moderate',
-                        'danger' => 'Urgent',
-                        'primary' => 'High',
-                        'important' => 'Escalated',
-                    ])
+                    ->getStateUsing(function ($record) {
+                        switch ($record->priority) {
+                            case 'urgent':
+                                return 'Urgent';
+                            case 'high':
+                                return 'High';
+                            case 'moderate':
+                                return 'Moderate';
+                            case 'low':
+                                return 'Low';
+                            case 'escalated':
+                                return 'Escalated';
+                            default:
+                                return $record->priority;
+                        }
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'Urgent' => Color::Red,
+                            'High' => Color::Orange,
+                            'Moderate' => Color::Yellow,
+                            'Low' => Color::Blue,
+                            'Escalated' => Color::Purple,
+                            default => null,
+                        };
+                    })
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('location')
@@ -144,7 +191,7 @@ class TicketQueueResource extends Resource
 
                             // Move the ticket to the "Tickets Accepted" list with additional modifications
                             TicketsAccepted::create([
-                                'id' => $record->id, // Assuming you want to keep the ticket ID
+                                'id' => $record->id, // Keep the ticket ID
                                 'concern_type' => $record->concern_type,
                                 'name' => $record->name,
                                 'subject' => $record->subject,
@@ -155,7 +202,7 @@ class TicketQueueResource extends Resource
                                 'status' => 'In progress', // Setting status to 'In progress'
                                 'accepted_at' => now(),
                                 'created_at' => $record->created_at,
-                                'assigned' => auth()->user()->name, // Adding timestamp for when the ticket was accepted
+                                'assigned' => auth()->user()->name, // Timestamp when the ticket was accepted
                                 // Add other fields you want to copy from the original record
                             ]);
 
@@ -163,7 +210,6 @@ class TicketQueueResource extends Resource
                             $record->delete();
                         } catch (\Exception $e) {
                             // Handle the exception if something goes wrong
-                            // For example, log the error or notify the user
                             \Log::error('Error grabbing ticket: ' . $e->getMessage());
                         }
                     })
@@ -179,55 +225,64 @@ class TicketQueueResource extends Resource
                         ->color('success')
                         ->modalHeading('Ticket Details')
                         ->modalSubheading('Full details of the selected ticket.')
+                        ->extraAttributes([
+                            'class' => 'sticky-modal-header', // Add sticky header class
+                        ])
                         ->form(function ($record) {
                             return [
-                                Card::make([
-                                    TextInput::make('id')
-                                        ->label('Ticket ID')
-                                        ->disabled()
-                                        ->default($record->id)
-                                        ->required(),
-                                    TextInput::make('name')
-                                        ->label('Sender')
-                                        ->disabled()
-                                        ->default($record->name)
-                                        ->required(),
-                                    TextInput::make('subject')
-                                        ->label('Concern')
-                                        ->disabled()
-                                        ->default($record->subject)
-                                        ->required(),
-                                    TextInput::make('status')
-                                        ->label('Status')
-                                        ->disabled()
-                                        ->default($record->status)
-                                        ->required(),
-                                    TextInput::make('priority')
-                                        ->label('Priority')
-                                        ->disabled()
-                                        ->default($record->priority)
-                                        ->required(),
-                                    TextInput::make('department')
-                                        ->label('department')
-                                        ->disabled()
-                                        ->default($record->department)
-                                        ->required(),
-                                    TextInput::make('location')
-                                        ->label('Location')
-                                        ->disabled()
-                                        ->default($record->location)
-                                        ->required(),
-                                    TextInput::make('dept_role')
-                                        ->label('Dept Assigned')
-                                        ->disabled()
-                                        ->default($record->dept_role)
-                                        ->required(),
-                                    DatePicker::make('created_at')
-                                        ->label('Date Created')
-                                        ->disabled()
-                                        ->default($record->created_at)
-                                        ->required(),
-                                ]),
+                                Card::make()
+                                    ->extraAttributes([
+                                        'style' => 'max-height: 60vh; overflow-y: auto;', // Make the content scrollable
+                                    ])
+                                    ->schema([
+
+                                        // Ticket ID, Sender, Concern, etc.
+                                        TextInput::make('id')
+                                            ->label('Ticket ID')
+                                            ->disabled()
+                                            ->default($record->id)
+                                            ->required(),
+                                        TextInput::make('name')
+                                            ->label('Sender')
+                                            ->disabled()
+                                            ->default($record->name)
+                                            ->required(),
+                                        TextInput::make('subject')
+                                            ->label('Concern')
+                                            ->disabled()
+                                            ->default($record->subject)
+                                            ->required(),
+                                        TextInput::make('status')
+                                            ->label('Status')
+                                            ->disabled()
+                                            ->default($record->status)
+                                            ->required(),
+                                        TextInput::make('priority')
+                                            ->label('Priority')
+                                            ->disabled()
+                                            ->default($record->priority)
+                                            ->required(),
+                                        TextInput::make('department')
+                                            ->label('Department')
+                                            ->disabled()
+                                            ->default($record->department)
+                                            ->required(),
+                                        TextInput::make('location')
+                                            ->label('Location')
+                                            ->disabled()
+                                            ->default($record->location)
+                                            ->required(),
+                                        TextInput::make('dept_role')
+                                            ->label('Dept Assigned')
+                                            ->disabled()
+                                            ->default($record->dept_role)
+                                            ->required(),
+                                        DatePicker::make('created_at')
+                                            ->label('Date Created')
+                                            ->disabled()
+                                            ->default($record->created_at)
+                                            ->required(),
+                                    ]),
                             ];
                         }),
                 ]),

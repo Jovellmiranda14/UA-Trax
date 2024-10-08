@@ -23,7 +23,18 @@ use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 
+use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 
+use Filament\Forms\Components\Grid;
+
+
+
+class IssuePalette
+{
+    const Gray = '#808080';
+    const Black = '#000000';
+}
 
 
 class TicketsAcceptedResource extends Resource
@@ -66,10 +77,10 @@ class TicketsAcceptedResource extends Resource
     public static function table(Table $table): Table
     {
         // $user = auth()->user();
-       
+
         return $table
-         // Pagination 
-        // ->paginated([10, 25, 50, 100, 'all']) 
+            // Pagination 
+            // ->paginated([10, 25, 50, 100, 'all']) 
             // ->query(Ticket::query()->where('role', $user->role))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
@@ -80,28 +91,67 @@ class TicketsAcceptedResource extends Resource
                     ->label('Concern')
                     ->sortable()
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('priority')
+                Tables\Columns\BadgeColumn::make('priority')
                     ->label('Priority')
-                    ->colors([
-                        'info' => 'Low',
-                        'warning' => 'Moderate',
-                        'danger'  => 'Urgent',
-                        'primary'  => 'High',
-                        'important' => 'Escalated',
-                    ])
+                    ->getStateUsing(function ($record) {
+                        switch ($record->priority) {
+                            case 'urgent':
+                                return 'Urgent';
+                            case 'high':
+                                return 'High';
+                            case 'moderate':
+                                return 'Moderate';
+                            case 'low':
+                                return 'Low';
+                            case 'escalated':
+                                return 'Escalated';
+                            default:
+                                return $record->priority;
+                        }
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'Urgent' => Color::Red,
+                            'High' => Color::Orange,
+                            'Moderate' => Color::Yellow,
+                            'Low' => Color::Blue,
+                            'Escalated' => Color::Purple,
+                            default => null,
+                        };
+                    })
+                    ->searchable()
                     ->sortable(),
-                    
+
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
                     ->sortable()
                     ->searchable()
-                    ->colors([
-                        'success' => 'Resolved',   
-                        'primary' => 'Open',      
-                        'warning' => 'In progress', 
-                        'black' => 'On-hold', 
-                        'grey' => 'Close',        
-                    ]), 
+                    ->getStateUsing(function ($record) {
+                        switch ($record->status) {
+                            case 'open':
+                                return 'Open';
+                            case 'in progress':
+                                return 'In progress';
+                            case 'on-hold':
+                                return 'On-hold';
+                            case 'resolved':
+                                return 'Resolved';
+                            case 'close':
+                                return 'Close';
+                            default:
+                                return $record->status;
+                        }
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'Open' => Color::Blue,
+                            'In progress' => Color::Yellow,
+                            'On-hold' => IssuePalette::Black,
+                            'Resolved' => Color::Green,
+                            'Close' => IssuePalette::Gray,
+                            default => null,
+                        };
+                    }),
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
                     ->sortable()
@@ -133,7 +183,7 @@ class TicketsAcceptedResource extends Resource
                         'Open' => 'Open Tickets',
                         'Accepted' => 'Accepted',
                     ]),
-                
+
                 // Type of issue filter
                 SelectFilter::make('concern_type')
                     ->label('Type of issue')
@@ -141,7 +191,7 @@ class TicketsAcceptedResource extends Resource
                         'Facility' => 'Facility',
                         'Laboratory and Equipment' => 'Laboratory and Equipment',
                     ]),
-            
+
                 // Department filter with checkboxes
                 MultiSelectFilter::make('department')
                     ->label('Department')
@@ -153,67 +203,112 @@ class TicketsAcceptedResource extends Resource
                         'Other offices' => 'Other offices',
                     ]),
             ])
-            
-            ->actions([  
+
+            ->actions([
                 Tables\Actions\ActionGroup::make([
-                        ViewAction::make('View')
-                            ->modalHeading('Ticket Details')
-                            ->modalSubheading('Full details of the selected ticket.')
-                            ->form([
-                                Card::make([
-                                    TextInput::make('id')
-                                        ->label('Ticket ID')
-                                        ->disabled()
-                                        ->required(),
-                                    TextInput::make('name')
-                                        ->label('Sender')
-                                        ->disabled()
-                                        ->required(),
-                                    TextInput::make('subject')
-                                        ->label('Concern')
-                                        ->disabled()
-                                        ->required(),
-                                    TextInput::make('status')
-                                        ->label('Status')
-                                        ->disabled()
-                                        ->required(),
-                                    TextInput::make('priority')
-                                        ->label('Priority')
-                                        ->disabled()
-                                        ->required(),
-                                    TextInput::make('location')
-                                        ->label('Location')
-                                        ->disabled()
-                                        ->required(),
-                                    TextInput::make('department')
-                                        ->label('Department')
-                                        ->disabled()
-                                        ->required(),
-                                    TextInput::make('dept_role')
-                                        ->label('Dept')
-                                        ->disabled()
-                                        ->required(),
-                                    DatePicker::make('created_at')
-                                        ->label('Date Created')
-                                        ->disabled()
-                                        ->required(),
+                    ViewAction::make('View')
+                        ->modalHeading('Ticket Details')
+                        ->modalSubHeading('')
+                        ->extraAttributes([
+                            'class' => 'sticky-modal-header', // Add sticky header class
+                        ])
+                        ->form([
+                            Card::make()
+                                ->extraAttributes([
+                                    'style' => 'max-height: 68vh; overflow-y: auto;', // Make the content scrollable
+                                ])
+                                ->schema([
+
+                                    // Top Row: Ticket ID, Status, Priority
+                                    Grid::make(3)
+                                        ->schema([
+                                            TextInput::make('id')
+                                                ->label('Ticket ID')
+                                                ->disabled()
+                                                ->required(),
+                                            TextInput::make('status')
+                                                ->label('Status')
+                                                ->disabled()
+                                                ->required(),
+                                            TextInput::make('priority')
+                                                ->label('Priority')
+                                                ->disabled()
+                                                ->required(),
+                                        ]),
+
+                                    // Section: Issue Information
+                                    Card::make('Issue Information')
+                                        ->description('View the information about the ticket.')
+                                        ->schema([
+                                            Grid::make(3)
+                                                ->schema([
+                                                    TextInput::make('name')
+                                                        ->label('Sender')
+                                                        ->disabled()
+                                                        ->required(),
+                                                    TextInput::make('subject')
+                                                        ->label('Concern')
+                                                        ->disabled()
+                                                        ->required(),
+                                                    TextInput::make('issue_type')
+                                                        ->label('Type of Issue')
+                                                        ->disabled()
+                                                        ->required(),
+                                                ]),
+
+                                            // Description and Attachment Fields
+                                            Grid::make(2)
+                                                ->schema([
+                                                    TextInput::make('description')
+                                                        ->label('Description')
+                                                        ->disabled()
+                                                        ->required(),
+                                                    TextInput::make('attachment')
+                                                        ->label('Attachment')
+                                                        ->disabled()
+                                                        ->required(),
+                                                ]),
+                                        ]),
+
+                                    // Section: Place of Issue
+                                    Card::make('Place of Issue')
+                                        ->description('Select where the equipment is currently located.')
+                                        ->schema([
+                                            Grid::make(3)
+                                                ->schema([
+                                                    TextInput::make('department')
+                                                        ->label('Department')
+                                                        ->disabled()
+                                                        ->required(),
+                                                    TextInput::make('location')
+                                                        ->label('Location')
+                                                        ->disabled()
+                                                        ->required(),
+                                                    DatePicker::make('created_at')
+                                                        ->label('Date Created')
+                                                        ->disabled()
+                                                        ->required(),
+                                                ]),
+                                        ]),
                                 ]),
-                            ]),
-                        Tables\Actions\Action::make('comment')
-                            ->label('Comment')
-                            ->icon('heroicon-o-rectangle-stack'),
-                            Tables\Actions\Action::make('resolve')
-                            ->label('Resolve')
-                            ->icon('heroicon-o-rectangle-stack'),
-                        // Tables\Actions\DeleteAction::make(),
-                    ])
-                        ]);
-            
-            // ->bulkActions([
-            //     // Tables\Actions\BulkActionGroup::make([
-            //     //     Tables\Actions\DeleteBulkAction::make(),
-            //     ])
-            // ]);
+                        ]),
+
+                    Tables\Actions\Action::make('comment')
+                        ->label('Comment')
+                        ->icon('heroicon-o-rectangle-stack'),
+
+                    Tables\Actions\Action::make('resolve')
+                        ->label('Resolve')
+                        ->icon('heroicon-o-check'),
+                ]),
+            ]);
+
+
+        // ->bulkActions([
+        //     // Tables\Actions\BulkActionGroup::make([
+        //     //     Tables\Actions\DeleteBulkAction::make(),
+        //     ])
+        // ]);
     }
 
     public static function getRelations(): array

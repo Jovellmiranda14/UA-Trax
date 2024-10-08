@@ -31,7 +31,13 @@ use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Button;
 use Filament\Forms\Components\Modal;
 
+use Filament\Support\Facades\FilamentColor;
 
+class TicketColors
+{
+    const Gray = '#808080';
+    const Black = '#000000';
+}
 class TicketResource extends Resource
 {
     protected static ?string $navigationLabel = 'My tickets';
@@ -274,25 +280,64 @@ class TicketResource extends Resource
 
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
-                    ->colors([
-                        'success' => 'Resolved',
-                        'primary' => 'Open',
-                        'warning' => 'In progress',
-                        'black' => 'On-hold',
-                        'grey' => 'Close',
-                    ])
+                    ->getStateUsing(function ($record) {
+                        switch ($record->status) {
+                            case 'open':
+                                return 'Open';
+                            case 'in progress':
+                                return 'In progress';
+                            case 'on-hold':
+                                return 'On-hold';
+                            case 'resolved':
+                                return 'Resolved';
+                            case 'close':
+                                return 'Close';
+                            default:
+                                return $record->status;
+                        }
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'Open' => Color::Blue,
+                            'In progress' => Color::Yellow,
+                            'On-hold' => TicketColors::Black,
+                            'Resolved' => Color::Green,
+                            'Close' => TicketColors::Gray,
+                            default => null,
+                        };
+                    })
+                    ->badge()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('priority')
+                Tables\Columns\BadgeColumn::make('priority')
                     ->label('Priority')
-                    ->colors([
-                        'info' => 'Low',
-                        'warning' => 'Moderate',
-                        'danger' => 'Urgent',
-                        'primary' => 'High',
-                        'important' => 'Escalated',
-                    ])
+                    ->getStateUsing(function ($record) {
+                        switch ($record->priority) {
+                            case 'urgent':
+                                return 'Urgent';
+                            case 'high':
+                                return 'High';
+                            case 'moderate':
+                                return 'Moderate';
+                            case 'low':
+                                return 'Low';
+                            case 'escalated':
+                                return 'Escalated';
+                            default:
+                                return $record->priority;
+                        }
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'Urgent' => Color::Red,
+                            'High' => Color::Orange,
+                            'Moderate' => Color::Yellow,
+                            'Low' => Color::Blue,
+                            'Escalated' => Color::Purple,
+                            default => null,
+                        };
+                    })
+                    ->sortable()
                     ->searchable(),
-
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
                     ->searchable(),

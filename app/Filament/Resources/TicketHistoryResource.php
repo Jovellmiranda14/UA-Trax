@@ -27,6 +27,13 @@ use Filament\Forms\Components\DatePicker;
 // Admin = By Dept
 // User = Sarili 
 
+use Filament\Support\Facades\FilamentColor;
+
+class UTicket
+{
+    const Gray = '#808080';
+    const Black = '#000000';
+}
 
 class TicketHistoryResource extends Resource
 {
@@ -75,25 +82,63 @@ class TicketHistoryResource extends Resource
                     ->searchable(),
                 BadgeColumn::make('status')
                     ->label('Status')
-                    ->colors([
-                        'success' => 'Resolved',
-                        'primary' => 'Open',
-                        'warning' => 'In progress',
-                        'black' => 'On-hold',
-                        'grey' => 'Close',
-                    ])
+                    ->getStateUsing(function ($record) {
+                        switch ($record->status) {
+                            case 'open':
+                                return 'Open';
+                            case 'in progress':
+                                return 'In progress';
+                            case 'on-hold':
+                                return 'On-hold';
+                            case 'resolved':
+                                return 'Resolved';
+                            case 'close':
+                                return 'Close';
+                            default:
+                                return $record->status;
+                        }
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'Open' => Color::Blue,
+                            'In progress' => Color::Yellow,
+                            'On-hold' => UTicket::Black,
+                            'Resolved' => Color::Green,
+                            'Close' => UTicket::Gray,
+                            default => null,
+                        };
+                    })
                     ->searchable(),
-                Tables\Columns\TextColumn::make('priority')
+                Tables\Columns\BadgeColumn::make('priority')
                     ->label('Priority')
                     ->sortable()
                     ->searchable()
-                    ->colors([
-                        'info' => 'Low',
-                        'warning' => 'Moderate',
-                        'danger' => 'Urgent',
-                        'primary' => 'High',
-                        'important' => 'Escalated',
-                    ]),
+                    ->getStateUsing(function ($record) {
+                        switch ($record->priority) {
+                            case 'urgent':
+                                return 'Urgent';
+                            case 'high':
+                                return 'High';
+                            case 'moderate':
+                                return 'Moderate';
+                            case 'low':
+                                return 'Low';
+                            case 'escalated':
+                                return 'Escalated';
+                            default:
+                                return $record->priority;
+                        }
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'Urgent' => Color::Red,
+                            'High' => Color::Orange,
+                            'Moderate' => Color::Yellow,
+                            'Low' => Color::Blue,
+                            'Escalated' => Color::Purple,
+                            default => null,
+                        };
+                    }),
                 TextColumn::make('location')
                     ->label('Location')
                     ->sortable()
