@@ -15,6 +15,17 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('subject');
+            $table->text('description');
+            $table->enum('type_of_issue', [
+                'repair',
+                'air_conditioning',
+                'plumbing',
+                'lighting',
+                'electricity',
+                'computer_issues',
+                'lab_equipment',
+                'Other_Devices',
+            ]); 
             $table->enum('concern_type', ['Laboratory and Equipment', 'Facility']);  
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed' , 'On-Hold'])->default('Open')->nullable();
             $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High','Escalated'])->default('Moderate');
@@ -23,7 +34,7 @@ return new class extends Migration
             $table->string('attachment')->nullable()->default('N/A');
             $table->string('assigned_to')->nullable();
             $table->timestamps();
-            $table->timestamp('accepted_at');
+            $table->timestamp('accepted_at')->nullable();
         });
     }
 

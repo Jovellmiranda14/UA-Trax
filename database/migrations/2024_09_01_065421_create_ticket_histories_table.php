@@ -14,8 +14,19 @@ return new class extends Migration
         Schema::create('ticket_histories', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
             $table->unsignedBigInteger('ticket_id')->nullable();; 
-            $table->string('name')->nullable(); 
-            $table->string('subject')->nullable();; 
+            $table->string('name')->nullable();
+            $table->text('description'); 
+            $table->string('subject')->nullable();
+            $table->enum('type_of_issue', [
+                'repair',
+                'air_conditioning',
+                'plumbing',
+                'lighting',
+                'electricity',
+                'computer_issues',
+                'lab_equipment',
+                'Other_Devices',
+            ]);  
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed', 'On-Hold'])->default('Open'); // Column to store the status of the ticket
             $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High','Escalated'])->default('Moderate'); // Column to store the priority of the ticket
             $table->string('location')->nullable(); 

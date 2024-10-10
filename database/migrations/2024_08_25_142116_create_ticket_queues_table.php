@@ -15,6 +15,17 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('subject');
+            $table->text('description');
+            $table->enum('type_of_issue', [
+                'repair',
+                'air_conditioning',
+                'plumbing',
+                'lighting',
+                'electricity',
+                'computer_issues',
+                'lab_equipment',
+                'Other_Devices',
+            ]); 
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed'])->default('Open')->nullable();
             $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High','Escalated'])->default('Moderate')->nullable();
             $table->enum('department', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE'])->nullable();

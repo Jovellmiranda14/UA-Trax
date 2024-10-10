@@ -28,6 +28,7 @@ class TicketsAccepted extends Model
         'role',
         'created_at',
         'assigned_at',
+        'commented_at'
     ];
     public function ticket()
 {
@@ -37,4 +38,9 @@ public function assignedUser()
 {
     return $this->belongsTo(User::class, 'assigned', 'id');
 }
+
+public function comments()
+{
+    return $this->hasMany(TicketComment::class, 'ticket_id');
+}   
 }
