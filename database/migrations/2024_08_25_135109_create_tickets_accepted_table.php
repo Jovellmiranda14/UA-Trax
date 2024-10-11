@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');          
             $table->string('subject');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->enum('type_of_issue', [
                 'repair',
                 'air_conditioning',

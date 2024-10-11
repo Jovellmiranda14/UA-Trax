@@ -13,9 +13,19 @@ class Ticket extends Model
 
     // Define fillable attributes for mass assignment
     protected $fillable = [
-        'type_of_issue', 'concern_type', 'name', 'description',
-        'subject', 'department', 'status', 'location', 'attachment',
-        'priority', 'assigned_to', 'dept_role', 'created_at'
+        'type_of_issue',
+        'concern_type',
+        'name',
+        'description',
+        'subject',
+        'department',
+        'status',
+        'location',
+        'attachment',
+        'priority',
+        'assigned_to',
+        'dept_role',
+        'created_at'
     ];
 
     // Boot method to define model events
@@ -24,30 +34,34 @@ class Ticket extends Model
         parent::boot();
         static::updated(function ($ticket) {
             TicketQueue::create([
-                'id'          => $ticket->id,
-                'name'        => auth()->user()->name, // Make sure this is set
-                'subject'     => $ticket->subject,
-                'status'      => $ticket->status,
-                'priority'    => $ticket->priority,
-                'department'  => $ticket->department,
-                'location'    => $ticket->location,
-                'created_at'  => now(),
-                 //'updated_at'  =>
+                'id' => $ticket->id,
+                'name' => auth()->user()->name,
+                'description' => $ticket->description, // Make sure this is set
+                'subject' => $ticket->subject,
+                'status' => $ticket->status,
+                'attachment' => $ticket->attachment, // Make
+                'priority' => $ticket->priority,
+                'department' => $ticket->department,
+                'location' => $ticket->location,
+                'created_at' => now(),
+                //'updated_at'  =>
             ]);
         });
 
         // Event: When a ticket is created
         static::created(function ($ticket) {
             TicketHistory::create([
-                'id'   => $ticket->id,
-                'name'        => $ticket->name,
-                'subject'     => $ticket->subject,
-                'status'      => 'Open',
-                'priority'    => 'Moderate',
-                'location'    => $ticket->location,
-                'department'  => $ticket->department,
-                'created_at'  => now(),
-                'assigned_at'  => $ticket->assigned,
+                'id' => $ticket->id,
+                'name' => $ticket->name,
+                'subject' => $ticket->subject,
+                'description' => $ticket->description,
+                'status' => 'Open',
+                'priority' => 'Moderate',
+                'location' => $ticket->location,
+                'department' => $ticket->department,
+                'attachment' => $ticket->attachment,
+                'created_at' => now(),
+                'assigned_at' => $ticket->assigned,
             ]);
         });
 
@@ -69,33 +83,33 @@ class Ticket extends Model
 
             $year = date('Y');
             $dateCreated = date('md');
-        
+
             $lastTicket = static::where('id', 'LIKE', "$year$dateCreated%")
-                ->orderBy('id', 'desc') 
+                ->orderBy('id', 'desc')
                 ->first();
-        
+
             if ($lastTicket) {
-          
+
                 $lastNumber = (int) substr($lastTicket->id, 8);
-                $nextNumber = $lastNumber + 1; 
+                $nextNumber = $lastNumber + 1;
             } else {
-                $nextNumber = 1; 
+                $nextNumber = 1;
             }
-        
+
 
             do {
-            
+
                 $newTicketId = $year . $dateCreated . $nextNumber;// YYYYMMDDxxxx
-        
+
                 // Check if the generated ID already exists
                 $ticketExists = static::where('id', $newTicketId)->exists();
-        
+
                 if ($ticketExists) {
                     // Increment the number to try again
                     $nextNumber++;
                 }
             } while ($ticketExists); // Repeat until a unique ID is found
-        
+
             // Set the ticket id to the unique ID
             $ticket->id = $newTicketId;
         });

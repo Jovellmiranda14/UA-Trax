@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id(); // Auto-incrementing primary key
             $table->unsignedBigInteger('ticket_id')->nullable();; 
             $table->string('name')->nullable();
-            $table->text('description'); 
+            $table->text('description')->nullable(); 
             $table->string('subject')->nullable();
             $table->enum('type_of_issue', [
                 'repair',
@@ -36,7 +36,7 @@ return new class extends Migration
             $table->enum('dept_role', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
             $table->enum('position', ['RSO', 'Faculty','Secretary', 'N/A']);
             $table->string('assigned')->nullable(); 
-        
+            $table->string('attachment')->nullable()->default('N/A');
         });
     }
 
