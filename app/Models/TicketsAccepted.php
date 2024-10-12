@@ -34,10 +34,10 @@ class TicketsAccepted extends Model
 {
     return $this->belongsTo(Ticket::class, 'id', 'id');
 }
-public function assignedUser()
-{
-    return $this->belongsTo(User::class, 'assigned', 'id');
-}
+// public function assignedUser()
+// {
+//     return $this->belongsTo(User::class, 'assigned', 'id');
+// }
 
 public function comments()
 {

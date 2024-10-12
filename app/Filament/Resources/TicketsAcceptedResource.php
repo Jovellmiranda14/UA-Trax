@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TicketsAcceptedResource\Pages;
 use App\Filament\Resources\TicketsAcceptedResource\RelationManagers;
 use App\Models\TicketsAccepted;
+use App\Models\TicketResolved;
 use App\Models\Ticket;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,21 +16,27 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
-
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\TextArea;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
-
+use App\Models\TicketComment;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
-
+use App\Notifications\NewCommentNotification;
 use Filament\Forms\Components\Grid;
-
-
+use Illuminate\Support\Facades\Log;
+use Filament\Notifications\Events\DatabaseNotificationsSent;
 
 class IssuePalette
 {
@@ -47,9 +55,6 @@ class TicketsAcceptedResource extends Resource
 
     // protected static ?string $navigationGroup = 'Tickets';
     protected static ?int $navigationSort = 2;
-
-
-
 
     public static function canCreate(): bool
     {
@@ -263,10 +268,9 @@ class TicketsAcceptedResource extends Resource
                                                         ->label('Description')
                                                         ->disabled()
                                                         ->required(),
-                                                    TextInput::make('attachment')
-                                                        ->label('Attachment')
-                                                        ->disabled()
-                                                        ->required(),
+                                                    // ImageColumn::make('attachment')
+                                                    // ->label('Attachment')
+                                                    // ->disabled(),
                                                 ]),
                                         ]),
 
@@ -284,7 +288,7 @@ class TicketsAcceptedResource extends Resource
                                                         ->label('Location')
                                                         ->disabled()
                                                         ->required(),
-                                                    DatePicker::make('created_at')
+                                                    TextInput::make('created_at')
                                                         ->label('Date Created')
                                                         ->disabled()
                                                         ->required(),
@@ -292,23 +296,121 @@ class TicketsAcceptedResource extends Resource
                                         ]),
                                 ]),
                         ]),
-
                     Tables\Actions\Action::make('comment')
                         ->label('Comment')
-                        ->icon('heroicon-o-rectangle-stack'),
+                        // ->icon('heroicon-o-chat')
+                        ->modalHeading('Comment on Ticket')
+                        ->modalSubheading('Provide and view comments related to this ticket.')
+                        ->form(function (TicketsAccepted $record) {
+                            return [
+                               
+                                Repeater::make('comments') // Display existing comments
+                                    ->label('Previous Comments')
+                                    ->schema([
+                                        TextInput::make('sender')
+                                            ->label('Sender')
+                                            ->disabled(),
+                                        TextArea::make('comment')
+                                            ->label('Comment')
+                                            ->disabled(),
+                                        TextInput::make('commented_at') // Use DateTimePicker for date and time selection
+                                            ->label('Date and Time')
+                                            ->disabled(),
+                                    ])
 
-                    Tables\Actions\Action::make('resolve')
+                                    ->default(function () use ($record) {
+                                        // Now we use the passed record parameter instead of $this
+                                        if ($record->comments) {
+                                            return $record->comments->map(function ($comment) {
+                                                return [
+                                                    'sender' => $comment->sender,
+                                                    'comment' => $comment->comment,
+                                                    'commented_at' => $comment->commented_at,
+                                                ];
+                                            })->toArray();
+                                        } else {
+                                            return [];
+                                        }
+                                    })
+                                    ->disabled(),
+                                TextInput::make('new_comment')
+                                    ->label('Add a Comment')
+                                    ->placeholder('Write your comment here...'),
+
+                            ];
+                        })
+                        ->action(function (array $data, TicketsAccepted $record) {
+                            // Save the new comment to the database
+                            $comment = new TicketComment();
+                            $comment->ticket_id = $record->id;
+                            $comment->sender = auth()->user()->name;
+                            $comment->commented_at = now();
+                            $comment->comment = $data['new_comment'];
+                            $comment->save();
+                            // ------------ Notification ------------------------------------------------ 
+                            $assignedAdmin = User::where('name', $record->assigned)->first();
+                            $RegularUser = User::where('name', $record->name)->first();
+ 
+                            if ($assignedAdmin) { // Check if the assigned admin exists
+                
+                                $RegularUser->notify(new NewCommentNotification($comment));
+                                Notification::make()
+                                    ->title('Admin Comment on Ticket:')
+                                    ->body('The ticket owner commented: ' . $comment->comment)
+                                    ->sendToDatabase($RegularUser);
+                                event(new DatabaseNotificationsSent($RegularUser));
+                            } else {
+                               
+                                Log::warning('No admin found for assigned record ID: ' . $record->assigned);
+                            }
+
+                            if ($RegularUser) { // Check if the regular user exists
+                                // Notify the regular user about the new comment
+                                $assignedAdmin->notify(new NewCommentNotification($comment));
+                                Notification::make()
+                                    ->title('User Comment on Ticket:')
+                                    ->body('The ticket owner commented: ' . $comment->comment)
+                                    ->sendToDatabase($assignedAdmin);
+
+
+                                event(new DatabaseNotificationsSent($assignedAdmin));
+                            } else {
+                                // Handle the case where the regular user is not found
+                                Log::warning('No regular user found for assigned record ID: ' . $record->assigned);
+                            }
+
+                        }),
+
+                    Action::make('resolve')
                         ->label('Resolve')
-                        ->icon('heroicon-o-check'),
+                        ->icon('heroicon-o-check')
+                        ->hidden(fn() => auth()->user()->role === 'user')->action(function ($record) {
+                            // Create a new entry in TicketsAccepted
+                            TicketResolved::create([
+                                'id' => $record->id,
+                                'concern_type' => $record->concern_type,
+                                'name' => $record->name,
+                                'subject' => $record->subject,
+                                'priority' => $record->priority,
+                                'department' => $record->department,
+                                'location' => $record->location,
+                                'dept' => $record->dept_role,
+                                'status' => 'Resolved',
+                                'accepted_at' => now(),
+                                'attachment' => $record->attachment,
+                                'created_at' => $record->created_at,
+                                'assigned' => auth()->user()->name,
+                            ]);
+
+                            // Attempt to delete the record
+                            if ($record->delete()) {
+                                \Log::info('Ticket resolved:', ['ticket_id' => $record->id]);
+                            } else {
+                                \Log::error('Failed to delete the resolved ticket:', ['ticket_id' => $record->id]);
+                            }
+                        })
                 ]),
             ]);
-
-
-        // ->bulkActions([
-        //     // Tables\Actions\BulkActionGroup::make([
-        //     //     Tables\Actions\DeleteBulkAction::make(),
-        //     ])
-        // ]);
     }
 
     public static function getRelations(): array

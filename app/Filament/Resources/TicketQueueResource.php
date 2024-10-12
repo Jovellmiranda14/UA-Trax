@@ -77,21 +77,30 @@ class TicketQueueResource extends Resource
         return $table
             ->query(function () {
                 $query = Ticket::query()->whereNull('assigned'); // Only show tickets not yet assigned
-    
-                if (
-                    auth()->user()->isEquipmentSuperAdmin() ||
-                    auth()->user()->isEquipmentAdminOmiss() ||
-                    auth()->user()->isEquipmentAdminlabcustodian()
-                ) {
+                $user = auth()->user();
+
+                if ($user->isEquipmentSuperAdmin()) {
                     $query->whereIn('concern_type', ['Laboratory and Equipment'])
                         ->orderBy('concern_type', 'asc');
+
+
                 } elseif (
-                    auth()->user()->isFacilityAdmin() ||
-                    auth()->user()->isFacilitySuperAdmin()
+                    $user->isEquipmentAdminOmiss() ||
+                    $user->isEquipmentAdminlabcustodian()
+                ) {
+                    $query->whereIn('concern_type', ['Laboratory and Equipment'])
+                        ->where('dept_role', $user->dept_role)
+                        ->whereIn('department', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE'])
+                        ->orderBy('concern_type', 'asc');
+
+                } elseif (
+                    $user->isFacilityAdmin() ||
+                    $user->isFacilitySuperAdmin()
                 ) {
                     $query->where('concern_type', 'Facility')
                         ->orderBy('concern_type', 'asc');
                 }
+
                 return $query;
             })
             ->columns([
@@ -105,6 +114,10 @@ class TicketQueueResource extends Resource
                     ->searchable(),
                 TextColumn::make('subject')
                     ->label('Concern')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('department')
+                    ->label('Department')
                     ->sortable()
                     ->searchable(),
                 BadgeColumn::make('status')
@@ -174,10 +187,7 @@ class TicketQueueResource extends Resource
                     ->label('Concern Type')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('department')
-                    ->label('Department')
-                    ->sortable()
-                    ->searchable(),
+
                 TextColumn::make('created_at')
                     ->label('Date Created')
                     ->date()
@@ -204,11 +214,12 @@ class TicketQueueResource extends Resource
                                 'department' => $record->department,
                                 'location' => $record->location,
                                 'dept' => $record->dept_role,
-                                'status' => 'In progress', // Setting status to 'In progress'
+                                'status' => 'In progress',
                                 'accepted_at' => now(),
+                                'attachment' => $record->attachment,
                                 'created_at' => $record->created_at,
-                                'assigned' => auth()->user()->name, // Timestamp when the ticket was accepted
-                                // Add other fields you want to copy from the original record
+                                'assigned' => auth()->user()->name,
+
                             ]);
 
                             // Delete the original ticket record

@@ -224,7 +224,7 @@ class TicketResolvedResource extends Resource
                                                         ->label('Concern')
                                                         ->disabled()
                                                         ->required(),
-                                                    TextInput::make('issue_type')
+                                                    TextInput::make('type_of_issue')
                                                         ->label('Type of Issue')
                                                         ->disabled()
                                                         ->required(),
@@ -267,17 +267,11 @@ class TicketResolvedResource extends Resource
                                 ]),
                         ]),
 
-                    Tables\Actions\Action::make('comment')
+                    Tables\Actions\Action::make('ViewComment')
                         ->label('Comment')
                         ->icon('heroicon-o-rectangle-stack'),
-
-                    Tables\Actions\Action::make('resolve')
-                        ->label('Resolve')
-                        ->icon('heroicon-o-check'),
                 ]),
             ]);
-        // ->bulkActions([
-        // ]);
     }
     public static function getRelations(): array
     {

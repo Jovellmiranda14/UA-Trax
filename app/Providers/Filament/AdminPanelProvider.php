@@ -17,10 +17,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Filament\Auth\Login;
-use Filament\Notifications\Notification;
 use Filament\Notifications\Livewire\DatabaseNotifications;
-
+use Illuminate\Support\Facades\Log;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -28,19 +26,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            // ->DatabaseNotifications::pollingInterval(null)
             ->databaseNotifications()
-            // CREATED BY:
-            // Subject
-            // Time
-            // Admin(DEPARTMENT)
-
-            //Regular:
-            // Accepted Notif
-             // Time
-            // Comment reply
-
-
             ->topNavigation()
             ->id('admin')
             // ->path('')
@@ -49,9 +35,9 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->colors([
                 'primary' => '#4D68C9',
-            //     'warning' => Color::Red,
-            //     'info' => Color::Blue,
-            //     'success' => Color::Green,
+                //     'warning' => Color::Red,
+                //     'info' => Color::Blue,
+                //     'success' => Color::Green,
             ])
             ->favicon(asset('images/UATRAX-logo-dark-transparent.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
@@ -60,17 +46,17 @@ class AdminPanelProvider extends PanelProvider
             // Wag cocooment
 
 
-             ->pages([
-                  //Pages\Dashboard::class,
-                 //  Pages\FacilityDashboard::class,
-                 // Pages\EquipmentDashboard::class,
+            ->pages([
+                //Pages\Dashboard::class,
+                //  Pages\FacilityDashboard::class,
+                // Pages\EquipmentDashboard::class,
             ])
-             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-             ->widgets([
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->widgets([
                 //Widgets\UserStatsWidget::class,
                 //Widgets\AccountWidget::class,
                 //Widgets\FilamentInfoWidget::class,
-             ])
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -85,6 +71,5 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
-
     }
 }
