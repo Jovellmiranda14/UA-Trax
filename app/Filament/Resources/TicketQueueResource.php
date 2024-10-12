@@ -29,8 +29,13 @@ use Filament\Forms\Components\DatePicker;
 use App\Filament\Resources\UserResource\RelationManagers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use Filament\Forms\Components\TextArea;
 use Filament\Support\Facades\FilamentColor;
+use Filament\Forms\Components\Grid;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Html;
+use Filament\Forms\Components\View;
 
 class UTicketColors
 {
@@ -131,7 +136,7 @@ class TicketQueueResource extends Resource
                         };
                     })
                     ->searchable(),
-                BadgeColumn::make('priority')
+                TextColumn::make('priority')
                     ->label('Priority')
                     ->getStateUsing(function ($record) {
                         switch ($record->priority) {
@@ -222,7 +227,6 @@ class TicketQueueResource extends Resource
                 ActionGroup::make([
                     Action::make('View')
                         ->icon('heroicon-o-rectangle-stack')
-                        ->color('success')
                         ->modalHeading('Ticket Details')
                         ->modalSubheading('Full details of the selected ticket.')
                         ->extraAttributes([
@@ -235,54 +239,90 @@ class TicketQueueResource extends Resource
                                         'style' => 'max-height: 60vh; overflow-y: auto;', // Make the content scrollable
                                     ])
                                     ->schema([
+                                        Grid::make(3)
+                                            ->schema([
+                                                // Ticket ID, Sender, Concern, etc.
+                                                TextInput::make('id')
+                                                    ->label('Ticket ID')
+                                                    ->disabled()
+                                                    ->default($record->id)
+                                                    ->required(),
+                                                TextInput::make('status')
+                                                    ->label('Status')
+                                                    ->disabled()
+                                                    ->default($record->status)
+                                                    ->required(),
+                                                TextInput::make('priority')
+                                                    ->label('Priority')
+                                                    ->disabled()
+                                                    ->default($record->priority)
+                                                    ->required(),
+                                            ]),
 
-                                        // Ticket ID, Sender, Concern, etc.
-                                        TextInput::make('id')
-                                            ->label('Ticket ID')
-                                            ->disabled()
-                                            ->default($record->id)
-                                            ->required(),
-                                        TextInput::make('name')
-                                            ->label('Sender')
-                                            ->disabled()
-                                            ->default($record->name)
-                                            ->required(),
-                                        TextInput::make('subject')
-                                            ->label('Concern')
-                                            ->disabled()
-                                            ->default($record->subject)
-                                            ->required(),
-                                        TextInput::make('status')
-                                            ->label('Status')
-                                            ->disabled()
-                                            ->default($record->status)
-                                            ->required(),
-                                        TextInput::make('priority')
-                                            ->label('Priority')
-                                            ->disabled()
-                                            ->default($record->priority)
-                                            ->required(),
-                                        TextInput::make('department')
-                                            ->label('Department')
-                                            ->disabled()
-                                            ->default($record->department)
-                                            ->required(),
-                                        TextInput::make('location')
-                                            ->label('Location')
-                                            ->disabled()
-                                            ->default($record->location)
-                                            ->required(),
-                                        TextInput::make('dept_role')
-                                            ->label('Dept Assigned')
-                                            ->disabled()
-                                            ->default($record->dept_role)
-                                            ->required(),
-                                        DatePicker::make('created_at')
-                                            ->label('Date Created')
-                                            ->disabled()
-                                            ->default($record->created_at)
-                                            ->required(),
-                                    ]),
+                                        Card::make('Issue Information')
+                                            ->description('View the information about the ticket.')
+                                            ->schema([
+                                                Grid::make(3)
+                                                    ->schema([
+                                                        TextInput::make('name')
+                                                            ->label('Sender')
+                                                            ->disabled()
+                                                            ->default($record->name)
+                                                            ->required(),
+                                                        TextInput::make('subject')
+                                                            ->label('Concern')
+                                                            ->disabled()
+                                                            ->default($record->subject)
+                                                            ->required(),
+                                                        TextInput::make('type_of_issue')
+                                                            ->label('Concern Type')
+                                                            ->disabled()
+                                                            ->default($record->type_of_issue)
+                                                            ->required(),
+                                                    ]),
+                                                    Grid::make(2)
+                                                    ->schema([
+                                                        Textarea::make('description')
+                                                            ->label('Description')
+                                                            ->default($record->description)
+                                                            ->disabled()
+                                                            ->required(),
+                                                        TextInput::make('attachment')
+                                                            ->label('Attachment')
+                                                            ->default($record->attachment) 
+                                                            ->disabled() 
+                                                            ->required(),
+                                                    ]),
+                                            ]),
+
+                                        Card::make('Place of Issue')
+                                            ->description('Select where the equipment is currently located.')
+                                            ->schema([
+                                                Grid::make(4)
+                                                    ->schema([
+                                                        TextInput::make('department')
+                                                            ->label('Department')
+                                                            ->disabled()
+                                                            ->default($record->department)
+                                                            ->required(),
+                                                        TextInput::make('location')
+                                                            ->label('Location')
+                                                            ->disabled()
+                                                            ->default($record->location)
+                                                            ->required(),
+                                                        TextInput::make('dept_role')
+                                                            ->label('Dept Assigned')
+                                                            ->disabled()
+                                                            ->default($record->dept_role)
+                                                            ->required(),
+                                                        DatePicker::make('created_at')
+                                                            ->label('Date Created')
+                                                            ->disabled()
+                                                            ->default($record->created_at)
+                                                            ->required(),
+                                                    ]),
+                                            ]),
+                                    ])
                             ];
                         }),
                 ]),

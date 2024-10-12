@@ -24,7 +24,7 @@ use App\Notifications\TicketCreated;
 use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
-
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Card;
 
@@ -262,7 +262,7 @@ class TicketResource extends Resource
         return $table
             // Pagination 
             // ->paginated([10, 25, 50, 100, 'all']) 
-            ->query(Ticket::query()->where('name', $user->name))
+            //->query(Ticket::query()->where('name', $user->name)) 
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Ticket ID')
@@ -308,7 +308,7 @@ class TicketResource extends Resource
                     })
                     ->badge()
                     ->searchable(),
-                Tables\Columns\BadgeColumn::make('priority')
+                Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
                     ->getStateUsing(function ($record) {
                         switch ($record->priority) {

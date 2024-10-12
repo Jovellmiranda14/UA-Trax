@@ -112,7 +112,7 @@ class TicketResolvedResource extends Resource
                         };
                     })
                     ->searchable(),
-                Tables\Columns\BadgeColumn::make('priority')
+                Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
                     ->getStateUsing(function ($record) {
                         switch ($record->priority) {
