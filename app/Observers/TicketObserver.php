@@ -42,9 +42,9 @@ class TicketObserver
                     User::EQUIPMENT_ADMIN_Omiss,
                     User::EQUIPMENT_ADMIN_labcustodian,
                     User::EquipmentSUPER_ADMIN,
-                ])
-                    ->whereIn('department', $department)
-                    ->where('dept_role', $user->dept_role); // Correct the syntax here
+                ]);
+                    // ->whereIn('department', $department)
+                    // ->where('dept_role', $user->dept_role); // Correct the syntax here
             } elseif ($category === 'Facility') {
                 $query->whereIn('role', [
                     User::FACILITY_ADMIN,
