@@ -37,6 +37,9 @@ use App\Notifications\NewCommentNotification;
 use Filament\Forms\Components\Grid;
 use Illuminate\Support\Facades\Log;
 use Filament\Notifications\Events\DatabaseNotificationsSent;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\FileUpload;
 
 class IssuePalette
 {
@@ -268,9 +271,11 @@ class TicketsAcceptedResource extends Resource
                                                         ->label('Description')
                                                         ->disabled()
                                                         ->required(),
-                                                    // ImageColumn::make('attachment')
-                                                    // ->label('Attachment')
-                                                    // ->disabled(),
+                                                    FileUpload::make('attachment')
+                                                        ->label('Attachment')
+                                                        ->image()
+                                                        // ->default( $record->attachment)
+                                                        ->disabled(),
                                                 ]),
                                         ]),
 
@@ -296,27 +301,67 @@ class TicketsAcceptedResource extends Resource
                                         ]),
                                 ]),
                         ]),
+
                     Tables\Actions\Action::make('comment')
                         ->label('Comment')
-                        // ->icon('heroicon-o-chat')
-                        ->modalHeading('Comment on Ticket')
-                        ->modalSubheading('Provide and view comments related to this ticket.')
+                        ->icon('heroicon-o-chat-bubble-left-right')
+                        ->modalHeading('Comments')
+                        ->modalSubheading('')
+
+
                         ->form(function (TicketsAccepted $record) {
+
                             return [
-                               
-                                Repeater::make('comments') // Display existing comments
-                                    ->label('Previous Comments')
+
+                                Grid::make(3)
                                     ->schema([
-                                        TextInput::make('sender')
-                                            ->label('Sender')
-                                            ->disabled(),
+                                        TextInput::make('id')
+                                            ->label('Ticket ID')
+                                            ->default($record->id)
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('subject')
+                                            ->label('Concern')
+                                            ->default($record->subject)
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('created_at')
+                                            ->label('Date Created')
+                                            ->default($record->created_at)
+                                            ->disabled()
+                                            ->required(),
+                                    ]),
+
+
+
+
+
+                                Repeater::make('comments') // Display existing comments
+                                    ->label('See all comments made by you and the administrator.')
+                                    ->extraAttributes([
+                                        'style' => 'max-height: 38vh;  overflow-y: auto;',
+                                    ])
+
+                                    ->schema([
+
+
+
+                                        Grid::make(3)
+                                            ->schema([
+                                                TextInput::make('sender')
+                                                    ->label('Sender')
+                                                    ->disabled(),
+                                                TextInput::make('commented_at')
+                                                    ->label('Date and time')
+                                                    ->disabled(),
+                                            ]),
+
                                         TextArea::make('comment')
-                                            ->label('Comment')
-                                            ->disabled(),
-                                        TextInput::make('commented_at') // Use DateTimePicker for date and time selection
-                                            ->label('Date and Time')
+                                            ->label('Description')
                                             ->disabled(),
                                     ])
+
+
 
                                     ->default(function () use ($record) {
                                         // Now we use the passed record parameter instead of $this
@@ -333,9 +378,11 @@ class TicketsAcceptedResource extends Resource
                                         }
                                     })
                                     ->disabled(),
-                                TextInput::make('new_comment')
-                                    ->label('Add a Comment')
-                                    ->placeholder('Write your comment here...'),
+
+                                TextArea::make('new_comment')
+                                    ->label('Comment')
+                                    ->placeholder('Write something...'),
+
 
                             ];
                         })
@@ -350,7 +397,7 @@ class TicketsAcceptedResource extends Resource
                             // ------------ Notification ------------------------------------------------ 
                             $assignedAdmin = User::where('name', $record->assigned)->first();
                             $RegularUser = User::where('name', $record->name)->first();
- 
+
                             if ($assignedAdmin) { // Check if the assigned admin exists
                 
                                 $RegularUser->notify(new NewCommentNotification($comment));
@@ -360,7 +407,7 @@ class TicketsAcceptedResource extends Resource
                                     ->sendToDatabase($RegularUser);
                                 event(new DatabaseNotificationsSent($RegularUser));
                             } else {
-                               
+
                                 Log::warning('No admin found for assigned record ID: ' . $record->assigned);
                             }
 
