@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TicketHistory extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'id',
         'name',
@@ -21,14 +22,14 @@ class TicketHistory extends Model
         'assigned',
         'attachment',
     ];
+
     public function ticket()
     {
         return $this->belongsTo(Ticket::class, 'id', 'id');
     }
 
-    // Relationship: Optionally track which user created this history entry
     public function user()
     {
-        return $this->belongsTo(User::class, 'name', 'name');
+        return $this->belongsTo(User::class, 'user_id'); // Assuming you track `user_id` in the table
     }
 }

@@ -5,6 +5,7 @@ namespace App\Observers;
 use Illuminate\Support\Facades\Log;
 use App\Models\Ticket;
 use App\Models\TicketQueue;
+use App\Models\TicketHistory;
 use App\Models\User;
 use App\Notifications\TicketCreated;
 use Filament\Notifications\Notification;
@@ -43,8 +44,6 @@ class TicketObserver
                     User::EQUIPMENT_ADMIN_labcustodian,
                     User::EquipmentSUPER_ADMIN,
                 ]);
-                    // ->whereIn('department', $department)
-                    // ->where('dept_role', $user->dept_role); // Correct the syntax here
             } elseif ($category === 'Facility') {
                 $query->whereIn('role', [
                     User::FACILITY_ADMIN,
@@ -74,6 +73,23 @@ class TicketObserver
             // Dispatch the event after sending each notification
             event(new DatabaseNotificationsSent($admin));
         }
+
+        // Create or update TicketHistory when the ticket is created
+        TicketHistory::updateOrCreate(
+            ['id' => $ticket->id], // This is the unique identifier to check if history already exists
+            [
+                'name'        => $ticket->name,
+                'subject'     => $ticket->subject,
+                'description' => $ticket->description,
+                'status'      => 'Open',  // Default 'Open' status for a newly created ticket
+                'priority'    => $ticket->priority ?? 'Moderate',  // Default to 'Moderate' if not set
+                'location'    => $ticket->location,
+                'department'  => $ticket->department,
+                'attachment'  => $ticket->attachment,
+                'created_at'  => now(),
+                'assigned_at' => $ticket->assigned_to,
+            ]
+        );
     }
     /**
      * Handle the Ticket "updated" event.
@@ -83,6 +99,22 @@ class TicketObserver
      */
     public function updated(Ticket $ticket): void
     {
+        // Update or create the ticket history entry when the ticket is updated
+        TicketHistory::updateOrCreate(
+            ['id' => $ticket->id],  // Find history by the ticket ID
+            [
+                'name'        => $ticket->name,
+                'subject'     => $ticket->subject,
+                'description' => $ticket->description,
+                'status'      => $ticket->status,  // Updated status
+                'priority'    => $ticket->priority,  // Updated priority
+                'location'    => $ticket->location,
+                'department'  => $ticket->department,
+                'attachment'  => $ticket->attachment,
+                'updated_at'  => now(),  // Set current time for the update
+            ]
+        );
+
         TicketQueue::updateOrCreate(
             ['id' => $ticket->id],
             [

@@ -32,7 +32,7 @@ return new class extends Migration
             $table->enum('department', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE'])->nullable();;
             $table->string('location')->nullable()->default('N/A');
             $table->enum('dept_role', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
-            $table->string('attachment')->nullable()->default('N/A');       
+            $table->binary('attachment')->nullable();      
             $table->string('assigned')->nullable(); 
             $table->enum('position', ['RSO', 'Faculty','Secretary', 'N/A']);
             $table->timestamp('accepted_at'); 

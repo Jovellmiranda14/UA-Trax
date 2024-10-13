@@ -36,7 +36,7 @@ return new class extends Migration
             $table->enum('dept_role', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
             $table->enum('position', ['RSO', 'Faculty','Secretary', 'N/A']);
             $table->string('assigned')->nullable(); 
-            $table->string('attachment')->nullable()->default('N/A');
+            $table->binary('attachment')->nullable();
         });
     }
 

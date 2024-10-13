@@ -7,10 +7,11 @@ use App\Models\TicketQueue;
 use App\Models\Ticket;
 use App\Models\TicketsAccepted;
 use App\Models\User;
+use App\Models\TicketHistory;
 use App\Notifications\TicketGrabbedNotification;
 use Filament\Notifications\Events\DatabaseNotificationsSent;
 use Filament\Forms;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -18,9 +19,11 @@ use Filament\Tables\Table;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\TextInput;
@@ -32,11 +35,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextArea;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Forms\Components\Grid;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Html;
 use Filament\Forms\Components\View;
-
+use Filament\Notifications\Notification;
 class UTicketColors
 {
     const Gray = '#808080';
@@ -208,6 +210,8 @@ class TicketQueueResource extends Resource
                             TicketsAccepted::create([
                                 'id' => $record->id, // Keep the ticket ID
                                 'concern_type' => $record->concern_type,
+                                'type_of_issue' => $record->type_of_issue,
+                                'description' => $record->description,
                                 'name' => $record->name,
                                 'subject' => $record->subject,
                                 'priority' => $record->priority,
@@ -221,7 +225,23 @@ class TicketQueueResource extends Resource
                                 'assigned' => auth()->user()->name,
 
                             ]);
+                            TicketHistory::where('id', $record->id)->update([ // Ensure you're updating the correct record
+            
+                                'priority' => $record->priority,
+                                'status' => 'In progress',
+                                'assigned' => auth()->user()->name,
+                            ]);
 
+
+                            $user = User::where('name', $record->name)->first();
+                            if ($user) {
+                                $user->notify(new TicketGrabbedNotification($record));
+                                Notification::make()
+                                    ->title('Admin Claim the Ticket:')
+                                    ->body('The admin have claimed your ticket.' . $record->id)
+                                    ->sendToDatabase($user);
+                                event(new DatabaseNotificationsSent($user));
+                            }
                             // Delete the original ticket record
                             $record->delete();
                         } catch (\Exception $e) {
@@ -291,18 +311,18 @@ class TicketQueueResource extends Resource
                                                             ->default($record->type_of_issue)
                                                             ->required(),
                                                     ]),
-                                                    Grid::make(2)
+                                                Grid::make(2)
                                                     ->schema([
                                                         Textarea::make('description')
                                                             ->label('Description')
                                                             ->default($record->description)
                                                             ->disabled()
                                                             ->required(),
-                                                        TextInput::make('attachment')
+                                                        FileUpload::make('attachment')
                                                             ->label('Attachment')
-                                                            ->default($record->attachment) 
-                                                            ->disabled() 
-                                                            ->required(),
+                                                            ->image()
+                                                            ->default($record->attachment)
+                                                            ->disabled(),
                                                     ]),
                                             ]),
 

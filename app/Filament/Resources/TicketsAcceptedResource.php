@@ -7,16 +7,17 @@ use App\Filament\Resources\TicketsAcceptedResource\RelationManagers;
 use App\Models\TicketsAccepted;
 use App\Models\TicketResolved;
 use App\Models\Ticket;
+use App\Models\TicketHistory;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Notifications\TicketResolvedNotification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\ActionGroup;
-use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Forms\Components\Card;
@@ -37,10 +38,9 @@ use App\Notifications\NewCommentNotification;
 use Filament\Forms\Components\Grid;
 use Illuminate\Support\Facades\Log;
 use Filament\Notifications\Events\DatabaseNotificationsSent;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
+use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
-
+use Filament\Forms\Components\Section;
 class IssuePalette
 {
     const Gray = '#808080';
@@ -416,7 +416,7 @@ class TicketsAcceptedResource extends Resource
                                 $assignedAdmin->notify(new NewCommentNotification($comment));
                                 Notification::make()
                                     ->title('User Comment on Ticket:')
-                                    ->body('The ticket owner commented: ' . $comment->comment)
+                                    ->body('The ticket owsner commented: ' . $comment->comment)
                                     ->sendToDatabase($assignedAdmin);
 
 
@@ -437,6 +437,8 @@ class TicketsAcceptedResource extends Resource
                                 'id' => $record->id,
                                 'concern_type' => $record->concern_type,
                                 'name' => $record->name,
+                                'type_of_issue' => $record->type_of_issue,
+                                'description' => $record->description,
                                 'subject' => $record->subject,
                                 'priority' => $record->priority,
                                 'department' => $record->department,
@@ -448,7 +450,21 @@ class TicketsAcceptedResource extends Resource
                                 'created_at' => $record->created_at,
                                 'assigned' => auth()->user()->name,
                             ]);
-
+                            TicketHistory::where('id', $record->id)->update([ // Ensure you're updating the correct record
+                
+                                'priority' => $record->priority,
+                                'status' => 'Resolved',
+                                'assigned' => auth()->user()->name,
+                            ]);
+                            $user = User::where('name', $record->name)->first();
+                            if ($user) {
+                                $user->notify(new TicketResolvedNotification($record));
+                                Notification::make()
+                                    ->title('Admin Claim the Ticket:')
+                                    ->body('The admin have closed your ticket.' . $record->id)
+                                    ->sendToDatabase($user);
+                                event(new DatabaseNotificationsSent($user));
+                            }
                             // Attempt to delete the record
                             if ($record->delete()) {
                                 \Log::info('Ticket resolved:', ['ticket_id' => $record->id]);

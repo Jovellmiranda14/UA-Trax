@@ -154,7 +154,7 @@ class TicketResolvedResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('assigned_to')
+                Tables\Columns\TextColumn::make('assigned')
                     ->label('Assigned To')
                     ->sortable()
                     ->searchable(),
