@@ -108,19 +108,45 @@ class TicketQueueResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->label('Ticket ID')
-                    ->sortable()
                     ->searchable(),
                 TextColumn::make('name')
                     ->label('Sender')
-                    ->sortable()
                     ->searchable(),
                 TextColumn::make('subject')
                     ->label('Concern')
-                    ->sortable()
                     ->searchable(),
                 TextColumn::make('department')
                     ->label('Department')
-                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('priority')
+                    ->label('Priority')
+                    ->getStateUsing(function ($record) {
+                        switch ($record->priority) {
+                            case 'urgent':
+                                return 'Urgent';
+                            case 'high':
+                                return 'High';
+                            case 'moderate':
+                                return 'Moderate';
+                            case 'low':
+                                return 'Low';
+                            case 'escalated':
+                                return 'Escalated';
+                            default:
+                                return $record->priority;
+                        }
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'Urgent' => Color::Red,
+                            'High' => Color::Orange,
+                            'Moderate' => Color::Yellow,
+                            'Low' => Color::Blue,
+                            'Escalated' => Color::Purple,
+                            default => null,
+                        };
+                    })
                     ->searchable(),
                 BadgeColumn::make('status')
                     ->label('Status')
@@ -151,43 +177,8 @@ class TicketQueueResource extends Resource
                         };
                     })
                     ->searchable(),
-                TextColumn::make('priority')
-                    ->label('Priority')
-                    ->getStateUsing(function ($record) {
-                        switch ($record->priority) {
-                            case 'urgent':
-                                return 'Urgent';
-                            case 'high':
-                                return 'High';
-                            case 'moderate':
-                                return 'Moderate';
-                            case 'low':
-                                return 'Low';
-                            case 'escalated':
-                                return 'Escalated';
-                            default:
-                                return $record->priority;
-                        }
-                    })
-                    ->color(function ($state) {
-                        return match ($state) {
-                            'Urgent' => Color::Red,
-                            'High' => Color::Orange,
-                            'Moderate' => Color::Yellow,
-                            'Low' => Color::Blue,
-                            'Escalated' => Color::Purple,
-                            default => null,
-                        };
-                    })
-                    ->sortable()
-                    ->searchable(),
                 TextColumn::make('location')
                     ->label('Location')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('concern_type')
-                    ->label('Concern Type')
-                    ->sortable()
                     ->searchable(),
 
                 TextColumn::make('created_at')
@@ -231,7 +222,6 @@ class TicketQueueResource extends Resource
                                 'status' => 'In progress',
                                 'assigned' => auth()->user()->name,
                             ]);
-
 
                             $user = User::where('name', $record->name)->first();
                             if ($user) {

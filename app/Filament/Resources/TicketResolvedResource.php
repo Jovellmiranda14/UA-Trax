@@ -69,22 +69,18 @@ class TicketResolvedResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Ticket ID')
-                    ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Sender')
-                    ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('subject')
                     ->label('Concern')
-                    ->sortable()
                     ->searchable(),
 
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
-                    ->sortable()
                     ->getStateUsing(function ($record) {
                         switch ($record->status) {
                             case 'open':
@@ -140,23 +136,18 @@ class TicketResolvedResource extends Resource
                             default => null,
                         };
                     })
-                    ->sortable()
                     ->searchable(),
-
 
 
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
-                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('department')
                     ->label('Department')
-                    ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('assigned')
-                    ->label('Assigned To')
-                    ->sortable()
+                    ->label('Assigned')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('created_at')

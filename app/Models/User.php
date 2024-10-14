@@ -22,6 +22,11 @@ class User extends Authenticatable implements FilamentUser
      const REGULAR_USER = 'user';
 
      const SAS = 'SAS';
+
+     //SAS DEPTS
+        const PSYCH = 'PSYCH';
+        const CRIM = 'CRIM';
+        const COMM = 'AB COMM';
      const CEA = 'CEA';
      const CONP = 'CONP';
      const CITCLS = 'CITCLS';
@@ -55,7 +60,7 @@ class User extends Authenticatable implements FilamentUser
         self::SAS => 'SAS',
         self::CEA => 'CEA',
         self::CITCLS => 'CITCLS',
-        self::RSO => 'RSO',
+        // self::RSO => 'RSO',
         self::OFFICE => 'OFFICE',
         self::CONP => 'CONP',
         self::PPGS => 'PPGS',

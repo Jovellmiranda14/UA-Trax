@@ -84,21 +84,57 @@ class TicketsAcceptedResource extends Resource
 
     public static function table(Table $table): Table
     {
-        // $user = auth()->user();
+        $user = auth()->user();
 
-        return $table
+        if ($user->role === 'user') {
+            // Admin users can see all tickets
+            $query = TicketsAccepted::query();
+        } else {
+            // Regular users see only their assigned tickets
+            $query = TicketsAccepted::query()->where('assigned', $user->name);
+        }
+
+        return $table->query($query)
             // Pagination 
-            // ->paginated([10, 25, 50, 100, 'all']) 
-            // ->query(Ticket::query()->where('role', $user->role))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Ticket ID')
-                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Concern')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('subject')
                     ->label('Concern')
-                    ->sortable()
                     ->searchable(),
+                Tables\Columns\BadgeColumn::make('status')
+                    ->label('Status')
+                    ->searchable()
+                    ->getStateUsing(function ($record) {
+                        switch ($record->status) {
+                            case 'open':
+                                return 'Open';
+                            case 'in progress':
+                                return 'In progress';
+                            case 'on-hold':
+                                return 'On-hold';
+                            case 'resolved':
+                                return 'Resolved';
+                            case 'close':
+                                return 'Close';
+                            default:
+                                return $record->status;
+                        }
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'Open' => Color::Blue,
+                            'In progress' => Color::Yellow,
+                            'On-hold' => IssuePalette::Black,
+                            'Resolved' => Color::Green,
+                            'Close' => IssuePalette::Gray,
+                            default => null,
+                        };
+                    }),
                 Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
                     ->getStateUsing(function ($record) {
@@ -127,58 +163,23 @@ class TicketsAcceptedResource extends Resource
                             default => null,
                         };
                     })
-                    ->searchable()
-                    ->sortable(),
-
-                Tables\Columns\BadgeColumn::make('status')
-                    ->label('Status')
-                    ->sortable()
-                    ->searchable()
-                    ->getStateUsing(function ($record) {
-                        switch ($record->status) {
-                            case 'open':
-                                return 'Open';
-                            case 'in progress':
-                                return 'In progress';
-                            case 'on-hold':
-                                return 'On-hold';
-                            case 'resolved':
-                                return 'Resolved';
-                            case 'close':
-                                return 'Close';
-                            default:
-                                return $record->status;
-                        }
-                    })
-                    ->color(function ($state) {
-                        return match ($state) {
-                            'Open' => Color::Blue,
-                            'In progress' => Color::Yellow,
-                            'On-hold' => IssuePalette::Black,
-                            'Resolved' => Color::Green,
-                            'Close' => IssuePalette::Gray,
-                            default => null,
-                        };
-                    }),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
-                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('department')
                     ->label('Department')
-                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('assigned')
-                    ->label('Grabbed by')
-                    ->sortable()
+                    ->label('Assigned')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Date created')
+                    ->label('Created On')
                     ->date()
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('accepted_at')
-                    ->label('Date Accepted')
+                    ->label('Accepted On')
                     ->date()
                     ->sortable()
                     ->searchable(),
@@ -307,12 +308,9 @@ class TicketsAcceptedResource extends Resource
                         ->icon('heroicon-o-chat-bubble-left-right')
                         ->modalHeading('Comments')
                         ->modalSubheading('')
-
-
                         ->form(function (TicketsAccepted $record) {
 
                             return [
-
                                 Grid::make(3)
                                     ->schema([
                                         TextInput::make('id')
@@ -343,9 +341,6 @@ class TicketsAcceptedResource extends Resource
                                     ])
 
                                     ->schema([
-
-
-
                                         Grid::make(3)
                                             ->schema([
                                                 TextInput::make('sender')
@@ -360,8 +355,6 @@ class TicketsAcceptedResource extends Resource
                                             ->label('Description')
                                             ->disabled(),
                                     ])
-
-
 
                                     ->default(function () use ($record) {
                                         // Now we use the passed record parameter instead of $this
@@ -456,6 +449,7 @@ class TicketsAcceptedResource extends Resource
                                 'status' => 'Resolved',
                                 'assigned' => auth()->user()->name,
                             ]);
+
                             $user = User::where('name', $record->name)->first();
                             if ($user) {
                                 $user->notify(new TicketResolvedNotification($record));

@@ -266,12 +266,10 @@ class TicketResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Ticket ID')
-                    ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('concern_type')
                     ->label('Category')
-                    ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('subject')
@@ -336,7 +334,6 @@ class TicketResource extends Resource
                             default => null,
                         };
                     })
-                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
@@ -346,21 +343,22 @@ class TicketResource extends Resource
                     ->label('Deptartment')
                     ->searchable(),
 
-                Tables\Columns\ImageColumn::make('attachment')
-                    ->label('Image')
-                    ->size(50)
-                    ->circular()
-                    ->getStateUsing(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : url('/images/XCircleOutline.png'))
-                    ->url(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : null)
-                    ->extraAttributes(function ($record) {
-                        return $record->attachment ? ['class' => 'clickable-image'] : [];
-                    })
-                    ->openUrlInNewTab(),
+                // Tables\Columns\ImageColumn::make('attachment')
+                //     ->label('Image')
+                //     ->size(50)
+                //     ->circular()
+                //     ->getStateUsing(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : url('/images/XCircleOutline.png'))
+                //     ->url(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : null)
+                //     ->extraAttributes(function ($record) {
+                //         return $record->attachment ? ['class' => 'clickable-image'] : [];
+                //     })
+                //     ->openUrlInNewTab(),
 
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Date Created')
                     ->formatStateUsing(fn() => Date::now()->format('Y-m-d H:i:s')) // Format date and time
+                    ->sortable()
                     ->date(),
 
                 // Tables\Columns\TextColumn::make('name')
@@ -380,9 +378,6 @@ class TicketResource extends Resource
                 // ->toggleable(isToggledHiddenByDefault: true),
                 // ->formatStateUsing(fn ($state) => $state ? '<img src="' . $state . '" alt="Attachment" style="max-width: 100px; max-height: 100px;" />' : 'No Attachment')
                 // ->html(), // Use HTML formatting to render the image
-
-
-
 
 
                 // Tables\Columns\TextColumn::make('updated_at')
