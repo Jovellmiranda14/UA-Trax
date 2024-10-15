@@ -33,7 +33,7 @@ class TicketGrabbedNotification extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database', 'mail']; // Add or remove channels as needed
+        return ['database',]; // Add or remove channels as needed
     }
 
     /**
@@ -57,12 +57,4 @@ class TicketGrabbedNotification extends Notification implements ShouldQueue
      * @param mixed $notifiable
      * @return MailMessage
      */
-    public function toMail($notifiable)
-    {
-        return (new MailMessage)
-            ->greeting('Hello!')
-            ->line('The ticket with ID ' . $this->ticket->id . ' has been grabbed by ' . auth()->user()->name . '.')
-            ->action('View Ticket', url('/tickets/' . $this->ticket->id))
-            ->line('Thank you for using our application!');
-    }
 }

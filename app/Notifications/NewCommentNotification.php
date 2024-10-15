@@ -25,16 +25,9 @@ class NewCommentNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['mail', 'database']; // You can also add 'mail' or other channels
+        return [ 'database']; // You can also add 'mail' or other channels
     }
 
-    public function toMail($notifiable)
-    {
-        return (new MailMessage)
-                    ->line('A new comment has been added to ticket #' . $this->comment->ticket_id)
-                    ->action('View Comment', url('/tickets/' . $this->comment->ticket_id))
-                    ->line('Thank you for using our application!');
-    }
 
     public function toArray($notifiable)
     {

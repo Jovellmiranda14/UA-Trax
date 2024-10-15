@@ -115,39 +115,6 @@ class TicketQueueResource extends Resource
                 TextColumn::make('subject')
                     ->label('Concern')
                     ->searchable(),
-                TextColumn::make('department')
-                    ->label('Department')
-                    ->searchable(),
-
-                TextColumn::make('priority')
-                    ->label('Priority')
-                    ->getStateUsing(function ($record) {
-                        switch ($record->priority) {
-                            case 'urgent':
-                                return 'Urgent';
-                            case 'high':
-                                return 'High';
-                            case 'moderate':
-                                return 'Moderate';
-                            case 'low':
-                                return 'Low';
-                            case 'escalated':
-                                return 'Escalated';
-                            default:
-                                return $record->priority;
-                        }
-                    })
-                    ->color(function ($state) {
-                        return match ($state) {
-                            'Urgent' => Color::Red,
-                            'High' => Color::Orange,
-                            'Moderate' => Color::Yellow,
-                            'Low' => Color::Blue,
-                            'Escalated' => Color::Purple,
-                            default => null,
-                        };
-                    })
-                    ->searchable(),
                 BadgeColumn::make('status')
                     ->label('Status')
                     ->getStateUsing(function ($record) {
@@ -177,8 +144,41 @@ class TicketQueueResource extends Resource
                         };
                     })
                     ->searchable(),
+                    
+                TextColumn::make('priority')
+                ->label('Priority')
+                ->getStateUsing(function ($record) {
+                    switch ($record->priority) {
+                        case 'urgent':
+                            return 'Urgent';
+                        case 'high':
+                            return 'High';
+                        case 'moderate':
+                            return 'Moderate';
+                        case 'low':
+                            return 'Low';
+                        case 'escalated':
+                            return 'Escalated';
+                        default:
+                            return $record->priority;
+                    }
+                })
+                ->color(function ($state) {
+                    return match ($state) {
+                        'Urgent' => Color::Red,
+                        'High' => Color::Orange,
+                        'Moderate' => Color::Yellow,
+                        'Low' => Color::Blue,
+                        'Escalated' => Color::Purple,
+                        default => null,
+                    };
+                })
+                ->searchable(),
                 TextColumn::make('location')
                     ->label('Location')
+                    ->searchable(),
+                    TextColumn::make('department')
+                    ->label('Department')
                     ->searchable(),
 
                 TextColumn::make('created_at')

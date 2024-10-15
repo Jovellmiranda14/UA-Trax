@@ -17,11 +17,13 @@ class TicketResolved extends Model
         'status',
         'priority',
         'department',
+        'description',
         'location',
         'assigned_to',
+        'assigned',
         'dept_role',
         'created_at',
-        'assigned_at',
+        'accepted_at',
         'attachment',
     ];
     public function ticket()

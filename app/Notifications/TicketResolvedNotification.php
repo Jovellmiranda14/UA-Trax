@@ -33,7 +33,7 @@ class TicketResolvedNotification extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database', 'mail']; // Add or remove channels as needed
+        return ['database']; // Add or remove channels as needed
     }
 
     /**
