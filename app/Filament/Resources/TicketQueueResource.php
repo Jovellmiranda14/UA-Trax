@@ -114,6 +114,7 @@ class TicketQueueResource extends Resource
                     ->searchable(),
                 TextColumn::make('subject')
                     ->label('Concern')
+                    ->limit(25)
                     ->searchable(),
                 BadgeColumn::make('status')
                     ->label('Status')
@@ -306,10 +307,11 @@ class TicketQueueResource extends Resource
                                                         Textarea::make('description')
                                                             ->label('Description')
                                                             ->default($record->description)
+                                                            ->autosize()
                                                             ->disabled()
                                                             ->required(),
                                                         FileUpload::make('attachment')
-                                                            ->label('Attachment')
+                                                            ->label('Attachment(optional')
                                                             ->image()
                                                             ->default($record->attachment)
                                                             ->disabled(),

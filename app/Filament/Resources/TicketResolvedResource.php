@@ -77,6 +77,7 @@ class TicketResolvedResource extends Resource
 
                 Tables\Columns\TextColumn::make('subject')
                     ->label('Concern')
+                    ->limit(25)
                     ->searchable(),
 
                 Tables\Columns\BadgeColumn::make('status')

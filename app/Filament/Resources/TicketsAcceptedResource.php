@@ -85,12 +85,12 @@ class TicketsAcceptedResource extends Resource
     public static function table(Table $table): Table
     {
         $user = auth()->user();
-
+        // Regular users see only their assigned tickets
         if ($user->role === 'user') {
-            // Admin users can see all tickets
+
             $query = TicketsAccepted::query();
         } else {
-            // Regular users see only their assigned tickets
+            // Admin users can see all tickets
             $query = TicketsAccepted::query()->where('assigned', $user->name);
         }
 
@@ -101,10 +101,11 @@ class TicketsAcceptedResource extends Resource
                     ->label('Ticket ID')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Concern')
+                    ->label('Sender')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('subject')
                     ->label('Concern')
+                    ->limit(25)
                     ->searchable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
@@ -273,12 +274,13 @@ class TicketsAcceptedResource extends Resource
                                                         ->disabled()
                                                         ->required(),
                                                     FileUpload::make('attachment')
-                                                        ->label('Attachment')
+                                                        ->label('Attachment (optional')
                                                         ->image()
                                                         // ->default( $record->attachment)
                                                         ->disabled(),
                                                 ]),
                                         ]),
+
 
                                     // Section: Place of Issue
                                     Card::make('Place of Issue')
@@ -303,13 +305,14 @@ class TicketsAcceptedResource extends Resource
                                 ]),
                         ]),
 
-                    Tables\Actions\Action::make('comment')
-                        ->label('Comment')
+                    Tables\Actions\Action::make('comment-list')
+                        ->label('Comment list')
                         ->icon('heroicon-o-chat-bubble-left-right')
                         ->modalHeading('Comments')
                         ->modalSubheading('')
-                        ->form(function (TicketsAccepted $record) {
 
+
+                        ->form(function (TicketsAccepted $record) {
                             return [
                                 Grid::make(3)
                                     ->schema([
@@ -329,17 +332,11 @@ class TicketsAcceptedResource extends Resource
                                             ->disabled()
                                             ->required(),
                                     ]),
-
-
-
-
-
-                                Repeater::make('comments') // Display existing comments
-                                    ->label('See all comments made by you and the administrator.')
+                                Repeater::make('comments')
+                                    ->label('Comments')
                                     ->extraAttributes([
-                                        'style' => 'max-height: 38vh;  overflow-y: auto;',
+                                        'style' => 'max-height: 38vh; overflow-y: auto;',
                                     ])
-
                                     ->schema([
                                         Grid::make(3)
                                             ->schema([
@@ -350,33 +347,58 @@ class TicketsAcceptedResource extends Resource
                                                     ->label('Date and time')
                                                     ->disabled(),
                                             ]),
-
                                         TextArea::make('comment')
                                             ->label('Description')
+                                            ->autosize()
                                             ->disabled(),
                                     ])
 
+
+
                                     ->default(function () use ($record) {
-                                        // Now we use the passed record parameter instead of $this
-                                        if ($record->comments) {
-                                            return $record->comments->map(function ($comment) {
-                                                return [
-                                                    'sender' => $comment->sender,
-                                                    'comment' => $comment->comment,
-                                                    'commented_at' => $comment->commented_at,
-                                                ];
-                                            })->toArray();
-                                        } else {
-                                            return [];
-                                        }
+                                        return $record->comments->map(function ($comment) {
+                                            return [
+                                                'sender' => $comment->sender,
+                                                'comment' => $comment->comment,
+                                                'commented_at' => $comment->commented_at,
+                                            ];
+                                        })->toArray();
                                     })
                                     ->disabled(),
+                            ];
+                        }),
 
-                                TextArea::make('new_comment')
-                                    ->label('Comment')
-                                    ->placeholder('Write something...'),
+                    Tables\Actions\Action::make('send_comment')
+                        ->icon('heroicon-o-chat-bubble-left-ellipsis')
 
-
+                        ->form(function (TicketsAccepted $record) {
+                            return [
+                                Grid::make(3)
+                                    ->schema([
+                                        TextInput::make('id')
+                                            ->label('Ticket ID')
+                                            ->default($record->id)
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('subject')
+                                            ->label('Concern')
+                                            ->default($record->subject)
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('created_at')
+                                            ->label('Date Created')
+                                            ->default($record->created_at)
+                                            ->disabled()
+                                            ->required(),
+                                    ]),
+                                Card::make('')
+                                    ->schema([
+                                        TextArea::make('new_comment')
+                                            ->label('Comment')
+                                            ->autosize()
+                                            ->placeholder('Write something to the administrator...')
+                                            ->required(),
+                                    ])
                             ];
                         })
                         ->action(function (array $data, TicketsAccepted $record) {
@@ -387,12 +409,12 @@ class TicketsAcceptedResource extends Resource
                             $comment->commented_at = now();
                             $comment->comment = $data['new_comment'];
                             $comment->save();
+
                             // ------------ Notification ------------------------------------------------ 
                             $assignedAdmin = User::where('name', $record->assigned)->first();
                             $RegularUser = User::where('name', $record->name)->first();
 
                             if ($assignedAdmin) { // Check if the assigned admin exists
-                
                                 $RegularUser->notify(new NewCommentNotification($comment));
                                 Notification::make()
                                     ->title('Admin Comment on Ticket:')
@@ -400,7 +422,6 @@ class TicketsAcceptedResource extends Resource
                                     ->sendToDatabase($RegularUser);
                                 event(new DatabaseNotificationsSent($RegularUser));
                             } else {
-
                                 Log::warning('No admin found for assigned record ID: ' . $record->assigned);
                             }
 
@@ -409,17 +430,15 @@ class TicketsAcceptedResource extends Resource
                                 $assignedAdmin->notify(new NewCommentNotification($comment));
                                 Notification::make()
                                     ->title('User Comment on Ticket:')
-                                    ->body('The ticket owsner commented: ' . $comment->comment)
+                                    ->body('The ticket owner commented: ' . $comment->comment)
                                     ->sendToDatabase($assignedAdmin);
-
-
                                 event(new DatabaseNotificationsSent($assignedAdmin));
                             } else {
                                 // Handle the case where the regular user is not found
                                 Log::warning('No regular user found for assigned record ID: ' . $record->assigned);
                             }
-
                         }),
+
 
                     Action::make('resolve')
                         ->label('Resolve')

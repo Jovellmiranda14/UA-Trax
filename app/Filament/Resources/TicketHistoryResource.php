@@ -24,6 +24,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
+
 // Admin = By Dept
 // User = Sarili 
 
@@ -78,8 +79,9 @@ class TicketHistoryResource extends Resource
                     ->searchable(),
                 TextColumn::make('subject')
                     ->label('Concern')
+                    ->limit(25)
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(),                
                 BadgeColumn::make('status')
                     ->label('Status')
                     ->getStateUsing(function ($record) {

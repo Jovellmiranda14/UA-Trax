@@ -82,8 +82,7 @@ class TicketResource extends Resource
 
 
                 Radio::make('concern_type')
-                    ->label('My concern is about:')
-
+                    ->label('I want to send a ticket to:')
                     ->options(function () {
                         $user = auth()->user();
                         // Restrict options based on user role
@@ -96,12 +95,12 @@ class TicketResource extends Resource
                         }
                         if ($user->isFacilitySuperAdmin()) {
                             return [
-                                'Laboratory and Equipment' => 'Laboratory and Equipment',
+                                'Laboratory and Equipment' => 'OMISS/ Lab in-Charge',
                             ];
                         }
                         return [
-                            'Laboratory and Equipment' => 'Laboratory and Equipment',
-                            'Facility' => 'Facility',
+                            'Laboratory and Equipment' => 'OMISS/ Lab in-Charge',
+                            'Facility' => 'PPGS',
                         ];
                     })
                     ->reactive()
@@ -136,7 +135,6 @@ class TicketResource extends Resource
                                         TextInput::make('subject')
                                             ->label('Concern')
                                             ->required()
-
                                             ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
 
                                         // TextInput::make('property_no')
@@ -154,7 +152,6 @@ class TicketResource extends Resource
                                             ])
                                             ->required()
                                             ->reactive()
-
                                             ->visible(fn($get) => $get('concern_type') === 'Facility'),
 
                                         Select::make('type_of_issue')
@@ -165,7 +162,6 @@ class TicketResource extends Resource
                                                 'Other_Devices' => 'Other Devices (e.g., Printer, Projector, and TV)',
                                             ])
                                             ->required()
-
                                             ->visible(fn($get) => $get('concern_type') === 'Laboratory and Equipment'),
                                     ]),
 
@@ -174,12 +170,12 @@ class TicketResource extends Resource
                                     ->schema([
                                         Textarea::make('description')
                                             ->label('Description')
+                                            ->autosize()
                                             ->required()
-
                                             ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
 
                                         FileUpload::make('attachment')
-                                            ->label('Upload a file')
+                                            ->label('Upload a file (optional)')
                                             ->acceptedFileTypes(['image/jpeg', 'image/png'])
                                             ->directory('attachments')
                                             ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
@@ -189,7 +185,6 @@ class TicketResource extends Resource
                         // Place of Issues Card
                         Card::make('Place of issues')
                             ->description('Select where the equipment is currently located.')
-
                             ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
                             ->schema([
                                 Grid::make(2)
@@ -206,7 +201,6 @@ class TicketResource extends Resource
                                                 'OFFICE' => 'OFFICE',
                                             ])
                                             ->reactive()
-
                                             ->required(),
 
                                         Select::make('location')
@@ -232,7 +226,6 @@ class TicketResource extends Resource
                                         TextInput::make('location')
                                             ->label('Location')
                                             ->required()
-
                                             ->default('N/A')
                                             ->visible(fn($get) => in_array($get('department'), ['RSO', 'OFFICE'])),
                                         // TextInput::make('created_at')
@@ -274,6 +267,7 @@ class TicketResource extends Resource
 
                 Tables\Columns\TextColumn::make('subject')
                     ->label('Concern')
+                    ->limit(25)
                     ->searchable(),
 
                 // Tables\Columns\BadgeColumn::make('status')
