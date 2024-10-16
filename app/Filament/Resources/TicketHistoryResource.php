@@ -3,27 +3,21 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TicketHistoryResource\Pages;
-use App\Filament\Resources\TicketHistoryResource\RelationManagers;
+
 use App\Models\TicketHistory;
-use App\Models\Ticket;
-use Filament\Forms;
+
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
+
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Support\Colors\Color;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\ViewAction;
-use Filament\Tables\Actions\DeleteAction;
+
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Card;
-use Filament\Forms\Components\DatePicker;
+
 
 // Admin = By Dept
 // User = Sarili 
@@ -63,25 +57,45 @@ class TicketHistoryResource extends Resource
 
     public static function table(Table $table): Table
     {
-        // $user = auth()->user();
+        $user = auth()->user(); // Retrieve the currently authenticated user
+
+        // Build the base query for TicketHistory
+        $query = TicketHistory::query();
+
+        // Check for Equipment Super Admin role
+        if ($user->isEquipmentSuperAdmin()) {
+            $query->whereIn('concern_type', ['Laboratory and Equipment'])
+                ->orderBy('concern_type', 'asc');
+        }
+
+        // Check for Equipment Admin roles
+        if ($user->isEquipmentAdminOmiss() || $user->isEquipmentAdminlabcustodian()) {
+
+            $query->where('assigned', $user->dept_role);
+        }
+
+
+        if ($user->isFacilityAdmin() || $user->isFacilitySuperAdmin()) {
+            $query->where('concern_type', 'Facility')
+                ->orderBy('concern_type', 'asc');
+        }
+
+
+        // Pagination 
+        // ->paginated([10, 25, 50, 100, 'all']) 
         return $table
-            // ->query(Ticket::query()->where('name', $user->name))
-            // Pagination 
-            // ->paginated([10, 25, 50, 100, 'all']) 
+            ->query($query)
             ->columns([
                 TextColumn::make('id')
                     ->label('Ticket ID')
-                    ->sortable()
                     ->searchable(),
                 TextColumn::make('name')
                     ->label('Sender')
-                    ->sortable()
                     ->searchable(),
                 TextColumn::make('subject')
                     ->label('Concern')
                     ->limit(25)
-                    ->sortable()
-                    ->searchable(),                
+                    ->searchable(),
                 BadgeColumn::make('status')
                     ->label('Status')
                     ->getStateUsing(function ($record) {
@@ -110,10 +124,10 @@ class TicketHistoryResource extends Resource
                             default => null,
                         };
                     })
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('priority')
-                    ->label('Priority')
                     ->sortable()
+                    ->searchable(),
+                TextColumn::make('priority')
+                    ->label('Priority')
                     ->searchable()
                     ->getStateUsing(function ($record) {
                         switch ($record->priority) {
@@ -143,18 +157,28 @@ class TicketHistoryResource extends Resource
                     }),
                 TextColumn::make('location')
                     ->label('Location')
-                    ->sortable()
                     ->searchable(),
                 TextColumn::make('department')
                     ->label('Department')
-                    ->sortable()
                     ->searchable(),
+                ImageColumn::make('attachment')
+                    ->label('Image')
+                    ->size(50)
+                    ->circular()
+                    ->getStateUsing(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : url('/images/XCircleOutline.png'))
+                    ->url(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : null)
+                    ->extraAttributes(function ($record) {
+                        return $record->attachment ? ['class' => 'clickable-image'] : [];
+                    })
+                    ->openUrlInNewTab(),
+
+
                 TextColumn::make('created_at')
                     ->label('Date Created')
                     ->date()
                     ->sortable(),
             ])
-            //
+            ->defaultSort('id', 'desc')
 
             ->filters([
                 SelectFilter::make('status')
@@ -166,10 +190,9 @@ class TicketHistoryResource extends Resource
                     ])
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
+
             ]);
+
     }
 
     public static function getRelations(): array

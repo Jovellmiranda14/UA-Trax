@@ -91,7 +91,7 @@ class TicketQueueResource extends Resource
                     $user->isEquipmentAdminlabcustodian()
                 ) {
                     $query->whereIn('concern_type', ['Laboratory and Equipment'])
-                    ->where('department', $user->dept_role)
+                        ->where('department', $user->dept_role)
                         ->orderBy('concern_type', 'asc');
 
                 } elseif (
@@ -144,40 +144,40 @@ class TicketQueueResource extends Resource
                         };
                     })
                     ->searchable(),
-                    
+
                 TextColumn::make('priority')
-                ->label('Priority')
-                ->getStateUsing(function ($record) {
-                    switch ($record->priority) {
-                        case 'urgent':
-                            return 'Urgent';
-                        case 'high':
-                            return 'High';
-                        case 'moderate':
-                            return 'Moderate';
-                        case 'low':
-                            return 'Low';
-                        case 'escalated':
-                            return 'Escalated';
-                        default:
-                            return $record->priority;
-                    }
-                })
-                ->color(function ($state) {
-                    return match ($state) {
-                        'Urgent' => Color::Red,
-                        'High' => Color::Orange,
-                        'Moderate' => Color::Yellow,
-                        'Low' => Color::Blue,
-                        'Escalated' => Color::Purple,
-                        default => null,
-                    };
-                })
-                ->searchable(),
+                    ->label('Priority')
+                    ->getStateUsing(function ($record) {
+                        switch ($record->priority) {
+                            case 'urgent':
+                                return 'Urgent';
+                            case 'high':
+                                return 'High';
+                            case 'moderate':
+                                return 'Moderate';
+                            case 'low':
+                                return 'Low';
+                            case 'escalated':
+                                return 'Escalated';
+                            default:
+                                return $record->priority;
+                        }
+                    })
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'Urgent' => Color::Red,
+                            'High' => Color::Orange,
+                            'Moderate' => Color::Yellow,
+                            'Low' => Color::Blue,
+                            'Escalated' => Color::Purple,
+                            default => null,
+                        };
+                    })
+                    ->searchable(),
                 TextColumn::make('location')
                     ->label('Location')
                     ->searchable(),
-                    TextColumn::make('department')
+                TextColumn::make('department')
                     ->label('Department')
                     ->searchable(),
 
@@ -186,6 +186,7 @@ class TicketQueueResource extends Resource
                     ->date()
                     ->sortable(),
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
             ])
             ->actions([
@@ -221,6 +222,7 @@ class TicketQueueResource extends Resource
                                 'priority' => $record->priority,
                                 'status' => 'In progress',
                                 'assigned' => auth()->user()->name,
+                                'accepted_at'=> now(),
                             ]);
 
                             $user = User::where('name', $record->name)->first();

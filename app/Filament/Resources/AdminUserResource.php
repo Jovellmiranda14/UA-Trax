@@ -65,14 +65,6 @@ class AdminUserResource extends Resource
                         // Lower part: Department, Role
                         Grid::make(3) // Split into two columns for the bottom part
                             ->schema([
-                                // This should be hidden for facility admin
-                                // Visible only for Equipment admin
-
-                                // Uncomment if needed
-                                // Forms\Components\Select::make('position')
-                                //     ->required()
-                                //     ->options(User::Pos), // Ensure User::Pos provides an associative array or similar structure
-
                                 Forms\Components\Select::make('role')
                                     ->label('Role')
                                     ->required()
@@ -86,28 +78,18 @@ class AdminUserResource extends Resource
                                     ->required()
                                     ->options(User::Dept)
                                     ->reactive()  // Make the field reactive to trigger location updates
-                                    ->visible(fn() => in_array(auth()->user()->role, ['equipment_admin_omiss', 'equipmentsuperadmin', 'equipment_admin_labcustodian']))
-                                    ->hidden(fn() => auth()->user()->role === 'facility_admin'),
-
-                                // Select::make('location')
-                                //     ->label('Location')
-                                //     ->options(fn ($get) => collect([
-                                //         'SAS' => ['SAS Building', 'SAS Lab'],
-                                //         'CEA' => ['CEA Hall', 'CEA Workshop'],
-                                //         'CONP' => ['CONP Room 1', 'CONP Room 2'],
-                                //         'CITCLS' => ['CITCLS Area A', 'CITCLS Area B'],
-                                //     ][$get('dept_role')] ?? [])->mapWithKeys(fn($value) => [$value => $value]))
-                                //     ->required()
-                                //     ->multiple()
-                                //     ->reactive()
-                                //     ->visible(fn ($get) => !in_array($get('dept_role'), ['RSO', 'OFFICE'])),
-
-                                // TextInput::make('location') // Changed field name to avoid conflict
-                                //     ->label('Location')
-                                //     ->required()
-                                //     ->default('N/A')
-                                //     ->visible(fn ($get) => in_array($get('dept_role'), ['RSO', 'OFFICE'])),
-
+                                    ->visible(
+                                        fn() => in_array(
+                                            auth()->user()->role,
+                                            [
+                                                'equipment_admin_omiss',
+                                                'equipmentsuperadmin',
+                                                'equipment_admin_labcustodian',
+                                                'facility_admin',
+                                                'facilitysuperadmin'
+                                            ]
+                                        )
+                                    ),
 
                             ])
 

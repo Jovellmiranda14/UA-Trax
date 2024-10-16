@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Forms\Components\Card;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\TextArea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Support\Colors\Color;
@@ -150,7 +153,16 @@ class TicketResolvedResource extends Resource
                 Tables\Columns\TextColumn::make('assigned')
                     ->label('Assigned')
                     ->searchable(),
-
+                    Tables\Columns\ImageColumn::make('attachment')
+                    ->label('Image')
+                    ->size(50)
+                    ->circular()
+                    ->getStateUsing(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : url('/images/XCircleOutline.png'))
+                    ->url(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : null)
+                    ->extraAttributes(function ($record) {
+                        return $record->attachment ? ['class' => 'clickable-image'] : [];
+                    })
+                    ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created On')
                     ->date()
@@ -259,9 +271,62 @@ class TicketResolvedResource extends Resource
                                 ]),
                         ]),
 
-                    Tables\Actions\Action::make('ViewComment')
-                        ->label('Comment')
-                        ->icon('heroicon-o-rectangle-stack'),
+                        Action::make('ViewComment')
+                        ->label('Comment list')    
+                        ->icon('heroicon-o-rectangle-stack')
+                        ->modalHeading('Comments')
+                        ->form(function (TicketResolved $record) {
+                            return [
+                                Grid::make(3)
+                                    ->schema([
+                                        TextInput::make('id')
+                                            ->label('Ticket ID')
+                                            ->default($record->id)
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('subject')
+                                            ->label('Concern')
+                                            ->default($record->subject)
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('created_at')
+                                            ->label('Date Created')
+                                            ->default($record->created_at)
+                                            ->disabled()
+                                            ->required(),
+                                    ]),
+                                    Repeater::make('resolved_comments')
+                                    ->label('Resolved Comments')
+                                    ->extraAttributes([
+                                        'style' => 'max-height: 38vh; overflow-y: auto;',
+                                    ])
+                                    ->schema([
+                                        Grid::make(3)
+                                            ->schema([
+                                                TextInput::make('sender')
+                                                    ->label('Sender')
+                                                    ->disabled(),
+                                                TextInput::make('commented_at')
+                                                    ->label('Date and Time')
+                                                    ->disabled(),
+                                            ]),
+                                        TextArea::make('comment')
+                                            ->label('Description')
+                                            ->autosize()
+                                            ->disabled(),
+                                    ])
+                                    ->default(function () use ($record) {
+                                        return $record->resolvedComments->map(function ($comment) {
+                                            return [
+                                                'sender' => $comment->sender,
+                                                'commented_at' => $comment->created_at->format('Y-m-d H:i:s'), // Format as needed
+                                                'comment' => $comment->comment,
+                                            ];
+                                        })->toArray();
+                                    })
+                                    ->disabled(),
+                            ];
+                        }),
                 ]),
             ]);
     }

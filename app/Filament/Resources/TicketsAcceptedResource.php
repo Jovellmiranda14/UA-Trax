@@ -32,6 +32,7 @@ use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 use App\Models\TicketComment;
+use App\Models\ResolvedComment;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use App\Notifications\NewCommentNotification;
@@ -260,7 +261,7 @@ class TicketsAcceptedResource extends Resource
                                                         ->label('Concern')
                                                         ->disabled()
                                                         ->required(),
-                                                    TextInput::make('issue_type')
+                                                    TextInput::make('type_of_issue')
                                                         ->label('Type of Issue')
                                                         ->disabled()
                                                         ->required(),
@@ -269,8 +270,9 @@ class TicketsAcceptedResource extends Resource
                                             // Description and Attachment Fields
                                             Grid::make(2)
                                                 ->schema([
-                                                    TextInput::make('description')
+                                                    TextArea::make('description')
                                                         ->label('Description')
+                                                        ->autosize()
                                                         ->disabled()
                                                         ->required(),
                                                     FileUpload::make('attachment')
@@ -439,13 +441,18 @@ class TicketsAcceptedResource extends Resource
                             }
                         }),
 
-
-                    Action::make('resolve')
+                        Action::make('resolve')
                         ->label('Resolve')
                         ->icon('heroicon-o-check')
-                        ->hidden(fn() => auth()->user()->role === 'user')->action(function ($record) {
-                            // Create a new entry in TicketsAccepted
-                            TicketResolved::create([
+                        ->hidden(fn() => auth()->user()->role === 'user')
+                        ->requiresConfirmation()
+                        ->modalHeading('Confirm Resolve Ticket')
+                        ->modalSubheading('Are you sure you want to resolve this ticket?')
+                        // ->color('success')
+                        ->action(function ($record) {
+
+                              // Create a new entry in TicketsResolved
+                              TicketResolved::create([
                                 'id' => $record->id,
                                 'concern_type' => $record->concern_type,
                                 'name' => $record->name,
@@ -462,29 +469,51 @@ class TicketsAcceptedResource extends Resource
                                 'created_at' => $record->created_at,
                                 'assigned' => auth()->user()->name,
                             ]);
-                            TicketHistory::where('id', $record->id)->update([ // Ensure you're updating the correct record
-                
+                          
+                    
+                            // Move comments to resolved_comments
+                            $comments = TicketComment::where('ticket_id', $record->id)->get();
+                            foreach ($comments as $comment) {
+                                // Log the ticket ID before inserting into resolved_comments
+                                \Log::info('Inserting comment into resolved_comments for ticket ID: ' . $record->id);
+                    
+                                // Create a resolved comment
+                                ResolvedComment::create([
+                                    'ticket_id' => $record->id,
+                                    'comment' => $comment->comment,
+                                    'sender' => $comment->sender,
+                                ]);
+                            }
+                    
+                            // Delete original comments after moving them
+                            TicketComment::where('ticket_id', $record->id)->delete();
+                    
+                            // Update TicketHistory for the resolved ticket
+                            TicketHistory::where('id', $record->id)->update([
                                 'priority' => $record->priority,
                                 'status' => 'Resolved',
                                 'assigned' => auth()->user()->name,
                             ]);
-
+                    
+                            // Notify the user about the ticket resolution
                             $user = User::where('name', $record->name)->first();
                             if ($user) {
                                 $user->notify(new TicketResolvedNotification($record));
                                 Notification::make()
-                                    ->title('Admin Claim the Ticket:')
-                                    ->body('The admin have closed your ticket.' . $record->id)
+                                    ->title('Admin Closed the Ticket:')
+                                    ->body('The admin has closed your ticket with ID: ' . $record->id)
                                     ->sendToDatabase($user);
                                 event(new DatabaseNotificationsSent($user));
                             }
-                            // Attempt to delete the record
+                    
+                            // Attempt to delete the original ticket record
                             if ($record->delete()) {
-                                \Log::info('Ticket resolved:', ['ticket_id' => $record->id]);
+                                \Log::info('Ticket resolved and deleted:', ['ticket_id' => $record->id]);
                             } else {
                                 \Log::error('Failed to delete the resolved ticket:', ['ticket_id' => $record->id]);
                             }
                         })
+                    
                 ]),
             ]);
     }

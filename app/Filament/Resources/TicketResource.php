@@ -334,19 +334,19 @@ class TicketResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('department')
-                    ->label('Deptartment')
+                    ->label('Assigned to')
                     ->searchable(),
 
-                // Tables\Columns\ImageColumn::make('attachment')
-                //     ->label('Image')
-                //     ->size(50)
-                //     ->circular()
-                //     ->getStateUsing(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : url('/images/XCircleOutline.png'))
-                //     ->url(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : null)
-                //     ->extraAttributes(function ($record) {
-                //         return $record->attachment ? ['class' => 'clickable-image'] : [];
-                //     })
-                //     ->openUrlInNewTab(),
+                Tables\Columns\ImageColumn::make('attachment')
+                    ->label('Image')
+                    ->size(50)
+                    ->circular()
+                    ->getStateUsing(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : url('/images/XCircleOutline.png'))
+                    ->url(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : null)
+                    ->extraAttributes(function ($record) {
+                        return $record->attachment ? ['class' => 'clickable-image'] : [];
+                    })
+                    ->openUrlInNewTab(),
 
 
                 Tables\Columns\TextColumn::make('created_at')
@@ -360,20 +360,6 @@ class TicketResource extends Resource
                 //     ->sortable()
                 //     ->searchable(),
 
-                // Tables\Columns\TextColumn::make('type_of_issue')
-                // ->label('Type of Issue')
-                // ->sortable()
-                // ->searchable(),
-
-
-                // Tables\Columns\TextColumn::make('attachment')
-                // ->label('Attachment')
-                // ->searchable()
-                // ->toggleable(isToggledHiddenByDefault: true),
-                // ->formatStateUsing(fn ($state) => $state ? '<img src="' . $state . '" alt="Attachment" style="max-width: 100px; max-height: 100px;" />' : 'No Attachment')
-                // ->html(), // Use HTML formatting to render the image
-
-
                 // Tables\Columns\TextColumn::make('updated_at')
                 // ->label('Date Updated')
                 // ->date()
@@ -381,6 +367,7 @@ class TicketResource extends Resource
                 // ->toggleable(isToggledHiddenByDefault: true),
 
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
 
                 // Type of issue filter
