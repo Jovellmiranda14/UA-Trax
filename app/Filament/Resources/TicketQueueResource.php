@@ -91,8 +91,7 @@ class TicketQueueResource extends Resource
                     $user->isEquipmentAdminlabcustodian()
                 ) {
                     $query->whereIn('concern_type', ['Laboratory and Equipment'])
-                        ->where('dept_role', $user->dept_role)
-                        ->whereIn('department', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE'])
+                    ->where('department', $user->dept_role)
                         ->orderBy('concern_type', 'asc');
 
                 } elseif (
