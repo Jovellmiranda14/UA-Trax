@@ -10,11 +10,11 @@ class CreateTicketCommentsTable extends Migration
     {
         Schema::create('ticket_comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ticket_id')->constrained('tickets_accepted'); // Foreign key to the ticket
+            $table->foreignId('ticket_id')->constrained('tickets_accepted')->onDelete('cascade'); // Foreign key to the ticket
             $table->string('sender');
-            $table->text('comment'); 
+            $table->text('comment');
             $table->timestamp('commented_at')->default(now());
-            $table->timestamps(); 
+            $table->timestamps();
         });
     }
 

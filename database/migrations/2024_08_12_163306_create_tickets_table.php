@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            
             $table->enum('concern_type', ['Laboratory and Equipment', 'Facility'])->nullable(false);
             $table->string('subject')->nullable(false);
             $table->string('name');  // Fixed 'name' field

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('subject');
+            $table->enum('concern_type', ['Laboratory and Equipment', 'Facility'])->nullable(false);
             $table->text('description')->nullable();
             $table->enum('type_of_issue', [
                 'repair',
