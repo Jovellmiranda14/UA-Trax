@@ -38,8 +38,4 @@ class TicketQueue extends Model
     {
         return $this->belongsTo(User::class, 'assigned', 'id');
     }
-
-    protected $cast =[
-        'attachment' => 'array'
-    ];
 }

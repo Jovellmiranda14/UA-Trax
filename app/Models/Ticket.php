@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Observers\TicketObserver;
-
+use Illuminate\Support\Facades\Log;
 // #[ObservedBy([TicketObserver::class])]
 class Ticket extends Model
 {
@@ -48,30 +48,25 @@ class Ticket extends Model
             ]);
         });
 
-        // Event: When a ticket is created
-        static::updated(function ($ticket) {
-            $freshTicket = $ticket->fresh();  // Fetch the most recent data from the database
-        
-            TicketHistory::create([
-                'id' => $freshTicket->id ?? $ticket->id,
-                'name' => $freshTicket->name ?? $ticket->name,
-                'subject' => $freshTicket->subject ?? $ticket->subject,
-                'description' => $freshTicket->description ?? $ticket->description,
-                'status' => $freshTicket->status ?? 'Open',  // Fallback to 'Open' if null
-                'priority' => $freshTicket->priority ?? 'Moderate',  // Fallback to 'Moderate' if null
-                'location' => $freshTicket->location ?? $ticket->location,
-                'department' => $freshTicket->department ?? $ticket->department,
-                'attachment' => $freshTicket->attachment ?? $ticket->attachment,
-                'assigned_at' => $freshTicket->assigned ?? $ticket->assigned,
-            ]);
-        });
-
         // Event: When a ticket is updated
         static::updated(function ($ticket) {
+            Log::info('Creating TicketHistory', [
+                'name' => $ticket->name,
+                'subject' => $ticket->subject,
+                'concern_type' => $ticket->concern_type,
+                'status' => $ticket->status,
+                'description' => $ticket->description,
+                'priority' => $ticket->priority,
+                'location' => $ticket->location,
+                'department' => $ticket->department,
+                'updated_at' => now(),
+            ]);
             TicketHistory::create([
                 'name' => $ticket->name,
                 'subject' => $ticket->subject,
+                'concern_type' => $ticket->concern_type,
                 'status' => $ticket->status,
+                'description' => $ticket->description,
                 'priority' => $ticket->priority,
                 'location' => $ticket->location,
                 'department' => $ticket->department,

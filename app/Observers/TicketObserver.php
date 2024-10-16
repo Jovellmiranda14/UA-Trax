@@ -81,6 +81,7 @@ class TicketObserver
                 'name'        => $ticket->name,
                 'subject'     => $ticket->subject,
                 'description' => $ticket->description,
+                'concern_type' => $ticket->concern_type,
                 'status'      => 'Open',  // Default 'Open' status for a newly created ticket
                 'priority'    => $ticket->priority ?? 'Moderate',  // Default to 'Moderate' if not set
                 'location'    => $ticket->location,

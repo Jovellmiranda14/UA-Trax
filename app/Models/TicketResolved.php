@@ -36,4 +36,9 @@ class TicketResolved extends Model
     {
         return $this->belongsTo(User::class, 'assigned', 'id');
     }
+
+    public function resolvedComments()
+    {
+        return $this->hasMany(ResolvedComment::class, 'ticket_id', 'id');
+    }
 }

@@ -15,12 +15,15 @@ class TicketHistory extends Model
         'subject',
         'status',
         'priority',
+        'description',
         'location',
         'department',
         'created_at',
+        'concern_type',
         'updated_at',
         'assigned',
         'attachment',
+        'accepted_at'
     ];
 
     public function ticket()
