@@ -61,14 +61,31 @@ class TicketResolvedResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $user = auth()->user(); // Retrieve the currently authenticated user
+
+        // Build the base query for TicketHistory
+        $query = TicketResolved::query();
+
+        // Check for Equipment Super Admin role
+        if ($user->isEquipmentSuperAdmin()) {
+            $query->whereIn('concern_type', ['Laboratory and Equipment'])
+                ->orderBy('concern_type', 'asc');
+        }
+
+        // Check for Equipment Admin roles
+        if ($user->isEquipmentAdminOmiss() || $user->isEquipmentAdminlabcustodian()) {
+
+            $query->where('assigned', $user->dept_role);
+        }
+
+
+        if ($user->isFacilityAdmin() || $user->isFacilitySuperAdmin()) {
+            $query->where('concern_type', 'Facility')
+                ->orderBy('concern_type', 'asc');
+        }
 
         return $table
-            // Pagination 
-            // ->paginated([10, 25, 50, 100, 'all']) 
-            // ->query(function (Builder $query) {
-            //     // Filter to show only tickets that are accepted
-            //     $query->whereNotNull('assigned');
-            // })
+            ->query($query)
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Ticket ID')

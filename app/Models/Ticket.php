@@ -48,32 +48,6 @@ class Ticket extends Model
             ]);
         });
 
-        // Event: When a ticket is updated
-        static::updated(function ($ticket) {
-            Log::info('Creating TicketHistory', [
-                'name' => $ticket->name,
-                'subject' => $ticket->subject,
-                'concern_type' => $ticket->concern_type,
-                'status' => $ticket->status,
-                'description' => $ticket->description,
-                'priority' => $ticket->priority,
-                'location' => $ticket->location,
-                'department' => $ticket->department,
-                'updated_at' => now(),
-            ]);
-            TicketHistory::create([
-                'name' => $ticket->name,
-                'subject' => $ticket->subject,
-                'concern_type' => $ticket->concern_type,
-                'status' => $ticket->status,
-                'description' => $ticket->description,
-                'priority' => $ticket->priority,
-                'location' => $ticket->location,
-                'department' => $ticket->department,
-                'updated_at' => now(),
-            ]);
-        });
-
         static::creating(function ($ticket) {
 
             $year = date('Y');

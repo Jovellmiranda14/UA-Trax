@@ -17,6 +17,7 @@ class TicketResolved extends Model
         'status',
         'priority',
         'department',
+        'concern_type',
         'description',
         'location',
         'assigned_to',
