@@ -17,7 +17,7 @@ use Filament\Forms\Components\Card;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\TextArea;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Support\Colors\Color;
@@ -289,7 +289,7 @@ class TicketResolvedResource extends Resource
                         ]),
 
                         Action::make('ViewComment')
-                        ->label('Comment list')    
+                        ->label('Comment list')
                         ->icon('heroicon-o-rectangle-stack')
                         ->modalHeading('Comments')
                         ->form(function (TicketResolved $record) {
@@ -327,7 +327,7 @@ class TicketResolvedResource extends Resource
                                                     ->label('Date and Time')
                                                     ->disabled(),
                                             ]),
-                                        TextArea::make('comment')
+                                        Textarea::make('comment')
                                             ->label('Description')
                                             ->autosize()
                                             ->disabled(),

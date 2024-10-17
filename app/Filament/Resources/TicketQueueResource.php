@@ -32,7 +32,7 @@ use Filament\Forms\Components\DatePicker;
 use App\Filament\Resources\UserResource\RelationManagers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\TextArea;
+use Filament\Forms\Components\Textarea;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
@@ -218,7 +218,7 @@ class TicketQueueResource extends Resource
 
                             ]);
                             TicketHistory::where('id', $record->id)->update([ // Ensure you're updating the correct record
-            
+
                                 'priority' => $record->priority,
                                 'status' => 'In progress',
                                 'assigned' => auth()->user()->name,

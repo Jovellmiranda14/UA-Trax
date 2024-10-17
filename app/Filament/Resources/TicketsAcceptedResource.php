@@ -26,7 +26,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\TextArea;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Filters\SelectFilter;
@@ -96,7 +96,7 @@ class TicketsAcceptedResource extends Resource
         }
 
         return $table->query($query)
-            // Pagination 
+            // Pagination
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Ticket ID')
@@ -270,13 +270,13 @@ class TicketsAcceptedResource extends Resource
                                             // Description and Attachment Fields
                                             Grid::make(2)
                                                 ->schema([
-                                                    TextArea::make('description')
+                                                    Textarea::make('description')
                                                         ->label('Description')
                                                         ->autosize()
                                                         ->disabled()
                                                         ->required(),
                                                     FileUpload::make('attachment')
-                                                        ->label('Attachment (optional')
+                                                        ->label('Attachment (optional)')
                                                         ->image()
                                                         // ->default( $record->attachment)
                                                         ->disabled(),
@@ -349,7 +349,7 @@ class TicketsAcceptedResource extends Resource
                                                     ->label('Date and time')
                                                     ->disabled(),
                                             ]),
-                                        TextArea::make('comment')
+                                        Textarea::make('comment')
                                             ->label('Description')
                                             ->autosize()
                                             ->disabled(),
@@ -395,7 +395,7 @@ class TicketsAcceptedResource extends Resource
                                     ]),
                                 Card::make('')
                                     ->schema([
-                                        TextArea::make('new_comment')
+                                        Textarea::make('new_comment')
                                             ->label('Comment')
                                             ->autosize()
                                             ->placeholder('Write something to the administrator...')
@@ -412,7 +412,7 @@ class TicketsAcceptedResource extends Resource
                             $comment->comment = $data['new_comment'];
                             $comment->save();
 
-                            // ------------ Notification ------------------------------------------------ 
+                            // ------------ Notification ------------------------------------------------
                             $assignedAdmin = User::where('name', $record->assigned)->first();
                             $RegularUser = User::where('name', $record->name)->first();
 
@@ -469,14 +469,14 @@ class TicketsAcceptedResource extends Resource
                                 'created_at' => $record->created_at,
                                 'assigned' => auth()->user()->name,
                             ]);
-                          
-                    
+
+
                             // Move comments to resolved_comments
                             $comments = TicketComment::where('ticket_id', $record->id)->get();
                             foreach ($comments as $comment) {
                                 // Log the ticket ID before inserting into resolved_comments
                                 \Log::info('Inserting comment into resolved_comments for ticket ID: ' . $record->id);
-                    
+
                                 // Create a resolved comment
                                 ResolvedComment::create([
                                     'ticket_id' => $record->id,
@@ -484,17 +484,17 @@ class TicketsAcceptedResource extends Resource
                                     'sender' => $comment->sender,
                                 ]);
                             }
-                    
+
                             // Delete original comments after moving them
                             TicketComment::where('ticket_id', $record->id)->delete();
-                    
+
                             // Update TicketHistory for the resolved ticket
                             TicketHistory::where('id', $record->id)->update([
                                 'priority' => $record->priority,
                                 'status' => 'Resolved',
                                 'assigned' => auth()->user()->name,
                             ]);
-                    
+
                             // Notify the user about the ticket resolution
                             $user = User::where('name', $record->name)->first();
                             if ($user) {
@@ -505,7 +505,7 @@ class TicketsAcceptedResource extends Resource
                                     ->sendToDatabase($user);
                                 event(new DatabaseNotificationsSent($user));
                             }
-                    
+
                             // Attempt to delete the original ticket record
                             if ($record->delete()) {
                                 \Log::info('Ticket resolved and deleted:', ['ticket_id' => $record->id]);
@@ -513,7 +513,7 @@ class TicketsAcceptedResource extends Resource
                                 \Log::error('Failed to delete the resolved ticket:', ['ticket_id' => $record->id]);
                             }
                         })
-                    
+
                 ]),
             ]);
     }
