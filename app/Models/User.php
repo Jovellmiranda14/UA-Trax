@@ -57,10 +57,11 @@ class User extends Authenticatable implements FilamentUser
      ];
 
      const Dept = [
-        self::SAS => 'SAS',
+        self::PSYCH => 'PSYCH',
         self::CEA => 'CEA',
+        self::COMM => 'AB COMM',
+        self::CRIM => 'CRIM',
         self::CITCLS => 'CITCLS',
-        // self::RSO => 'RSO',
         self::OFFICE => 'OFFICE',
         self::CONP => 'CONP',
         self::PPGS => 'PPGS',

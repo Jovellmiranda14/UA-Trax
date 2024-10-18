@@ -17,7 +17,7 @@ return new class extends Migration
             'facility_admin', 'equipment_user',
             'equipment_admin_omiss',
             'equipment_admin_labcustodian', 'user'])->default('user');
-            $table->enum('dept_role', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE','PPGS']);
+            $table->enum('dept_role', [ 'AB COMM', 'PSYCH', 'CRIM', 'SAS', 'CEA', 'CONP', 'CITCLS', 'OFFICE', 'PPGS']);
             $table->enum('position', ['RSO', 'Faculty','Secretary', 'N/A']);
             
         });

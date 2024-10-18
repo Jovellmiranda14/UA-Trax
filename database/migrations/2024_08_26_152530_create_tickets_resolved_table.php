@@ -29,7 +29,7 @@ return new class extends Migration
             $table->enum('concern_type', ['Laboratory and Equipment', 'Facility']);  
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed' , 'On-Hold'])->default('Open')->nullable();
             $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High','Escalated'])->default('Moderate');
-            $table->enum('department', ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
+            $table->enum('department', ['AB COMM', 'PSYCH', 'CRIM', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
             $table->string('location')->default('N/A');  
             $table->binary('attachment')->nullable();
             $table->string('assigned')->nullable();
