@@ -67,22 +67,25 @@ class TicketHistoryResource extends Resource
             $query->whereIn('concern_type', ['Laboratory and Equipment'])
                 ->orderBy('concern_type', 'asc');
         }
-
         // Check for Equipment Admin roles
-        if ($user->isEquipmentAdminOmiss() || $user->isEquipmentAdminlabcustodian()) {
-
-            $query->where('assigned', $user->dept_role);
-        }
-
-
-        if ($user->isFacilityAdmin() || $user->isFacilitySuperAdmin()) {
-            $query->where('concern_type', 'Facility')
+        else if ($user->isEquipmentAdminOmiss() || $user->isEquipmentAdminLabCustodian()) {
+            // Filter by 'Laboratory and Equipment' concerns and by assigned department
+            $query->whereIn('concern_type', ['Laboratory and Equipment'])
+                ->where('assigned', $user->name)
                 ->orderBy('concern_type', 'asc');
         }
+        // Check for Facility Admin roles
+        else if ($user->isFacilityAdmin() || $user->isFacilitySuperAdmin()) {
+            $query->where('concern_type', 'Facility')
+                ->where('assigned', $user->name)
+                ->orderBy('concern_type', 'asc');
+        }
+        // For regular users, filter by the user's own tickets
+        else {
+            $query->where('id', $user->id);  // Regular users query
+        }
 
 
-        // Pagination 
-        // ->paginated([10, 25, 50, 100, 'all']) 
         return $table
             ->query($query)
             ->columns([

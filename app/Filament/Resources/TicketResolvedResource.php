@@ -72,10 +72,13 @@ class TicketResolvedResource extends Resource
                 ->orderBy('concern_type', 'asc');
         }
 
-        // Check for Equipment Admin roles
-        if ($user->isEquipmentAdminOmiss() || $user->isEquipmentAdminlabcustodian()) {
 
-            $query->where('assigned', $user->dept_role);
+
+        if ($user->isEquipmentAdminOmiss() || $user->isEquipmentAdminLabCustodian()) {
+            // Adjust the query for 'Laboratory and Equipment' concerns and filter by user's department
+            $query->whereIn('concern_type', ['Laboratory and Equipment'])
+                ->where('assigned', $user->name)
+                ->orderBy('concern_type', 'asc');
         }
 
 
@@ -170,7 +173,7 @@ class TicketResolvedResource extends Resource
                 Tables\Columns\TextColumn::make('assigned')
                     ->label('Assigned')
                     ->searchable(),
-                    Tables\Columns\ImageColumn::make('attachment')
+                Tables\Columns\ImageColumn::make('attachment')
                     ->label('Image')
                     ->size(50)
                     ->circular()
@@ -288,7 +291,7 @@ class TicketResolvedResource extends Resource
                                 ]),
                         ]),
 
-                        Action::make('ViewComment')
+                    Action::make('ViewComment')
                         ->label('Comment list')
                         ->icon('heroicon-o-rectangle-stack')
                         ->modalHeading('Comments')
@@ -312,7 +315,7 @@ class TicketResolvedResource extends Resource
                                             ->disabled()
                                             ->required(),
                                     ]),
-                                    Repeater::make('resolved_comments')
+                                Repeater::make('resolved_comments')
                                     ->label('Resolved Comments')
                                     ->extraAttributes([
                                         'style' => 'max-height: 38vh; overflow-y: auto;',
