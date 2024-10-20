@@ -81,6 +81,7 @@ class TicketObserver
             ]
         );
 
+ 
         TicketQueue::create([
             'id' => $ticket->id,
             'name' => auth()->user()->name,
@@ -108,20 +109,6 @@ class TicketObserver
     public function updated(Ticket $ticket): void
     {
         // Update or create the ticket history entry when the ticket is updated
-        TicketHistory::updateOrCreate(
-            ['id' => $ticket->id],
-            [
-                'name' => $ticket->name,
-                'subject' => $ticket->subject,
-                'description' => $ticket->description,
-                'status' => $ticket->status,
-                'priority' => $ticket->priority,
-                'location' => $ticket->location,
-                'department' => $ticket->department,
-                'attachment' => $ticket->attachment,
-                'updated_at' => now(),
-            ]
-        );
     }
 
     /**

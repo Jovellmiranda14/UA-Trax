@@ -137,10 +137,6 @@ class TicketResource extends Resource
                                             ->required()
                                             ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
 
-                                        // TextInput::make('property_no')
-                                        // ->label('Property No.')
-                                        // ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
-
                                         Select::make('type_of_issue')
                                             ->label('Type of Issue')
                                             ->options([
@@ -193,50 +189,191 @@ class TicketResource extends Resource
                                         Select::make('department')
                                             ->label('Department')
                                             ->options([
-                                                'SAS' => 'SAS',
                                                 'CEA' => 'CEA',
                                                 'CONP' => 'CONP',
                                                 'CITCLS' => 'CITCLS',
-                                                'RSO' => 'RSO',
-                                                'OFFICE' => 'OFFICE',
+                                                'SAS (AB COMM)' => 'SAS (AB COMM)',
+                                                'SAS (PSYCH)' => 'SAS (PSYCH)',
+                                                'SAS (CRIM)' => 'SAS (CRIM)',
+                                                'OFFICE' => 'OFFICES',
                                             ])
                                             ->reactive()
                                             ->required(),
 
                                         Select::make('location')
+                                            ->searchable()
                                             ->label('Location')
                                             ->options(fn($get) => collect([
-                                                'SAS' => ['SAS Building', 'SAS Lab'],
-                                                'CEA' => ['CEA Hall', 'CEA Workshop'],
-                                                'CONP' => ['CONP Room 1', 'CONP Room 2'],
-                                                'CITCLS' => ['CITCLS Area A', 'CITCLS Area B'],
-                                            // mapWithKeys
+                                                'SAS (AB COMM)' => [
+                                                    'AUDIO VISUAL CENTER',
+                                                    'DEMO ROOM',
+                                                    'DIRECTOR’S BOOTH',
+                                                    'G201 - SPEECH LAB',
+                                                    'G208',
+                                                    'RADIO STUDIO',
+                                                    'TV STUDIO',
+                                                ],
+
+                                                'CEA' => [
+                                                    'ARCHITECTURE DESIGN STUDIO',
+                                                    'C200 - PHYSICS LAB',
+                                                    'C201 - PHYSICS LAB',
+                                                    'C202 - PHYSICS LAB',
+                                                    'C203A',
+                                                    'C203B',
+                                                    'RY302',
+                                                    'RY303',
+                                                    'RY304',
+                                                    'RY305',
+                                                    'RY306',
+                                                    'RY307',
+                                                    'RY308',
+                                                    'RY309',
+                                                ],
+
+                                                'CITCLS' => [
+                                                    'C204 - ROBOTICS LAB',
+                                                    'C301 - CISCO LAB',
+                                                    'C302 - SPEECH LAB',
+                                                    'P308',
+                                                    'P309 - COMPUTER LAB 4',
+                                                    'P310 - COMPUTER LAB 3',
+                                                    'P311 - COMPUTER LAB 2',
+                                                    'P312 - COMPUTER LAB 1',
+                                                    'P313',
+                                                ],
+
+                                                'CONP' => [
+                                                    'G103 - NURSING LAB',
+                                                    'G105 - NURSING LAB',
+                                                    'G107 - NURSING LAB',
+                                                    'NURSING ARTS LAB',
+                                                    'NURSING CONFERENCE ROOM',
+                                                    'PHARMACY LECTURE ROOM',
+                                                    'PHARMACY STOCKROOM',
+                                                ],
+
+                                                'SAS (CRIM)' => [
+                                                    'CRIME LAB',
+                                                    'CRIMINOLOGY LECTURE ROOM',
+                                                    'FORENSIC PHOTOGRAPHY ROOM',
+                                                    'MOOT COURT',
+                                                ],
+
+                                                'OFFICE' => [
+                                                
+                                                        'PROPERTY CUSTODIAN',
+                                                        'PHYSICAL PLANT & GENERAL SERVICES',
+                                                        'EAMO',
+                                                        'DENTAL/MEDICAL CLINIC',
+                                                        'REGINA OFFICE',
+                                                        'QUALITY MANAGEMENT OFFICE',
+                                                        'OFFICE OF THE PRESIDENT',
+                                                        'VPA',
+                                                        'HUMAN RESOURCES & DEVELOPMENT',
+                                                        'CITCLS OFFICE',
+                                                        'CITCLS DEAN OFFICE',
+                                                        'CEA OFFICE',
+                                                        'HGU OFFICE',
+                                                        'VPAA',
+                                                        'RSO OFFICE',
+                                                        'SAS OFFICE',
+                                                        'SED OFFICE',
+                                                        'SBPA OFFICE',
+                                                        'CONP OFFICE',
+                                                        'CHTM OFFICE',
+                                                        'OFFICE OF STUDENT AFFAIRS',
+                                                        'UACSC OFFICE',
+                                                        'PREFECT OF DISCIPLINE',
+                                                        'RESEARCH PLANNING OFFICE',
+                                                        'CEO',
+                                                        'GUIDANCE & ADMISSION',
+                                                        'CMO',
+                                                        'ITRS',
+                                                        'REGISTRAR’S OFFICE',
+                                                        'PHOTO LAB',
+                                                        'BUSINESS OFFICE',
+                                                        'FINANCE OFFICE',
+                                                        'RMS OFFICE',
+                                                        'VPF',
+                                                        'AMPHITHEATER',
+                                                        'COLLEGE AVR',
+                                                        'LIBRARY MAIN LOBBY',
+                                                        'NSTP',
+                                                        'COLLEGE LIBRARY',
+                                                        'OMISS',
+                                                        'SOCIAL HALL',
+                                                        'QMO',
+                                                        'RPO',
+                                                        'BOOKSTORE',
+                                                        'HOTEL OFFICE/CAFE MARIA',
+                                                        'SPORTS OFFICE',
+                                                
+
+                                                   
+                                                        'OFFICE OF THE PRESIDENT',
+                                                        'CMO',
+                                                        'EAMO',
+                                                        'QUALITY MANAGEMENT OFFICE',
+                                                        'REGINA OFFICE',
+                                               
+
+                                                        'VPA',
+                                                        'HUMAN RESOURCES & DEVELOPMENT',
+                                                        'DENTAL/MEDICAL CLINIC',
+                                                        'PHYSICAL PLANT & GENERAL SERVICES',
+                                                        'OMISS',
+                                                        'HOTEL OFFICE/CAFE MARIA',
+                                                        'SPORTS OFFICE',
+                                                        'QMO',
+                                           
+
+                                          
+                                                        'VPF',
+                                                        'BUSINESS OFFICE',
+                                                        'FINANCE OFFICE',
+                                                        'RMS OFFICE',
+                                                        'PROPERTY CUSTODIAN',
+                                                        'BOOKSTORE',
+                                          
+
+                                                
+                                                        'VPAA',
+                                                        'PREFECT OF DISCIPLINE',
+                                                        'GUIDANCE & ADMISSION',
+                                                        'CITCLS OFFICE',
+                                                        'CITCLS DEAN OFFICE',
+                                                        'CEA OFFICE',
+                                                        'SAS OFFICE',
+                                                        'SED OFFICE',
+                                                        'SBPA OFFICE',
+                                                        'CONP OFFICE',
+                                                        'CHTM OFFICE',
+                                                        'ITRS',
+                                                        'REGISTRAR’S OFFICE',
+                                                        'RPO',
+                                                        'NURSING ARTS LAB',
+                                                        'COLLEGE LIBRARY',
+                                                 
+                                                ],
+
+                                                'SAS (PSYCH)' => [
+                                                    'C100 - PHARMACY LAB',
+                                                    'C101 - BIOLOGY LAB/STOCKROOM',
+                                                    'C102',
+                                                    'C103 - CHEMISTRY LAB',
+                                                    'C104 - CHEMISTRY LAB',
+                                                    'C105 - CHEMISTRY LAB',
+                                                    'C106',
+                                                    'C303',
+                                                    'C304',
+                                                    'C305',
+                                                    'C306',
+                                                    'C307 - PSYCHOLOGY LAB',
+                                                ],
                                             ][$get('department')] ?? [])->mapWithKeys(fn($value) => [$value => $value]))
                                             ->required()
-
-                                            ->reactive()
-                                            // ->afterStateUpdated(function ($state, $set) {
-                                            //     if (is_array($state)) {
-                                            //         $locationString = implode(', ', $state);
-                                            //         $set('location', $locationString);
-                                            //     }
-                                            // })
-                                            ->visible(fn($get) => !in_array($get('department'), ['RSO', 'OFFICE'])),
-
-                                        TextInput::make('location')
-                                            ->label('Location')
-                                            ->required()
-                                            ->default('N/A')
-                                            ->visible(fn($get) => in_array($get('department'), ['RSO', 'OFFICE'])),
-                                        // TextInput::make('created_at')
-                                        // ->label('Date Created')
-                                        // ->default(Date::now()->format('Y-m-d')) // Set default value to current date
-                                        // ->hidden(),
-
-                                        // TextInput::make('property_no')
-                                        // ->label('Property No.')
-
-                                        // ->visible(fn ($get) => $get('concern_type') === 'Laboratory and Equipment'),
+                                            ->reactive(),
                                     ]),
                             ])
 
@@ -303,17 +440,20 @@ class TicketResource extends Resource
                 Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
                     ->getStateUsing(function ($record) {
-                        switch ($record->priority) {
-                            case 'urgent':
-                                return 'Urgent';
-                            case 'high':
+                        switch ($record->location) {
+                            case 'SAS Building':
+                            case 'SAS Lab':
                                 return 'High';
-                            case 'moderate':
+
+                            case 'C200 - PHYSICS LAB':
+                            case 'C201 - PHYSICS LAB':
                                 return 'Moderate';
-                            case 'low':
+
+                            case 'PHARMACY STOCKROOM':
+                            case 'PHARMACY LECTURE ROOM':
                                 return 'Low';
-                            case 'escalated':
-                                return 'Escalated';
+
+                            // Add more cases for other locations as needed
                             default:
                                 return $record->priority;
                         }

@@ -33,19 +33,6 @@ class Ticket extends Model
     {
         parent::boot();
         static::updated(function ($ticket) {
-            TicketQueue::create([
-                'id' => $ticket->id,
-                'name' => auth()->user()->name,
-                'description' => $ticket->description, // Make sure this is set
-                'subject' => $ticket->subject,
-                'status' => $ticket->status,
-                'attachment' => $ticket->attachment, // Make
-                'priority' => $ticket->priority,
-                'department' => $ticket->department,
-                'location' => $ticket->location,
-                'created_at' => now(),
-                //'updated_at'  =>
-            ]);
         });
 
         static::creating(function ($ticket) {
