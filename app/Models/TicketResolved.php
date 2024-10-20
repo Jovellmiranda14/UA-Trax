@@ -26,6 +26,7 @@ class TicketResolved extends Model
         'created_at',
         'accepted_at',
         'attachment',
+        'resolved_at',
     ];
     public function ticket()
     {

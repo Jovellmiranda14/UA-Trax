@@ -441,18 +441,12 @@ class TicketsAcceptedResource extends Resource
                             }
                         }),
 
-                        Action::make('resolve')
+                    Action::make('resolve')
                         ->label('Resolve')
                         ->icon('heroicon-o-check')
-                        ->hidden(fn() => auth()->user()->role === 'user')
-                        ->requiresConfirmation()
-                        ->modalHeading('Confirm Resolve Ticket')
-                        ->modalSubheading('Are you sure you want to resolve this ticket?')
-                        // ->color('success')
                         ->action(function ($record) {
-
-                              // Create a new entry in TicketsResolved
-                              TicketResolved::create([
+                            // Create a new entry in TicketsResolved
+                            TicketResolved::create([
                                 'id' => $record->id,
                                 'concern_type' => $record->concern_type,
                                 'name' => $record->name,
@@ -464,7 +458,8 @@ class TicketsAcceptedResource extends Resource
                                 'location' => $record->location,
                                 'dept' => $record->dept_role,
                                 'status' => 'Resolved',
-                                'accepted_at' => now(),
+                                'accepted_at' => $record->accepted_at,
+                                'resolved_at' => now(),
                                 'attachment' => $record->attachment,
                                 'created_at' => $record->created_at,
                                 'assigned' => auth()->user()->name,
@@ -513,6 +508,9 @@ class TicketsAcceptedResource extends Resource
                                 \Log::error('Failed to delete the resolved ticket:', ['ticket_id' => $record->id]);
                             }
                         })
+                        ->requiresConfirmation()
+                        ->modalHeading('Confirm Resolve Ticket')
+                        ->modalSubheading('Are you sure you want to resolve this ticket?')
 
                 ]),
             ]);
