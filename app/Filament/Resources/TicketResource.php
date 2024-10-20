@@ -259,103 +259,56 @@ class TicketResource extends Resource
                                                     'FORENSIC PHOTOGRAPHY ROOM',
                                                     'MOOT COURT',
                                                 ],
-
                                                 'OFFICE' => [
-                                                
-                                                        'PROPERTY CUSTODIAN',
-                                                        'PHYSICAL PLANT & GENERAL SERVICES',
-                                                        'EAMO',
-                                                        'DENTAL/MEDICAL CLINIC',
-                                                        'REGINA OFFICE',
-                                                        'QUALITY MANAGEMENT OFFICE',
-                                                        'OFFICE OF THE PRESIDENT',
-                                                        'VPA',
-                                                        'HUMAN RESOURCES & DEVELOPMENT',
-                                                        'CITCLS OFFICE',
-                                                        'CITCLS DEAN OFFICE',
-                                                        'CEA OFFICE',
-                                                        'HGU OFFICE',
-                                                        'VPAA',
-                                                        'RSO OFFICE',
-                                                        'SAS OFFICE',
-                                                        'SED OFFICE',
-                                                        'SBPA OFFICE',
-                                                        'CONP OFFICE',
-                                                        'CHTM OFFICE',
-                                                        'OFFICE OF STUDENT AFFAIRS',
-                                                        'UACSC OFFICE',
-                                                        'PREFECT OF DISCIPLINE',
-                                                        'RESEARCH PLANNING OFFICE',
-                                                        'CEO',
-                                                        'GUIDANCE & ADMISSION',
-                                                        'CMO',
-                                                        'ITRS',
-                                                        'REGISTRAR’S OFFICE',
-                                                        'PHOTO LAB',
-                                                        'BUSINESS OFFICE',
-                                                        'FINANCE OFFICE',
-                                                        'RMS OFFICE',
-                                                        'VPF',
-                                                        'AMPHITHEATER',
-                                                        'COLLEGE AVR',
-                                                        'LIBRARY MAIN LOBBY',
-                                                        'NSTP',
-                                                        'COLLEGE LIBRARY',
-                                                        'OMISS',
-                                                        'SOCIAL HALL',
-                                                        'QMO',
-                                                        'RPO',
-                                                        'BOOKSTORE',
-                                                        'HOTEL OFFICE/CAFE MARIA',
-                                                        'SPORTS OFFICE',
-                                                
-
-                                                   
-                                                        'OFFICE OF THE PRESIDENT',
-                                                        'CMO',
-                                                        'EAMO',
-                                                        'QUALITY MANAGEMENT OFFICE',
-                                                        'REGINA OFFICE',
-                                               
-
-                                                        'VPA',
-                                                        'HUMAN RESOURCES & DEVELOPMENT',
-                                                        'DENTAL/MEDICAL CLINIC',
-                                                        'PHYSICAL PLANT & GENERAL SERVICES',
-                                                        'OMISS',
-                                                        'HOTEL OFFICE/CAFE MARIA',
-                                                        'SPORTS OFFICE',
-                                                        'QMO',
-                                           
-
-                                          
-                                                        'VPF',
-                                                        'BUSINESS OFFICE',
-                                                        'FINANCE OFFICE',
-                                                        'RMS OFFICE',
-                                                        'PROPERTY CUSTODIAN',
-                                                        'BOOKSTORE',
-                                          
-
-                                                
-                                                        'VPAA',
-                                                        'PREFECT OF DISCIPLINE',
-                                                        'GUIDANCE & ADMISSION',
-                                                        'CITCLS OFFICE',
-                                                        'CITCLS DEAN OFFICE',
-                                                        'CEA OFFICE',
-                                                        'SAS OFFICE',
-                                                        'SED OFFICE',
-                                                        'SBPA OFFICE',
-                                                        'CONP OFFICE',
-                                                        'CHTM OFFICE',
-                                                        'ITRS',
-                                                        'REGISTRAR’S OFFICE',
-                                                        'RPO',
-                                                        'NURSING ARTS LAB',
-                                                        'COLLEGE LIBRARY',
-                                                 
+                                                    'PROPERTY CUSTODIAN',
+                                                    'PHYSICAL PLANT & GENERAL SERVICES',
+                                                    'EAMO',
+                                                    'DENTAL/MEDICAL CLINIC',
+                                                    'REGINA OFFICE',
+                                                    'QUALITY MANAGEMENT OFFICE',
+                                                    'OFFICE OF THE PRESIDENT',
+                                                    'VPA',
+                                                    'HUMAN RESOURCES & DEVELOPMENT',
+                                                    'CITCLS OFFICE',
+                                                    'CITCLS DEAN OFFICE',
+                                                    'CEA OFFICE',
+                                                    'HGU OFFICE',
+                                                    'VPAA',
+                                                    'RSO OFFICE',
+                                                    'SAS OFFICE',
+                                                    'SED OFFICE',
+                                                    'SBPA OFFICE',
+                                                    'CONP OFFICE',
+                                                    'CHTM OFFICE',
+                                                    'OFFICE OF STUDENT AFFAIRS',
+                                                    'UACSC OFFICE',
+                                                    'PREFECT OF DISCIPLINE',
+                                                    'RESEARCH PLANNING OFFICE',
+                                                    'CEO',
+                                                    'GUIDANCE & ADMISSION',
+                                                    'CMO',
+                                                    'ITRS',
+                                                    'REGISTRAR’S OFFICE',
+                                                    'PHOTO LAB',
+                                                    'BUSINESS OFFICE',
+                                                    'FINANCE OFFICE',
+                                                    'RMS OFFICE',
+                                                    'VPF',
+                                                    'AMPHITHEATER',
+                                                    'COLLEGE AVR',
+                                                    'LIBRARY MAIN LOBBY',
+                                                    'NSTP',
+                                                    'COLLEGE LIBRARY',
+                                                    'OMISS',
+                                                    'SOCIAL HALL',
+                                                    'QMO',
+                                                    'RPO',
+                                                    'BOOKSTORE',
+                                                    'HOTEL OFFICE/CAFE MARIA',
+                                                    'SPORTS OFFICE',
+                                                    'NURSING ARTS LAB',
                                                 ],
+
 
                                                 'SAS (PSYCH)' => [
                                                     'C100 - PHARMACY LAB',
@@ -441,16 +394,115 @@ class TicketResource extends Resource
                     ->label('Priority')
                     ->getStateUsing(function ($record) {
                         switch ($record->location) {
-                            case 'SAS Building':
-                            case 'SAS Lab':
+                            case 'OFFICE OF THE PRESIDENT':
+                            case 'CMO':
+                            case 'EAMO':
+                            case ' QUALITY MANAGEMENT OFFICE':
+                            case 'REGINA OFFICE':
                                 return 'High';
 
-                            case 'C200 - PHYSICS LAB':
-                            case 'C201 - PHYSICS LAB':
+                            case 'NURSING ARTS LAB':
+                            case 'SBPA OFFICE':
+                            case 'VPAA':
+                            case 'PREFECT OF DISCIPLINE':
+                            case 'GUIDANCE & ADMISSION':
+                            case 'CITCLS OFFICE':
+                            case 'CITCLS DEAN OFFICE':
+                            case 'CEA OFFICE':
+                            case 'SAS OFFICE':
+                            case 'SED OFFICE':
+                            case 'CONP OFFICE':
+                            case 'CHTM OFFICE':
+                            case 'ITRS':
+                            case 'REGISTRAR’S OFFICE':
+                            case 'RPO':
+                            case 'COLLEGE LIBRARY':
+                            case 'VPF':
+                            case 'BUSINESS OFFICE':
+                            case 'FINANCE OFFICE':
+                            case 'RMS OFFICE':
+                            case 'PROPERTY CUSTODIAN':
+                            case 'BOOKSTORE':
+                            case 'VPA':
+                            case 'HUMAN RESOURCES & DEVELOPMENT':
+                            case 'DENTAL/MEDICAL CLINIC':
+                            case 'PHYSICAL PLANT & GENERAL SERVICES':
+                            case 'OMISS':
+                            case 'HOTEL OFFICE/CAFE MARIA':
+                            case 'SPORTS OFFICE':
+                            case 'QMO':
                                 return 'Moderate';
 
+
+                            case 'C100 - PHARMACY LAB':
+                            case 'C101 - BIOLOGY LAB/STOCKROOM':
+                            case 'C102':
+                            case 'C103 - CHEMISTRY LAB':
+                            case 'C104 - CHEMISTRY LAB':
+                            case 'C105 - CHEMISTRY LAB':
+                            case 'C106':
+                            case 'C303':
+                            case 'C304':
+                            case 'C305':
+                            case 'C306':
+                            case 'C307 - PSYCHOLOGY LAB':
+
+                            // SAS (AB COMM)
+                            case 'G201 - SPEECH LAB':
+                            case 'RADIO STUDIO':
+                            case 'DIRECTOR’S BOOTH':
+                            case 'AUDIO VISUAL CENTER':
+                            case 'TV STUDIO':
+                            case 'G208':
+                            case 'DEMO ROOM':
+
+                            // SAS (Crim)
+                            case 'MOOT COURT':
+                            case 'CRIMINOLOGY LECTURE ROOM':
+                            case 'FORENSIC PHOTOGRAPHY ROOM':
+                            case 'CRIME LAB':
+
+                            // Other previously defined low priority locations
+                            case 'C200 - PHYSICS LAB':
+                            case 'C201 - PHYSICS LAB':
+                            case 'C202 - PHYSICS LAB':
+                            case 'C203A':
+                            case 'C203B':
+                            case 'ARCHITECTURE DESIGN STUDIO':
+                            case 'RY302':
+                            case 'RY303':
+                            case 'RY304':
+                            case 'RY305':
+                            case 'RY306':
+                            case 'RY307':
+                            case 'RY308':
+                            case 'RY309':
                             case 'PHARMACY STOCKROOM':
-                            case 'PHARMACY LECTURE ROOM':
+                            case 'G103 - NURSING LAB':
+                            case 'G105 - NURSING LAB':
+                            case 'G107 - NURSING LAB':
+                            case 'NURSING CONFERENCE ROOM':
+                            case 'C204 - ROBOTICS LAB':
+                            case 'C301 - CISCO LAB':
+                            case 'C302 - SPEECH LAB':
+                            case 'P307':
+                            case 'P308':
+                            case 'P309':
+                            case 'P309 - COMPUTER LAB 4':
+                            case 'P310':
+                            case 'P310 - COMPUTER LAB 3':
+                            case 'P311':
+                            case 'P311 - COMPUTER LAB 2':
+                            case 'P312 - COMPUTER LAB 1':
+                            case 'P312':
+                            case 'P313':
+                            case 'RSO OFFICE':
+                            case 'UACSC OFFICE':
+                            case 'PHOTO LAB':
+                            case 'AMPHITHEATER':
+                            case 'COLLEGE AVR':
+                            case 'LIBRARY MAIN LOBBY':
+                            case 'NSTP':
                                 return 'Low';
 
                             // Add more cases for other locations as needed

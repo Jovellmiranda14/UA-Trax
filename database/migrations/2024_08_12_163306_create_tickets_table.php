@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('subject')->nullable(false);
             $table->string('name');  // Fixed 'name' field
             $table->text('description'); // Changed to text for longer descriptions
-            $table->enum('department', ['AB COMM', 'PSYCH', 'CRIM', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
+            $table->enum('department', ['SAS (PSYCH)', 'SAS (CRIM)', 'SAS (AB COMM)','CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
             $table->enum('type_of_issue', [
                 'repair',
                 'air_conditioning',
@@ -33,7 +33,7 @@ return new class extends Migration {
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed', 'On-Hold'])->default('Open');
             $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High', 'Escalated'])->default('Moderate');
             $table->string('location');
-            $table->enum('dept_role', [ 'AB COMM', 'PSYCH', 'CRIM', 'SAS', 'CEA', 'CONP', 'CITCLS', 'OFFICE', 'PPGS']);
+             $table->enum('dept_role', [ 'SAS (PSYCH)', 'SAS (CRIM)', 'SAS (AB COMM)', 'CEA', 'CONP', 'CITCLS', 'OFFICE', 'PPGS']);
             $table->string('attachment')->nullable()->default('N/A');
             $table->string('assigned')->nullable();
             $table->enum('position', ['RSO', 'Faculty', 'Secretary', 'N/A']);

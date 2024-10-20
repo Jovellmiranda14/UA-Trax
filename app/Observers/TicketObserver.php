@@ -24,6 +24,127 @@ class TicketObserver
      */
     public function created(Ticket $ticket)
     {
+        function getPriorityByLocation($location, $record)
+        {
+            switch ($location) {
+                // High priority locations
+                case 'OFFICE OF THE PRESIDENT':
+                case 'CMO':
+                case 'EAMO':
+                case 'QUALITY MANAGEMENT OFFICE':
+                case 'REGINA OFFICE':
+                    return 'High';
+
+                // Moderate priority locations
+                case 'NURSING ARTS LAB':
+                case 'SBPA OFFICE':
+                case 'VPAA':
+                case 'PREFECT OF DISCIPLINE':
+                case 'GUIDANCE & ADMISSION':
+                case 'CITCLS OFFICE':
+                case 'CITCLS DEAN OFFICE':
+                case 'CEA OFFICE':
+                case 'SAS OFFICE':
+                case 'SED OFFICE':
+                case 'CONP OFFICE':
+                case 'CHTM OFFICE':
+                case 'ITRS':
+                case 'REGISTRAR’S OFFICE':
+                case 'RPO':
+                case 'COLLEGE LIBRARY':
+                case 'VPF':
+                case 'BUSINESS OFFICE':
+                case 'FINANCE OFFICE':
+                case 'RMS OFFICE':
+                case 'PROPERTY CUSTODIAN':
+                case 'BOOKSTORE':
+                case 'VPA':
+                case 'HUMAN RESOURCES & DEVELOPMENT':
+                case 'DENTAL/MEDICAL CLINIC':
+                case 'PHYSICAL PLANT & GENERAL SERVICES':
+                case 'OMISS':
+                case 'HOTEL OFFICE/CAFE MARIA':
+                case 'SPORTS OFFICE':
+                case 'QMO':
+                    return 'Moderate';
+
+                // Low priority locations
+                case 'C100 - PHARMACY LAB':
+                case 'C101 - BIOLOGY LAB/STOCKROOM':
+                case 'C102':
+                case 'C103 - CHEMISTRY LAB':
+                case 'C104 - CHEMISTRY LAB':
+                case 'C105 - CHEMISTRY LAB':
+                case 'C106':
+                case 'C303':
+                case 'C304':
+                case 'C305':
+                case 'C306':
+                case 'C307 - PSYCHOLOGY LAB':
+
+                // SAS (AB COMM)
+                case 'G201 - SPEECH LAB':
+                case 'RADIO STUDIO':
+                case 'DIRECTOR’S BOOTH':
+                case 'AUDIO VISUAL CENTER':
+                case 'TV STUDIO':
+                case 'G208':
+                case 'DEMO ROOM':
+
+                // SAS (Crim)
+                case 'MOOT COURT':
+                case 'CRIMINOLOGY LECTURE ROOM':
+                case 'FORENSIC PHOTOGRAPHY ROOM':
+                case 'CRIME LAB':
+
+                // Other previously defined low priority locations
+                case 'C200 - PHYSICS LAB':
+                case 'C201 - PHYSICS LAB':
+                case 'C202 - PHYSICS LAB':
+                case 'C203A':
+                case 'C203B':
+                case 'ARCHITECTURE DESIGN STUDIO':
+                case 'RY302':
+                case 'RY303':
+                case 'RY304':
+                case 'RY305':
+                case 'RY306':
+                case 'RY307':
+                case 'RY308':
+                case 'RY309':
+                case 'PHARMACY STOCKROOM':
+                case 'G103 - NURSING LAB':
+                case 'G105 - NURSING LAB':
+                case 'G107 - NURSING LAB':
+                case 'NURSING CONFERENCE ROOM':
+                case 'C204 - ROBOTICS LAB':
+                case 'C301 - CISCO LAB':
+                case 'C302 - SPEECH LAB':
+                case 'P307':
+                case 'P308':
+                case 'P309':
+                case 'P309 - COMPUTER LAB 4':
+                case 'P310':
+                case 'P310 - COMPUTER LAB 3':
+                case 'P311':
+                case 'P311 - COMPUTER LAB 2':
+                case 'P312 - COMPUTER LAB 1':
+                case 'P312':
+                case 'P313':
+                case 'RSO OFFICE':
+                case 'UACSC OFFICE':
+                case 'PHOTO LAB':
+                case 'AMPHITHEATER':
+                case 'COLLEGE AVR':
+                case 'LIBRARY MAIN LOBBY':
+                case 'NSTP':
+                    return 'Low';
+
+                // Default case if the location is not in the list
+                default:
+                    return $record->priority;  // Keep the existing priority from the ticket
+            }
+        }
         $category = $ticket->concern_type;
 
         // Get the admins based on category
@@ -72,7 +193,7 @@ class TicketObserver
                 'description' => $ticket->description,
                 'concern_type' => $ticket->concern_type,
                 'status' => 'Open',
-                'priority' => $ticket->priority ?? 'Moderate',
+                'priority' => getPriorityByLocation($ticket->location, $ticket),
                 'location' => $ticket->location,
                 'department' => $ticket->department,
                 'attachment' => $ticket->attachment,
@@ -81,13 +202,14 @@ class TicketObserver
             ]
         );
 
- 
+      
         TicketQueue::create([
             'id' => $ticket->id,
             'name' => auth()->user()->name,
             'description' => $ticket->description,
             'subject' => $ticket->subject,
-            // 'attachment' => $ticket->attachment,
+            'attachment' => $ticket->attachment,
+            'priority' => getPriorityByLocation($ticket->location, $ticket),
             'department' => $ticket->department,
             'location' => $ticket->location,
             'created_at' => now(),
