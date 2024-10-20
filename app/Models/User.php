@@ -14,33 +14,33 @@ use Filament\Panel;
 class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
-     const FacilitySUPER_ADMIN = 'facilitysuperadmin';
-     const FACILITY_ADMIN = 'facility_admin';
-     const EquipmentSUPER_ADMIN = 'equipmentsuperadmin';
-     const EQUIPMENT_ADMIN_Omiss = 'equipment_admin_omiss';
-     const EQUIPMENT_ADMIN_labcustodian = 'equipment_admin_labcustodian';
-     const REGULAR_USER = 'user';
+    const FacilitySUPER_ADMIN = 'facilitysuperadmin';
+    const FACILITY_ADMIN = 'facility_admin';
+    const EquipmentSUPER_ADMIN = 'equipmentsuperadmin';
+    const EQUIPMENT_ADMIN_Omiss = 'equipment_admin_omiss';
+    const EQUIPMENT_ADMIN_labcustodian = 'equipment_admin_labcustodian';
+    const REGULAR_USER = 'user';
 
-     const SAS = 'SAS';
+    const SAS = 'SAS';
 
-     //SAS DEPTS
-        const PSYCH = 'PSYCH';
-        const CRIM = 'CRIM';
-        const COMM = 'AB COMM';
-     const CEA = 'CEA';
-     const CONP = 'CONP';
-     const CITCLS = 'CITCLS';
-     const RSO = 'RSO';
-     const OFFICE = 'OFFICE';
-     const PPGS = 'PPGS';
+    //SAS DEPTS
+    const PSYCH = 'SAS (PSYCH)';
+    const CRIM = 'SAS (CRIM)';
+    const COMM = 'SAS (AB COMM)';
+    const CEA = 'CEA';
+    const CONP = 'CONP';
+    const CITCLS = 'CITCLS';
+    const RSO = 'RSO';
+    const OFFICE = 'OFFICE';
+    const PPGS = 'PPGS';
 
-     //Positions
-     const rso = 'RSO';
-     const Faculty = 'Faculty';
-     const Secretary = 'Secretary';
-     const None = 'N/A';
+    //Positions
+    const rso = 'RSO';
+    const Faculty = 'Faculty';
+    const Secretary = 'Secretary';
+    const None = 'N/A';
 
-     const Pos = [
+    const Pos = [
         self::rso => 'RSO',
         self::Faculty => 'Faculty',
         self::Secretary => 'Secretary',
@@ -48,50 +48,56 @@ class User extends Authenticatable implements FilamentUser
     ];
     // Define the roles array using the constants
     const ROLES = [
-         self::REGULAR_USER => 'Regular User',
-         self::FacilitySUPER_ADMIN => 'Faciltiy Super Admin',
-         self::EquipmentSUPER_ADMIN => 'Equipment Super Admin',
-         self::FACILITY_ADMIN => 'Facility Admin',
-         self::EQUIPMENT_ADMIN_Omiss => 'equipment_admin_omiss',
-         self::EQUIPMENT_ADMIN_labcustodian => 'equipment_admin_labcustodian',
-     ];
+        self::REGULAR_USER => 'Regular User',
+        self::FacilitySUPER_ADMIN => 'Faciltiy Super Admin',
+        self::EquipmentSUPER_ADMIN => 'Equipment Super Admin',
+        self::FACILITY_ADMIN => 'Facility Admin',
+        self::EQUIPMENT_ADMIN_Omiss => 'equipment_admin_omiss',
+        self::EQUIPMENT_ADMIN_labcustodian => 'equipment_admin_labcustodian',
+    ];
 
-     const Dept = [
-        self::PSYCH => 'PSYCH',
+    const Dept = [
+        self::PSYCH => 'SAS (PSYCH)',
         self::CEA => 'CEA',
-        self::COMM => 'AB COMM',
-        self::CRIM => 'CRIM',
+        self::COMM => 'SAS (AB COMM)',
+        self::CRIM => 'SAS (CRIM)',
         self::CITCLS => 'CITCLS',
         self::OFFICE => 'OFFICE',
         self::CONP => 'CONP',
         self::PPGS => 'PPGS',
     ];
-     public function canAccessPanel(Panel $panel): bool
+    public function canAccessPanel(Panel $panel): bool
     {
-        return $this->isFacilitySuperAdmin() || 
-        $this->isEquipmentSuperAdmin() || 
-        $this->isFacilityAdmin() || 
-        $this->isEquipmentAdminOmiss() || 
-        $this->isEquipmentAdminlabcustodian() || 
-        $this->isRegularUser();
+        return $this->isFacilitySuperAdmin() ||
+            $this->isEquipmentSuperAdmin() ||
+            $this->isFacilityAdmin() ||
+            $this->isEquipmentAdminOmiss() ||
+            $this->isEquipmentAdminlabcustodian() ||
+            $this->isRegularUser();
     }
 
-    public function isFacilitySuperAdmin(){
+    public function isFacilitySuperAdmin()
+    {
         return $this->role == self::FacilitySUPER_ADMIN;
     }
-    public function isEquipmentSuperAdmin(){
+    public function isEquipmentSuperAdmin()
+    {
         return $this->role == self::EquipmentSUPER_ADMIN;
     }
-    public function isFacilityAdmin(){
+    public function isFacilityAdmin()
+    {
         return $this->role == self::FACILITY_ADMIN;
     }
-    public function isRegularUser(){
+    public function isRegularUser()
+    {
         return $this->role == self::REGULAR_USER;
     }
-    public function isEquipmentAdminOmiss(){
+    public function isEquipmentAdminOmiss()
+    {
         return $this->role == self::EQUIPMENT_ADMIN_Omiss;
     }
-    public function isEquipmentAdminlabcustodian(){
+    public function isEquipmentAdminlabcustodian()
+    {
         return $this->role == self::EQUIPMENT_ADMIN_labcustodian;
     }
     /**
@@ -100,8 +106,8 @@ class User extends Authenticatable implements FilamentUser
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 
-        'email', 
+        'name',
+        'email',
         'dept_role',
         'position',
         'password',
@@ -131,11 +137,11 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
     public function ticketsCreated()
-{
-    return $this->hasMany(Ticket::class, 'created_by', 'id');
-}
-public function ticketsAssigned()
-{
-    return $this->hasMany(Ticket::class, 'assigned_to', 'id');
-}
+    {
+        return $this->hasMany(Ticket::class, 'created_by', 'id');
+    }
+    public function ticketsAssigned()
+    {
+        return $this->hasMany(Ticket::class, 'assigned_to', 'id');
+    }
 }

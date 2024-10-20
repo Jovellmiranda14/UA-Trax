@@ -80,10 +80,12 @@ class RegularUserResource extends Resource
 
     public static function table(Table $table): Table
     {
+
+
         return $table
             // Pagination 
             // ->paginated([10, 25, 50, 100, 'all']) 
-            ->query(User::where('role', 'user'))
+            ->query(User::query()->where('role', 'user'))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()

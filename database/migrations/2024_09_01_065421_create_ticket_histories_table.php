@@ -29,11 +29,11 @@ return new class extends Migration {
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed', 'On-Hold'])->default('Open'); // Column to store the status of the ticket
             $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High', 'Escalated'])->default('Moderate'); // Column to store the priority of the ticket
             $table->string('location')->nullable();
-            $table->enum('department', ['AB COMM', 'PSYCH', 'CRIM', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
+            $table->enum('department', ['SAS (PSYCH)', 'SAS (CRIM)', 'SAS (AB COMM)', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
             $table->timestamps();
-        
+
             $table->timestamp('accepted_at')->nullable();
-            $table->enum('dept_role', [ 'AB COMM', 'PSYCH', 'CRIM', 'SAS', 'CEA', 'CONP', 'CITCLS', 'OFFICE', 'PPGS']);
+            $table->enum('dept_role', ['SAS (PSYCH)', 'SAS (CRIM)', 'SAS (AB COMM)', 'SAS', 'CEA', 'CONP', 'CITCLS', 'OFFICE', 'PPGS']);
             $table->enum('position', ['RSO', 'Faculty', 'Secretary', 'PPGS']);
             $table->string('assigned')->nullable();
             $table->binary('attachment')->nullable();

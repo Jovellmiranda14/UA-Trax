@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
             'name' => 'Equipment Admin Labcustodian',
             'email' => 'equipment_admin_labcustodian@example.com',
             'password' => Hash::make('password'),
-            'dept_role' => 'SAS',
+            'dept_role' => 'SAS (AB COMM)',
             'role' => 'equipment_admin_labcustodian',
         ]);
         User::create([
