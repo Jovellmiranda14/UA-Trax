@@ -4,7 +4,7 @@ namespace App\Filament\Resources\TicketResource\Widgets;
 
 use Filament\Widgets\ChartWidget;
 use App\Models\Ticket;
-use App\Models\TicketsAccepted; // Add this model if accepted tickets are tracked here
+use App\Models\TicketsAccepted;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
@@ -26,12 +26,20 @@ class TicketVolumeChart extends ChartWidget
             'last_week' => 'Last Week',
             'month' => 'Last Month',
             'year' => 'This Year',
+            'CRIM' => 'CRIM Department',
+            'PSYCH' => 'PSYCH Department',
+            'BS COMM' => 'BS COMM Department',
+            'CEA' => 'CEA Department',
+            'CONP' => 'CONP Department',
+            'CITCLS' => 'CITCLS Department',
+            'RSO' => 'RSO Department',
+            'OFFICE' => 'OFFICE Department',
+            'PPGS' => 'PPGS Department',
         ];
     }
 
     protected function getFilterDateRange(): array
     {
-        // Get the current filter or use 'today' as the default
         $filter = $this->filter ?? 'today';
 
         switch ($filter) {
@@ -47,6 +55,7 @@ class TicketVolumeChart extends ChartWidget
             case 'month':
                 return [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()];
             case 'year':
+                return [now()->startOfYear(), now()->endOfYear()];
             default:
                 return [now()->startOfYear(), now()->endOfYear()];
         }
@@ -55,82 +64,129 @@ class TicketVolumeChart extends ChartWidget
     protected function getData(): array
     {
         [$startDate, $endDate] = $this->getFilterDateRange();
+        $selectedDepartment = $this->filter;
 
-        // Query for Laboratory and Equipment tickets (submitted tickets)
+        // Determine if the year filter is selected
+        $isYearFilter = $this->filter === 'year';
+        $isDepartmentFilter = in_array($selectedDepartment, $this->getDepartmentFilters());
+
+        // Get the trend data for tickets based on the aggregation period
+        $aggregationPeriod = $isYearFilter || $isDepartmentFilter ? 'month' : 'day';
+
         $labEquipmentData = Trend::query(
             Ticket::query()
                 ->where('concern_type', 'Laboratory and Equipment')
-                ->when(request('department'), function ($query) {
-                    return $query->where('department', request('department'));
+                ->when($isDepartmentFilter, function ($query) use ($selectedDepartment) {
+                    return $query->where('department', $selectedDepartment);
                 })
         )
         ->between($startDate, $endDate)
-        ->perDay()
+        ->perDay($aggregationPeriod)
         ->count();
 
-        // Query for Facility tickets (submitted tickets)
         $facilityData = Trend::query(
             Ticket::query()
                 ->where('concern_type', 'Facility')
+                ->when($isDepartmentFilter, function ($query) use ($selectedDepartment) {
+                    return $query->where('department', $selectedDepartment);
+                })
         )
         ->between($startDate, $endDate)
-        ->perDay()
+        ->perDay($aggregationPeriod)
         ->count();
 
-        // Query for accepted Laboratory and Equipment tickets from the TicketsAccepted table
         $acceptedLabEquipmentTickets = Trend::query(
             TicketsAccepted::query()
-                ->where('concern_type', 'Laboratory and Equipment') // Adjust field if necessary
+                ->where('concern_type', 'Laboratory and Equipment')
+                ->when($isDepartmentFilter, function ($query) use ($selectedDepartment) {
+                    return $query->where('department', $selectedDepartment);
+                })
         )
         ->between($startDate, $endDate)
-        ->perDay()
+        ->perDay($aggregationPeriod)
         ->count();
 
-        // Query for accepted Facility tickets from the TicketsAccepted table
         $acceptedFacilityTickets = Trend::query(
             TicketsAccepted::query()
-                ->where('concern_type', 'Facility') // Adjust field if necessary
+                ->where('concern_type', 'Facility')
+                ->when($isDepartmentFilter, function ($query) use ($selectedDepartment) {
+                    return $query->where('department', $selectedDepartment);
+                })
         )
         ->between($startDate, $endDate)
-        ->perDay()
+        ->perDay($aggregationPeriod)
         ->count();
 
-        // Combine Laboratory and Equipment tickets (submitted + accepted)
-        $combinedLabEquipmentData = $labEquipmentData->map(function (TrendValue $value, $key) use ($acceptedLabEquipmentTickets) {
-            return $value->aggregate + ($acceptedLabEquipmentTickets[$key]->aggregate ?? 0);
-        });
+        // Initialize arrays for combined data and labels
+        $combinedLabEquipmentData = [];
+        $combinedFacilityData = [];
+        $labels = [];
 
-        // Combine Facility tickets (submitted + accepted)
-        $combinedFacilityData = $facilityData->map(function (TrendValue $value, $key) use ($acceptedFacilityTickets) {
-            return $value->aggregate + ($acceptedFacilityTickets[$key]->aggregate ?? 0);
-        });
+        // Group data by month if filtering by year or department
+        if ($isYearFilter || $isDepartmentFilter) {
+            $labEquipmentData->groupBy(function ($value) {
+                return \Carbon\Carbon::parse($value->date)->format('Y-m'); // Group by year-month
+            })->each(function ($group) use (&$combinedLabEquipmentData, &$labels) {
+                $combinedLabEquipmentData[] = $group->sum('aggregate'); // Sum for the month
+                $labels[] = \Carbon\Carbon::parse($group->first()->date)->format('M Y'); // Store unique month-year
+            });
+
+            $facilityData->groupBy(function ($value) {
+                return \Carbon\Carbon::parse($value->date)->format('Y-m'); // Group by year-month
+            })->each(function ($group) use (&$combinedFacilityData) {
+                $combinedFacilityData[] = $group->sum('aggregate'); // Sum for the month
+            });
+        } else {
+            // Original logic for daily data
+            $labels = $labEquipmentData->map(fn (TrendValue $value) => \Carbon\Carbon::parse($value->date)->format('Y-m-d'));
+            $combinedLabEquipmentData = $labEquipmentData->map(fn (TrendValue $value) => $value->aggregate);
+            $combinedFacilityData = $facilityData->map(fn (TrendValue $value) => $value->aggregate);
+        }
 
         return [
             'datasets' => [
                 [
                     'label' => 'Laboratory and Equipment Ticket Volume',
                     'data' => $combinedLabEquipmentData,
-                    'backgroundColor' => 'rgba(75, 192, 192, 0.2)', // Light cyan background
-                    'borderColor' => 'rgba(75, 192, 192, 1)', // Cyan border
+                    'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
+                    'borderColor' => 'rgba(75, 192, 192, 1)',
                     'borderWidth' => 2,
                     'fill' => true,
+                    'tension' => 0.4, // Adds curve to the line
                 ],
                 [
                     'label' => 'Facility Ticket Volume',
                     'data' => $combinedFacilityData,
-                    'backgroundColor' => 'rgba(255, 99, 132, 0.2)', // Light red background
-                    'borderColor' => 'rgba(255, 99, 132, 1)', // Red border
+                    'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
+                    'borderColor' => 'rgba(255, 99, 132, 1)',
                     'borderWidth' => 2,
                     'fill' => true,
+                    'tension' => 0.4, // Adds curve to the line
                 ],
             ],
-            'labels' => $labEquipmentData->map(fn (TrendValue $value) => $value->date),
+            'labels' => $labels,
+        ];
+    }
+
+    // Helper method to get department filters
+    protected function getDepartmentFilters(): array
+    {
+        return [
+            'CRIM',
+            'PSYCH',
+            'BS COMM',
+            'CEA',
+            'CONP',
+            'CITCLS',
+            'RSO',
+            'OFFICE',
+            'PPGS',
         ];
     }
 
     protected function getType(): string
     {
-        return 'line'; // Keep it as line chart for smooth transitions
+        return 'line';
     }
 
     protected function getOptions(): array
@@ -141,27 +197,28 @@ class TicketVolumeChart extends ChartWidget
                     'beginAtZero' => true,
                     'title' => [
                         'display' => true,
-                        'text' => 'Number of Tickets', // Title for the Y-axis
+                        'text' => 'Number of Tickets',
                     ],
                 ],
                 'x' => [
                     'title' => [
                         'display' => true,
-                        'text' => 'Date', // Title for the X-axis
+                        'text' => 'Date',
                     ],
                 ],
             ],
             'plugins' => [
                 'legend' => [
-                    'position' => 'top', // Position of the legend
+                    'position' => 'top',
                 ],
                 'tooltip' => [
-                    'enabled' => true, // Show tooltips on hover
-                    'mode' => 'index', // Show tooltips for all datasets at the same index
+                    'enabled' => true,
+                    'mode' => 'index',
+                    'intersect' => false, // Makes the tooltip display on the entire line
                 ],
                 'title' => [
                     'display' => true,
-                    'text' => 'Daily Ticket Submission Volume', // Main title for the chart
+                    'text' => 'Daily Ticket Submission Volume',
                 ],
             ],
         ];
