@@ -53,7 +53,7 @@ class Login extends BaseAuth
     protected function getRememberMeFormComponent(): \Filament\Forms\Components\Checkbox
     {
         return Checkbox::make('remember')
-            ->label('Remember Me')
+            ->label('Remember me')
             ->extraInputAttributes(['tabindex' => 3]);
     }
 

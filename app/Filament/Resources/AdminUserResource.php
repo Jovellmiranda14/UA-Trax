@@ -21,10 +21,10 @@ use Filament\Forms\Components\TextInput;
 class AdminUserResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $label = 'Admin User';
+    protected static ?string $navigationLabel = 'Admin user';
 
     // protected static ?string $navigationGroupIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationGroup = 'Users Account';
+    protected static ?string $navigationGroup = 'Users';
     protected static ?int $navigationSort = 2;
 
 
@@ -38,7 +38,7 @@ class AdminUserResource extends Resource
                         Grid::make(3)
                             ->schema([
                                 Forms\Components\TextInput::make('name')
-                                    ->label('Full Name')
+                                    ->label('Full name')
                                     ->extraAttributes(['style' => 'width: 250px;'])
                                     ->required()
                                     ->maxLength(255),
@@ -63,7 +63,7 @@ class AdminUserResource extends Resource
                             ]),
 
                         // Lower part: Department, Role
-                        Grid::make(3) // Split into two columns for the bottom part
+                        Grid::make(2) // Split into two columns for the bottom part
                             ->schema([
                                 Forms\Components\Select::make('role')
                                     ->label('Role')
@@ -74,7 +74,7 @@ class AdminUserResource extends Resource
                                         'facility_admin' => 'Facility Admin',
                                     ]),
                                 Forms\Components\Select::make('dept_role')
-                                    ->label('Department Role')
+                                    ->label('Department role')
                                     ->required()
                                     ->options(User::Dept)
                                     ->reactive()  // Make the field reactive to trigger location updates
@@ -140,10 +140,10 @@ class AdminUserResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('dept_role')
-                    ->label('Department Role'),
+                    ->label('Department role'),
 
                 Tables\Columns\TextColumn::make('role')
-                    ->label('Role')
+                    ->label('role')
                     ->searchable()
                     ->sortable(),
             ])

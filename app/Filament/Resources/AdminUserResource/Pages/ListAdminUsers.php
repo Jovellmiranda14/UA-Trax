@@ -18,7 +18,7 @@ class ListAdminUsers extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-            ->label('New Admin User'),
+            ->label('New admin user'),
         ];
     }
     protected function getHeaderWidgets(): array

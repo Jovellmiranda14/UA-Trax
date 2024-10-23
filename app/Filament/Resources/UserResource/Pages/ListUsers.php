@@ -19,7 +19,7 @@ class ListUsers extends ListRecords
         return [
 
             Actions\CreateAction::make()
-                ->label('New User Admin'),
+                ->label('New user admin'),
         ];
     }
 

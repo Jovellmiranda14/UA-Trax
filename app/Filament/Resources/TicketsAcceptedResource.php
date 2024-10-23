@@ -414,7 +414,12 @@ class TicketsAcceptedResource extends Resource
                         ->icon('heroicon-o-chat-bubble-left-right')
                         ->modalHeading('Comments')
                         ->modalSubheading('')
-
+                        ->modalActions([
+                            Tables\Actions\Modal\Actions\ButtonAction::make('done')
+                                ->label('Done') 
+                                ->button() 
+                                ->close(),
+                        ])
 
                         ->form(function (TicketsAccepted $record) {
                             return [
@@ -474,6 +479,21 @@ class TicketsAcceptedResource extends Resource
 
                     Tables\Actions\Action::make('send_comment')
                         ->icon('heroicon-o-chat-bubble-left-ellipsis')
+                        // ->modalActions([
+                        //     Tables\Actions\Modal\Actions\ButtonAction::make('submit')
+                        //         ->label('Submit') 
+                        //         ->button()
+                        //         ->close(),
+
+                        //     Tables\Actions\Modal\Actions\ButtonAction::make('discard')
+                        //         ->label('Discard') 
+                        //         ->button()
+                        //         ->color('white')
+                        //         ->extraAttributes([
+                        //             'style' => 'color: black; border: 2px solid grey; ', 
+                        //         ])
+                        //         ->close(),
+                        // ])
 
                         ->form(function (TicketsAccepted $record) {
                             return [

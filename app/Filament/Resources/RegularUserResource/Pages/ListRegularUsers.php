@@ -15,7 +15,7 @@ class ListRegularUsers extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-            ->label('New Regular User'),
+            ->label('New regular user'),
         ];
     }
     protected function getHeaderWidgets(): array

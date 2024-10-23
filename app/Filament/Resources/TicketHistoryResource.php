@@ -90,7 +90,7 @@ class TicketHistoryResource extends Resource
             ->query($query)
             ->columns([
                 TextColumn::make('id')
-                    ->label('Ticket ID')
+                    ->label('Ticket id')
                     ->searchable(),
                 TextColumn::make('name')
                     ->label('Sender')
@@ -279,7 +279,7 @@ class TicketHistoryResource extends Resource
 
 
                 TextColumn::make('created_at')
-                    ->label('Date Created')
+                    ->label('Date created')
                     ->date()
                     ->sortable(),
             ])

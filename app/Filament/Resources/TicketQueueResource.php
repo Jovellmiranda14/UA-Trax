@@ -50,6 +50,8 @@ class TicketQueueResource extends Resource
     protected static ?string $model = TicketQueue::class;
     // protected static ?string $navigationIcon = 'heroicon-s-queue-list';
     protected static ?string $navigationGroup = 'Tickets';
+
+    protected static ?string $navigationLabel = 'Ticket queue';
     protected static ?int $navigationSort = 1;
 
     public static function canCreate(): bool
@@ -59,12 +61,12 @@ class TicketQueueResource extends Resource
 
     public static function getPluralLabel(): string
     {
-        return 'Ticket Queue';
+        return 'Ticket queue';
     }
 
     public static function getLabel(): string
     {
-        return 'Ticket Queue';
+        return 'Ticket queue';
     }
 
     public static function form(Form $form): Form
@@ -106,7 +108,7 @@ class TicketQueueResource extends Resource
             })
             ->columns([
                 TextColumn::make('id')
-                    ->label('Ticket ID')
+                    ->label('Ticket id')
                     ->searchable(),
                 TextColumn::make('name')
                     ->label('Sender')
@@ -284,7 +286,7 @@ class TicketQueueResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('created_at')
-                    ->label('Date Created')
+                    ->label('Date created')
                     ->date()
                     ->sortable(),
             ])
@@ -484,7 +486,7 @@ class TicketQueueResource extends Resource
                                             ->schema([
                                                 // Ticket ID, Sender, Concern, etc.
                                                 TextInput::make('id')
-                                                    ->label('Ticket ID')
+                                                    ->label('Ticket id')
                                                     ->disabled()
                                                     ->default($record->id)
                                                     ->required(),
@@ -516,7 +518,7 @@ class TicketQueueResource extends Resource
                                                             ->default($record->subject)
                                                             ->required(),
                                                         TextInput::make('type_of_issue')
-                                                            ->label('Concern Type')
+                                                            ->label('Concern type')
                                                             ->disabled()
                                                             ->default($record->type_of_issue)
                                                             ->required(),
@@ -530,14 +532,14 @@ class TicketQueueResource extends Resource
                                                             ->disabled()
                                                             ->required(),
                                                         FileUpload::make('attachment')
-                                                            ->label('Attachment(optional')
+                                                            ->label('Attachment(optional)')
                                                             ->image()
                                                             ->default($record->attachment)
                                                             ->disabled(),
                                                     ]),
                                             ]),
 
-                                        Card::make('Place of Issue')
+                                        Card::make('Place of issue')
                                             ->description('Select where the equipment is currently located.')
                                             ->schema([
                                                 Grid::make(4)
@@ -553,12 +555,12 @@ class TicketQueueResource extends Resource
                                                             ->default($record->location)
                                                             ->required(),
                                                         TextInput::make('dept_role')
-                                                            ->label('Dept Assigned')
+                                                            ->label('Dept assigned')
                                                             ->disabled()
                                                             ->default($record->dept_role)
                                                             ->required(),
                                                         DatePicker::make('created_at')
-                                                            ->label('Date Created')
+                                                            ->label('Date created')
                                                             ->disabled()
                                                             ->default($record->created_at)
                                                             ->required(),

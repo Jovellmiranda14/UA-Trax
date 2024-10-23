@@ -43,10 +43,11 @@ class TicketResource extends Resource
     protected static ?string $navigationLabel = 'My tickets';
     protected static ?string $model = Ticket::class;
     // protected static ?string $navigationIcon = 'heroicon-s-ticket';
-    protected static ?string $label = 'Open tickets';
+    // protected static ?string $label = 'Open tickets';
     //protected static ?string $navigationGroup = 'Tickets';
     protected static ?int $navigationSort = 1;
 
+    protected static ?string $pluralModelLabel = 'Open tickets';
     // Disable Function
     // public static function canCreate(): Bool
     // {
@@ -138,7 +139,7 @@ class TicketResource extends Resource
                                             ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
 
                                         Select::make('type_of_issue')
-                                            ->label('Type of Issue')
+                                            ->label('Type of issue')
                                             ->options([
                                                 'repair' => 'Repair',
                                                 'air_conditioning' => 'Air Conditioning',
@@ -151,7 +152,7 @@ class TicketResource extends Resource
                                             ->visible(fn($get) => $get('concern_type') === 'Facility'),
 
                                         Select::make('type_of_issue')
-                                            ->label('Type of Issue')
+                                            ->label('Type of issue')
                                             ->options([
                                                 'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
                                                 'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
@@ -205,47 +206,32 @@ class TicketResource extends Resource
                                             ->label('Location')
                                             ->options(fn($get) => collect([
                                                 'SAS (AB COMM)' => [
-                                                    'AUDIO VISUAL CENTER',
-                                                    'DEMO ROOM',
-                                                    'DIRECTOR’S BOOTH',
-                                                    'G201 - SPEECH LAB',
-                                                    'G208',
-                                                    'RADIO STUDIO',
+                                                    'AUDIO VISUAL CENTER', 'DEMO ROOM',
+                                                    'DIRECTOR’S BOOTH', 'G201 - SPEECH LAB',
+                                                    'G208', 'RADIO STUDIO',
                                                     'TV STUDIO',
                                                 ],
 
                                                 'CEA' => [
-                                                    'ARCHITECTURE DESIGN STUDIO',
-                                                    'C200 - PHYSICS LAB',
-                                                    'C201 - PHYSICS LAB',
-                                                    'C202 - PHYSICS LAB',
-                                                    'C203A',
-                                                    'C203B',
-                                                    'RY302',
-                                                    'RY303',
-                                                    'RY304',
-                                                    'RY305',
-                                                    'RY306',
-                                                    'RY307',
-                                                    'RY308',
-                                                    'RY309',
+                                                    'ARCHITECTURE DESIGN STUDIO', 'C200 - PHYSICS LAB',
+                                                    'C201 - PHYSICS LAB',  'C202 - PHYSICS LAB',
+                                                    'C203A', 'C203B',
+                                                    'RY302', 'RY303',
+                                                    'RY304', 'RY305',
+                                                    'RY306', 'RY307',
+                                                    'RY308', 'RY309',
                                                 ],
 
                                                 'CITCLS' => [
-                                                    'C204 - ROBOTICS LAB',
-                                                    'C301 - CISCO LAB',
-                                                    'C302 - SPEECH LAB',
-                                                    'P308',
-                                                    'P309 - COMPUTER LAB 4',
-                                                    'P310 - COMPUTER LAB 3',
-                                                    'P311 - COMPUTER LAB 2',
-                                                    'P312 - COMPUTER LAB 1',
+                                                    'C204 - ROBOTICS LAB',  'C301 - CISCO LAB',
+                                                    'C302 - SPEECH LAB',    'P308',
+                                                    'P309 - COMPUTER LAB 4','P310 - COMPUTER LAB 3',
+                                                    'P311 - COMPUTER LAB 2','P312 - COMPUTER LAB 1',
                                                     'P313',
                                                 ],
 
                                                 'CONP' => [
-                                                    'G103 - NURSING LAB',
-                                                    'G105 - NURSING LAB',
+                                                    'G103 - NURSING LAB', 'G105 - NURSING LAB',
                                                     'G107 - NURSING LAB',
                                                     'NURSING ARTS LAB',
                                                     'NURSING CONFERENCE ROOM',
@@ -394,115 +380,67 @@ class TicketResource extends Resource
                     ->label('Priority')
                     ->getStateUsing(function ($record) {
                         switch ($record->location) {
-                            case 'OFFICE OF THE PRESIDENT':
-                            case 'CMO':
-                            case 'EAMO':
-                            case ' QUALITY MANAGEMENT OFFICE':
+                            case 'OFFICE OF THE PRESIDENT': case 'CMO':
+                            case 'EAMO':                    case ' QUALITY MANAGEMENT OFFICE':
                             case 'REGINA OFFICE':
                                 return 'High';
 
-                            case 'NURSING ARTS LAB':
-                            case 'SBPA OFFICE':
-                            case 'VPAA':
-                            case 'PREFECT OF DISCIPLINE':
-                            case 'GUIDANCE & ADMISSION':
-                            case 'CITCLS OFFICE':
-                            case 'CITCLS DEAN OFFICE':
-                            case 'CEA OFFICE':
-                            case 'SAS OFFICE':
-                            case 'SED OFFICE':
-                            case 'CONP OFFICE':
-                            case 'CHTM OFFICE':
-                            case 'ITRS':
-                            case 'REGISTRAR’S OFFICE':
-                            case 'RPO':
-                            case 'COLLEGE LIBRARY':
-                            case 'VPF':
-                            case 'BUSINESS OFFICE':
-                            case 'FINANCE OFFICE':
-                            case 'RMS OFFICE':
-                            case 'PROPERTY CUSTODIAN':
-                            case 'BOOKSTORE':
-                            case 'VPA':
-                            case 'HUMAN RESOURCES & DEVELOPMENT':
-                            case 'DENTAL/MEDICAL CLINIC':
-                            case 'PHYSICAL PLANT & GENERAL SERVICES':
-                            case 'OMISS':
-                            case 'HOTEL OFFICE/CAFE MARIA':
-                            case 'SPORTS OFFICE':
-                            case 'QMO':
+                            case 'NURSING ARTS LAB':        case 'SBPA OFFICE':
+                            case 'VPAA':                    case 'PREFECT OF DISCIPLINE':
+                            case 'GUIDANCE & ADMISSION':    case 'CITCLS OFFICE':
+                            case 'CITCLS DEAN OFFICE':      case 'CEA OFFICE':
+                            case 'SAS OFFICE':              case 'SED OFFICE':
+                            case 'CONP OFFICE':             case 'CHTM OFFICE':
+                            case 'ITRS':                    case 'REGISTRAR’S OFFICE':
+                            case 'RPO':                     case 'COLLEGE LIBRARY':
+                            case 'VPF':                     case 'BUSINESS OFFICE':
+                            case 'FINANCE OFFICE':          case 'RMS OFFICE':
+                            case 'PROPERTY CUSTODIAN':      case 'BOOKSTORE':
+                            case 'VPA':                     case 'HUMAN RESOURCES & DEVELOPMENT':
+                            case 'DENTAL/MEDICAL CLINIC':   case 'PHYSICAL PLANT & GENERAL SERVICES':
+                            case 'OMISS':                   case 'HOTEL OFFICE/CAFE MARIA':
+                            case 'SPORTS OFFICE':           case 'QMO':
                                 return 'Moderate';
 
 
-                            case 'C100 - PHARMACY LAB':
-                            case 'C101 - BIOLOGY LAB/STOCKROOM':
-                            case 'C102':
-                            case 'C103 - CHEMISTRY LAB':
-                            case 'C104 - CHEMISTRY LAB':
-                            case 'C105 - CHEMISTRY LAB':
-                            case 'C106':
-                            case 'C303':
-                            case 'C304':
-                            case 'C305':
-                            case 'C306':
-                            case 'C307 - PSYCHOLOGY LAB':
+                            case 'C100 - PHARMACY LAB':     case 'C101 - BIOLOGY LAB/STOCKROOM':
+                            case 'C102':                    case 'C103 - CHEMISTRY LAB':
+                            case 'C104 - CHEMISTRY LAB':    case 'C105 - CHEMISTRY LAB':
+                            case 'C106':                    case 'C303':
+                            case 'C304':                    case 'C305':
+                            case 'C306':                    case 'C307 - PSYCHOLOGY LAB':
 
                             // SAS (AB COMM)
-                            case 'G201 - SPEECH LAB':
-                            case 'RADIO STUDIO':
-                            case 'DIRECTOR’S BOOTH':
-                            case 'AUDIO VISUAL CENTER':
-                            case 'TV STUDIO':
-                            case 'G208':
+                            case 'G201 - SPEECH LAB':       case 'RADIO STUDIO':
+                            case 'DIRECTOR’S BOOTH':        case 'AUDIO VISUAL CENTER':
+                            case 'TV STUDIO':               case 'G208':
                             case 'DEMO ROOM':
 
                             // SAS (Crim)
-                            case 'MOOT COURT':
-                            case 'CRIMINOLOGY LECTURE ROOM':
-                            case 'FORENSIC PHOTOGRAPHY ROOM':
-                            case 'CRIME LAB':
+                            case 'MOOT COURT':              case 'CRIMINOLOGY LECTURE ROOM':
+                            case 'FORENSIC PHOTOGRAPHY ROOM':  case 'CRIME LAB':
 
                             // Other previously defined low priority locations
-                            case 'C200 - PHYSICS LAB':
-                            case 'C201 - PHYSICS LAB':
-                            case 'C202 - PHYSICS LAB':
-                            case 'C203A':
-                            case 'C203B':
-                            case 'ARCHITECTURE DESIGN STUDIO':
-                            case 'RY302':
-                            case 'RY303':
-                            case 'RY304':
-                            case 'RY305':
-                            case 'RY306':
-                            case 'RY307':
-                            case 'RY308':
-                            case 'RY309':
-                            case 'PHARMACY STOCKROOM':
-                            case 'G103 - NURSING LAB':
-                            case 'G105 - NURSING LAB':
-                            case 'G107 - NURSING LAB':
-                            case 'NURSING CONFERENCE ROOM':
-                            case 'C204 - ROBOTICS LAB':
-                            case 'C301 - CISCO LAB':
-                            case 'C302 - SPEECH LAB':
-                            case 'P307':
-                            case 'P308':
-                            case 'P309':
-                            case 'P309 - COMPUTER LAB 4':
-                            case 'P310':
-                            case 'P310 - COMPUTER LAB 3':
-                            case 'P311':
-                            case 'P311 - COMPUTER LAB 2':
-                            case 'P312 - COMPUTER LAB 1':
-                            case 'P312':
-                            case 'P313':
-                            case 'RSO OFFICE':
-                            case 'UACSC OFFICE':
-                            case 'PHOTO LAB':
-                            case 'AMPHITHEATER':
-                            case 'COLLEGE AVR':
-                            case 'LIBRARY MAIN LOBBY':
-                            case 'NSTP':
+                            case 'C200 - PHYSICS LAB':      case 'C201 - PHYSICS LAB':
+                            case 'C202 - PHYSICS LAB':      case 'C203A':
+                            case 'C203B':                   case 'ARCHITECTURE DESIGN STUDIO':
+                            case 'RY302':                   case 'RY303':
+                            case 'RY304':                   case 'RY305':
+                            case 'RY306':                   case 'RY307':
+                            case 'RY308':                   case 'RY309':
+                            case 'PHARMACY STOCKROOM':      case 'G103 - NURSING LAB':
+                            case 'G105 - NURSING LAB':      case 'G107 - NURSING LAB':
+                            case 'NURSING CONFERENCE ROOM': case 'C204 - ROBOTICS LAB':
+                            case 'C301 - CISCO LAB':        case 'C302 - SPEECH LAB':
+                            case 'P307':                    case 'P308':
+                            case 'P309':                    case 'P309 - COMPUTER LAB 4':
+                            case 'P310':                    case 'P310 - COMPUTER LAB 3':
+                            case 'P311':                    case 'P311 - COMPUTER LAB 2':
+                            case 'P312 - COMPUTER LAB 1':   case 'P312':
+                            case 'P313':                    case 'RSO OFFICE':
+                            case 'UACSC OFFICE':            case 'PHOTO LAB':
+                            case 'AMPHITHEATER':            case 'COLLEGE AVR':
+                            case 'LIBRARY MAIN LOBBY':      case 'NSTP':
                                 return 'Low';
 
                             // Add more cases for other locations as needed
@@ -547,16 +485,6 @@ class TicketResource extends Resource
                     ->sortable()
                     ->date(),
 
-                // Tables\Columns\TextColumn::make('name')
-                //     ->label('Sender')
-                //     ->sortable()
-                //     ->searchable(),
-
-                // Tables\Columns\TextColumn::make('updated_at')
-                // ->label('Date Updated')
-                // ->date()
-                // ->searchable()
-                // ->toggleable(isToggledHiddenByDefault: true),
 
             ])
             ->defaultSort('id', 'desc')
@@ -567,18 +495,12 @@ class TicketResource extends Resource
                     ->label('Type of issue')
                     ->options([
                         'Facility' => 'Facility',
-                        'Laboratory and Equipment' => 'Laboratory and Equipment',
+                        'Laboratory and Equipment' => 'Lab Equipment',
                     ]),
             ])
             ->actions([
                 //
             ]);
-        // ->bulkActions([
-        //     Tables\Actions\BulkActionGroup::make([
-        //         Tables\Actions\DeleteBulkAction::make(),
-
-        //     ]),
-
 
     }
 

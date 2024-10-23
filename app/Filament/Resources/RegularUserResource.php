@@ -18,10 +18,10 @@ class RegularUserResource extends Resource
 {
     protected static ?int $navigationSort = 1;
     protected static ?string $model = User::class;
-    protected static ?string $label = 'Regular User';
+    protected static ?string $navigationLabel = 'Regular user';
     //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Users Account';
+    protected static ?string $navigationGroup = 'Users';
     // Uncomment the following method if you want to disable the creation of new Regular Users
     // public static function canCreate(): bool
     // {
@@ -39,7 +39,7 @@ class RegularUserResource extends Resource
                         Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('name')
-                                    ->label('Full Name')
+                                    ->label('Full name')
                                     ->required()
                                     ->maxLength(255),
 

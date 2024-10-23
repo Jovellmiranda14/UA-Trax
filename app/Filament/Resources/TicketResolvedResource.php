@@ -30,7 +30,7 @@ class ConcernSpectrum
 }
 class TicketResolvedResource extends Resource
 {
-    protected static ?string $navigationLabel = 'Closed Tickets';
+    protected static ?string $navigationLabel = 'Closed tickets';
 
     protected static ?string $model = TicketResolved::class;
 
@@ -91,7 +91,7 @@ class TicketResolvedResource extends Resource
             ->query($query)
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('Ticket ID')
+                    ->label('Ticket id')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('name')
@@ -286,14 +286,14 @@ class TicketResolvedResource extends Resource
                     })
                     ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Created On')
+                    ->label('Created on')
                     ->date()
                     ->sortable()
                     ->searchable(),
 
                 // Unfinished
                 Tables\Columns\TextColumn::make('accepted_at')
-                    ->label('Accepted On')
+                    ->label('Accepted on')
                     ->date()
                     ->sortable()
                     ->searchable(),
@@ -305,7 +305,7 @@ class TicketResolvedResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     ViewAction::make('View')
-                        ->modalHeading('Ticket Details')
+                        ->modalHeading('Ticket details')
                         ->modalSubHeading('')
                         ->extraAttributes([
                             'class' => 'sticky-modal-header', // Add sticky header class
@@ -323,7 +323,7 @@ class TicketResolvedResource extends Resource
                                     Grid::make(3)
                                         ->schema([
                                             TextInput::make('id')
-                                                ->label('Ticket ID')
+                                                ->label('Ticket id')
                                                 ->disabled()
                                                 ->required(),
                                             TextInput::make('status')
@@ -337,7 +337,7 @@ class TicketResolvedResource extends Resource
                                         ]),
 
                                     // Section: Issue Information
-                                    Card::make('Issue Information')
+                                    Card::make('Issue information')
                                         ->description('View the information about the ticket.')
                                         ->schema([
                                             Grid::make(3)
@@ -351,7 +351,7 @@ class TicketResolvedResource extends Resource
                                                         ->disabled()
                                                         ->required(),
                                                     TextInput::make('type_of_issue')
-                                                        ->label('Type of Issue')
+                                                        ->label('Type of issue')
                                                         ->disabled()
                                                         ->required(),
                                                 ]),
@@ -371,7 +371,7 @@ class TicketResolvedResource extends Resource
                                         ]),
 
                                     // Section: Place of Issue
-                                    Card::make('Place of Issue')
+                                    Card::make('Place of issue')
                                         ->description('Select where the equipment is currently located.')
                                         ->schema([
                                             Grid::make(3)
@@ -385,7 +385,7 @@ class TicketResolvedResource extends Resource
                                                         ->disabled()
                                                         ->required(),
                                                     DatePicker::make('created_at')
-                                                        ->label('Date Created')
+                                                        ->label('Date created')
                                                         ->disabled()
                                                         ->required(),
                                                 ]),
@@ -402,7 +402,7 @@ class TicketResolvedResource extends Resource
                                 Grid::make(3)
                                     ->schema([
                                         TextInput::make('id')
-                                            ->label('Ticket ID')
+                                            ->label('Ticket id')
                                             ->default($record->id)
                                             ->disabled()
                                             ->required(),
@@ -412,7 +412,7 @@ class TicketResolvedResource extends Resource
                                             ->disabled()
                                             ->required(),
                                         TextInput::make('created_at')
-                                            ->label('Date Created')
+                                            ->label('Date created')
                                             ->default($record->created_at)
                                             ->disabled()
                                             ->required(),
@@ -429,7 +429,7 @@ class TicketResolvedResource extends Resource
                                                     ->label('Sender')
                                                     ->disabled(),
                                                 TextInput::make('commented_at')
-                                                    ->label('Date and Time')
+                                                    ->label('Date and time')
                                                     ->disabled(),
                                             ]),
                                         Textarea::make('comment')

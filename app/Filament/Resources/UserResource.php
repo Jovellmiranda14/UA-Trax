@@ -14,10 +14,10 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Card;
 class UserResource extends Resource
 {
-    protected static ?string $navigationLabel = 'Super Admin';
+    protected static ?string $navigationLabel = 'Super admin';
     protected static ?string $model = User::class;
     //protected static ?string $navigationIcon = 'heroicon-o-user';
-    protected static ?string $navigationGroup = 'Users Account';
+    protected static ?string $navigationGroup = 'Users';
 
 
     public static function form(Form $form): Form
@@ -30,7 +30,7 @@ class UserResource extends Resource
                         Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('name')
-                                    ->label('Full Name')
+                                    ->label('Full name')
                                     ->required()
                                     ->maxLength(255),
 
