@@ -15,26 +15,19 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use App\Notifications\TicketResolvedNotification;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Tables\Actions\ActionGroup;
+
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\Filter;
 use App\Models\TicketComment;
 use App\Models\ResolvedComment;
 use Filament\Support\Colors\Color;
-use Filament\Support\Facades\FilamentColor;
 use App\Notifications\NewCommentNotification;
 use Filament\Forms\Components\Grid;
 use Illuminate\Support\Facades\Log;
@@ -363,10 +356,20 @@ class TicketsAcceptedResource extends Resource
                                                         ->label('Concern')
                                                         ->disabled()
                                                         ->required(),
-                                                    TextInput::make('type_of_issue')
-                                                        ->label('Type of Issue')
-                                                        ->disabled()
-                                                        ->required(),
+                                                    Select::make('type_of_issue')
+                                                        ->label('Concern type')
+                                                        ->options([
+                                                            'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
+                                                            'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
+                                                            'other_devices' => 'Other Devices (e.g., Printer, Projector, and TV)',
+                                                            'repair' => 'Repair',
+                                                            'air_conditioning' => 'Air Conditioning',
+                                                            'plumbing' => 'Plumbing',
+                                                            'lighting' => 'Lighting',
+                                                            'electricity' => 'Electricity',
+                                                        ])
+                                                        ->required()
+                                                        ->disabled(),
                                                 ]),
 
                                             // Description and Attachment Fields
@@ -416,8 +419,8 @@ class TicketsAcceptedResource extends Resource
                         ->modalSubheading('')
                         ->modalActions([
                             Tables\Actions\Modal\Actions\ButtonAction::make('done')
-                                ->label('Done') 
-                                ->button() 
+                                ->label('Done')
+                                ->button()
                                 ->close(),
                         ])
 
@@ -767,8 +770,6 @@ class TicketsAcceptedResource extends Resource
     {
         return [
             'index' => Pages\ListTicketsAccepteds::route('/'),
-            // 'create' => Pages\CreateTicketsAccepted::route('/create'),
-            // 'edit' => Pages\EditTicketsAccepted::route('/{record}/edit'),
         ];
     }
 }

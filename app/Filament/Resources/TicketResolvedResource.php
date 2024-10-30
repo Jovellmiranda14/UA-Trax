@@ -18,6 +18,7 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Support\Colors\Color;
@@ -350,10 +351,20 @@ class TicketResolvedResource extends Resource
                                                         ->label('Concern')
                                                         ->disabled()
                                                         ->required(),
-                                                    TextInput::make('type_of_issue')
-                                                        ->label('Type of issue')
-                                                        ->disabled()
-                                                        ->required(),
+                                                    Select::make('type_of_issue')
+                                                        ->label('Concern type')
+                                                        ->options([
+                                                            'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
+                                                            'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
+                                                            'other_devices' => 'Other Devices (e.g., Printer, Projector, and TV)',
+                                                            'repair' => 'Repair',
+                                                            'air_conditioning' => 'Air Conditioning',
+                                                            'plumbing' => 'Plumbing',
+                                                            'lighting' => 'Lighting',
+                                                            'electricity' => 'Electricity',
+                                                        ])
+                                                        ->required()
+                                                        ->disabled(),
                                                 ]),
 
                                             // Description and Attachment Fields

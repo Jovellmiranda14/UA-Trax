@@ -47,7 +47,6 @@ class AdminUserResource extends Resource
                                     ->label('Email')
                                     ->extraAttributes(['style' => 'width: 250px;'])
                                     ->email()
-                                    ->unique()
                                     ->required()
                                     ->maxLength(255),
 
@@ -57,13 +56,14 @@ class AdminUserResource extends Resource
                                     ->revealable(true)
                                     ->required()
                                     ->password()
+                                    ->minLength(8)
                                     ->maxLength(255)
                                     ->dehydrateStateUsing(fn($state) => bcrypt($state)), // Ensure password is hashed
 
                             ]),
 
                         // Lower part: Department, Role
-                        Grid::make(2) // Split into two columns for the bottom part
+                        Grid::make(2) 
                             ->schema([
                                 Forms\Components\Select::make('role')
                                     ->label('Role')
@@ -77,7 +77,7 @@ class AdminUserResource extends Resource
                                     ->label('Department role')
                                     ->required()
                                     ->options(User::Dept)
-                                    ->reactive()  // Make the field reactive to trigger location updates
+                                    ->reactive()
                                     ->visible(
                                         fn() => in_array(
                                             auth()->user()->role,

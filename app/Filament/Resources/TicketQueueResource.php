@@ -27,6 +27,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use App\Filament\Resources\UserResource\RelationManagers;
@@ -302,7 +303,7 @@ class TicketQueueResource extends Resource
                             // Assign the ticket to the current user
                             $record->update(['assigned' => auth()->user()->name]);
                             $priority = 'Moderate'; // Default value
-
+            
                             switch ($record->location) {
                                 case 'OFFICE OF THE PRESIDENT':
                                 case 'CMO':
@@ -311,7 +312,6 @@ class TicketQueueResource extends Resource
                                 case 'REGINA OFFICE':
                                     $priority = 'High';
                                     break;
-                    
                                 case 'NURSING ARTS LAB':
                                 case 'SBPA OFFICE':
                                 case 'VPAA':
@@ -344,7 +344,6 @@ class TicketQueueResource extends Resource
                                 case 'QMO':
                                     $priority = 'Moderate';
                                     break;
-                    
                                 // Low priority locations
                                 case 'C100 - PHARMACY LAB':
                                 case 'C101 - BIOLOGY LAB/STOCKROOM':
@@ -358,7 +357,7 @@ class TicketQueueResource extends Resource
                                 case 'C305':
                                 case 'C306':
                                 case 'C307 - PSYCHOLOGY LAB':
-                                    // SAS (AB COMM)
+                                // SAS (AB COMM)
                                 case 'G201 - SPEECH LAB':
                                 case 'RADIO STUDIO':
                                 case 'DIRECTOR’S BOOTH':
@@ -366,12 +365,12 @@ class TicketQueueResource extends Resource
                                 case 'TV STUDIO':
                                 case 'G208':
                                 case 'DEMO ROOM':
-                                    // SAS (Crim)
+                                // SAS (Crim)
                                 case 'MOOT COURT':
                                 case 'CRIMINOLOGY LECTURE ROOM':
                                 case 'FORENSIC PHOTOGRAPHY ROOM':
                                 case 'CRIME LAB':
-                                    // Other previously defined low priority locations
+                                // Other previously defined low priority locations
                                 case 'C200 - PHYSICS LAB':
                                 case 'C201 - PHYSICS LAB':
                                 case 'C202 - PHYSICS LAB':
@@ -414,7 +413,7 @@ class TicketQueueResource extends Resource
                                 case 'NSTP':
                                     $priority = 'Low';
                                     break;
-                    
+
                                 default:
                                     $priority = 'Moderate'; // Handle unmatched cases
                                     break;
@@ -437,8 +436,8 @@ class TicketQueueResource extends Resource
                                 'created_at' => $record->created_at,
                                 'assigned' => auth()->user()->name,
                             ]);
-                            TicketHistory::where('id', $record->id)->update([ // Ensure you're updating the correct record
-            
+                            TicketHistory::where('id', $record->id)->update([
+
                                 'priority' => $record->priority,
                                 'status' => 'In progress',
                                 'assigned' => auth()->user()->name,
@@ -517,11 +516,21 @@ class TicketQueueResource extends Resource
                                                             ->disabled()
                                                             ->default($record->subject)
                                                             ->required(),
-                                                        TextInput::make('type_of_issue')
+                                                        Select::make('type_of_issue')
                                                             ->label('Concern type')
-                                                            ->disabled()
+                                                            ->options([
+                                                                'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
+                                                                'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
+                                                                'other_devices' => 'Other Devices (e.g., Printer, Projector, and TV)',
+                                                                'repair' => 'Repair',
+                                                                'air_conditioning' => 'Air Conditioning',
+                                                                'plumbing' => 'Plumbing',
+                                                                'lighting' => 'Lighting',
+                                                                'electricity' => 'Electricity',
+                                                            ])
                                                             ->default($record->type_of_issue)
-                                                            ->required(),
+                                                            ->required()
+                                                            ->disabled()
                                                     ]),
                                                 Grid::make(2)
                                                     ->schema([

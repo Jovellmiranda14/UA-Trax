@@ -37,7 +37,6 @@ class UserResource extends Resource
                                 Forms\Components\TextInput::make('email')
                                     ->label('Email')
                                     ->email()
-                                    ->unique()
                                     ->required()
                                     ->maxLength(255),
 
@@ -46,6 +45,7 @@ class UserResource extends Resource
                                     ->revealable(true)
                                     ->required()
                                     ->password()
+                                    ->minLength(8)
                                     ->maxLength(255)
                                     ->dehydrateStateUsing(fn($state) => bcrypt($state)), // Ensure password is hashed
 
@@ -65,10 +65,6 @@ class UserResource extends Resource
                                         'equipmentsuperadmin' => 'Equipment Super Admin',
                                         'facilitysuperadmin' => 'Facility Super Admin',
                                     ]),
-                                //Equipment Admin Omiss - > Offcie (secretary) and RSO 
-                                //Equipment Admin LabCustodian -> Faculty (All Depts)
-                                // Display Position IF MERON SYA
-                                // Default value for role
                             ])
                     ])
             ]);
@@ -90,16 +86,10 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                // Tables\Columns\TextColumn::make('dept_role')
-                // ->sortable()
-                // ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('role')
                     ->searchable(),
-                // Tables\Columns\TextColumn::make('position')
-                // ->sortable()
-                // ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -122,11 +112,6 @@ class UserResource extends Resource
                     Tables\Actions\DeleteAction::make(),
                 ]),
 
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

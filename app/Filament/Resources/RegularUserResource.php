@@ -46,7 +46,6 @@ class RegularUserResource extends Resource
                                 Forms\Components\TextInput::make('email')
                                     ->label('Email')
                                     ->email()
-                                    ->unique()
                                     ->required()
                                     ->maxLength(255),
 
@@ -55,6 +54,7 @@ class RegularUserResource extends Resource
                                     ->revealable(true)
                                     ->required()
                                     ->password()
+                                    ->minLength(8)
                                     ->maxLength(255)
                                     ->dehydrateStateUsing(fn($state) => bcrypt($state)), // Ensure password is hashed
 
@@ -121,9 +121,8 @@ class RegularUserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
             ]);
+
     }
 
     public static function getRelations(): array
