@@ -82,7 +82,7 @@ class TicketHistoryResource extends Resource
         }
         // For regular users, filter by the user's own tickets
         else {
-            $query->where('id', $user->id);  // Regular users query
+            $query->where('name', $user->name);  // Regular users query
         }
 
 

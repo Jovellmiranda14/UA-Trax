@@ -22,6 +22,7 @@ use Filament\Forms\Components\Card;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Filters\SelectFilter;
@@ -403,11 +404,11 @@ class TicketsAcceptedResource extends Resource
                                                         ->label('Location')
                                                         ->disabled()
                                                         ->required(),
-                                                    TextInput::make('created_at')
+                                                        DatePicker::make('created_at')
                                                         ->label('Date Created')
-                                                        ->default(fn($record) => $record->created_at->format('M d, Y'))
+                                                        ->default(fn($record) => $record->created_at)
                                                         ->disabled()
-                                                        ->required(),
+                                                        ->required(),   
                                                 ]),
                                         ]),
                                 ]),
@@ -468,7 +469,7 @@ class TicketsAcceptedResource extends Resource
                                                     ->required(),
                                                 TextInput::make('time_sent')
                                                     ->label('Time Sent')
-                                                    ->default($record->created_at->timezone('Asia/Manila')->format('g:i A'))
+                                                    ->default(now()->timezone('Asia/Manila')->format('g:i A'))
                                                     ->disabled()
                                                     ->required(),
                                             ]),

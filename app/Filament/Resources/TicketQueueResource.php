@@ -88,7 +88,6 @@ class TicketQueueResource extends Resource
                     $query->whereIn('concern_type', ['Laboratory and Equipment'])
                         ->orderBy('concern_type', 'asc');
 
-
                 } elseif (
                     $user->isEquipmentAdminOmiss() ||
                     $user->isEquipmentAdminlabcustodian()
@@ -541,7 +540,7 @@ class TicketQueueResource extends Resource
                                         Card::make('Where did it occur ?')
                                             ->description('Enter the information about the place of issue.')
                                             ->schema([
-                                                Grid::make(4)
+                                                Grid::make(3)
                                                     ->schema([
                                                         TextInput::make('department')
                                                             ->label('Area')
@@ -553,15 +552,15 @@ class TicketQueueResource extends Resource
                                                             ->disabled()
                                                             ->default($record->location)
                                                             ->required(),
-                                                        TextInput::make('dept_role')
-                                                            ->label('Dept assigned')
-                                                            ->disabled()
-                                                            ->default($record->dept_role)
-                                                            ->required(),
+                                                        // TextInput::make('dept_role')
+                                                        //     ->label('Dept assigned')
+                                                        //     ->disabled()
+                                                        //     ->default($record->dept_role)
+                                                        //     ->required(),
                                                         DatePicker::make('created_at')
                                                             ->label('Date created')
                                                             ->disabled()
-                                                            ->default($record->created_at)
+                                                            ->default($record->created_at->format('M d, Y'))
                                                             ->required(),
                                                     ]),
                                             ]),
