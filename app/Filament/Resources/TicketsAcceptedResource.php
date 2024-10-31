@@ -50,7 +50,7 @@ class TicketsAcceptedResource extends Resource
 
     // protected static ?string $navigationIcon = 'heroicon-o-ticket';
 
-    // protected static ?string $navigationGroup = 'Tickets';
+    protected static ?string $navigationGroup = 'Tickets';
     protected static ?int $navigationSort = 2;
 
     public static function canCreate(): bool
@@ -261,11 +261,11 @@ class TicketsAcceptedResource extends Resource
                         };
                     })
                     ->searchable(),
+                Tables\Columns\TextColumn::make('department')
+                    ->label('Area')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('department')
-                    ->label('Department')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('assigned')
                     ->label('Assigned')
@@ -316,12 +316,12 @@ class TicketsAcceptedResource extends Resource
                         ->modalHeading('Ticket Details')
                         ->modalSubHeading('')
                         ->extraAttributes([
-                            'class' => 'sticky-modal-header', // Add sticky header class
+                            'class' => 'sticky-modal-header',
                         ])
                         ->form([
                             Card::make()
                                 ->extraAttributes([
-                                    'style' => 'max-height: 68vh; overflow-y: auto;', // Make the content scrollable
+                                    'style' => 'max-height: 68vh; overflow-y: auto;',
                                 ])
                                 ->schema([
 
@@ -357,7 +357,7 @@ class TicketsAcceptedResource extends Resource
                                                         ->disabled()
                                                         ->required(),
                                                     Select::make('type_of_issue')
-                                                        ->label('Concern type')
+                                                        ->label('Type of Issue')
                                                         ->options([
                                                             'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
                                                             'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
@@ -390,13 +390,13 @@ class TicketsAcceptedResource extends Resource
 
 
                                     // Section: Place of Issue
-                                    Card::make('Place of Issue')
-                                        ->description('Select where the equipment is currently located.')
+                                    Card::make('Where did it occur ?')
+                                        ->description('Enter the information about the place of issue.')
                                         ->schema([
                                             Grid::make(3)
                                                 ->schema([
                                                     TextInput::make('department')
-                                                        ->label('Department')
+                                                        ->label('Area')
                                                         ->disabled()
                                                         ->required(),
                                                     TextInput::make('location')
@@ -405,6 +405,7 @@ class TicketsAcceptedResource extends Resource
                                                         ->required(),
                                                     TextInput::make('created_at')
                                                         ->label('Date Created')
+                                                        ->default(fn($record) => $record->created_at->format('M d, Y'))
                                                         ->disabled()
                                                         ->required(),
                                                 ]),
@@ -426,7 +427,7 @@ class TicketsAcceptedResource extends Resource
 
                         ->form(function (TicketsAccepted $record) {
                             return [
-                                Grid::make(3)
+                                Grid::make(4)
                                     ->schema([
                                         TextInput::make('id')
                                             ->label('Ticket ID')
@@ -438,11 +439,16 @@ class TicketsAcceptedResource extends Resource
                                             ->default($record->subject)
                                             ->disabled()
                                             ->required(),
-                                        TextInput::make('created_at')
-                                            ->label('Date Created')
-                                            ->default($record->created_at)
-                                            ->disabled()
-                                            ->required(),
+                                        // TextInput::make('date_created')
+                                        //     ->label('Date Created')
+                                        //     ->default($record->created_at->format('M d, Y')) 
+                                        //     ->disabled()
+                                        //     ->required(),
+                                        // TextInput::make('time_created')
+                                        //     ->label('Time Created')
+                                        //     ->default($record->created_at->format('g:i A')) 
+                                        //     ->disabled()
+                                        //     ->required(),
                                     ]),
                                 Repeater::make('comments')
                                     ->label('Comments')
@@ -455,9 +461,16 @@ class TicketsAcceptedResource extends Resource
                                                 TextInput::make('sender')
                                                     ->label('Sender')
                                                     ->disabled(),
-                                                TextInput::make('commented_at')
-                                                    ->label('Date and time')
-                                                    ->disabled(),
+                                                TextInput::make('date_sent')
+                                                    ->label('Date Sent')
+                                                    ->default($record->created_at->format('M d, Y'))
+                                                    ->disabled()
+                                                    ->required(),
+                                                TextInput::make('time_sent')
+                                                    ->label('Time Sent')
+                                                    ->default($record->created_at->timezone('Asia/Manila')->format('g:i A'))
+                                                    ->disabled()
+                                                    ->required(),
                                             ]),
                                         Textarea::make('comment')
                                             ->label('Description')
@@ -500,7 +513,7 @@ class TicketsAcceptedResource extends Resource
 
                         ->form(function (TicketsAccepted $record) {
                             return [
-                                Grid::make(3)
+                                Grid::make(4)
                                     ->schema([
                                         TextInput::make('id')
                                             ->label('Ticket ID')
@@ -512,9 +525,14 @@ class TicketsAcceptedResource extends Resource
                                             ->default($record->subject)
                                             ->disabled()
                                             ->required(),
-                                        TextInput::make('created_at')
+                                        TextInput::make('date_created')
                                             ->label('Date Created')
-                                            ->default($record->created_at)
+                                            ->default($record->created_at->format('M d, Y'))
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('time_created')
+                                            ->label('Time Created')
+                                            ->default($record->created_at->format('g:i A'))
                                             ->disabled()
                                             ->required(),
                                     ]),

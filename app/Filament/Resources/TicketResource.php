@@ -180,15 +180,20 @@ class TicketResource extends Resource
                             ]),
 
                         // Place of Issues Card
-                        Card::make('Place of issues')
-                            ->description('Select where the equipment is currently located.')
+                        Card::make('Where did it occur ?')
+                            ->description('Enter the information about the place of issue.')
                             ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility']))
                             ->schema([
                                 Grid::make(2)
 
                                     ->schema([
                                         Select::make('department')
-                                            ->label('Department')
+                                            ->label('Area')
+                                            ->hint('Help')
+                                            ->hintIcon('heroicon-s-question-mark-circle')
+                                            ->extraAttributes([
+                                                'style' => 'font-size: 0.500rem; '  
+                                            ])
                                             ->options([
                                                 'CEA' => 'CEA',
                                                 'CONP' => 'CONP',
@@ -459,12 +464,11 @@ class TicketResource extends Resource
                         };
                     })
                     ->searchable(),
+                    Tables\Columns\TextColumn::make('department')
+                    ->label('Area')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('department')
-                    ->label('Assigned to')
                     ->searchable(),
 
                 Tables\Columns\ImageColumn::make('attachment')

@@ -50,7 +50,7 @@ class TicketQueueResource extends Resource
 {
     protected static ?string $model = TicketQueue::class;
     // protected static ?string $navigationIcon = 'heroicon-s-queue-list';
-    protected static ?string $navigationGroup = 'Tickets';
+    // protected static ?string $navigationGroup = 'Tickets';
 
     protected static ?string $navigationLabel = 'Ticket queue';
     protected static ?int $navigationSort = 1;
@@ -152,27 +152,18 @@ class TicketQueueResource extends Resource
                     ->label('Priority')
                     ->getStateUsing(function ($record) {
                         switch ($record->location) {
-                            case 'OFFICE OF THE PRESIDENT':
-                            case 'CMO':
-                            case 'EAMO':
-                            case ' QUALITY MANAGEMENT OFFICE':
+                            case 'OFFICE OF THE PRESIDENT': case 'CMO':
+                            case 'EAMO':                    case ' QUALITY MANAGEMENT OFFICE':
                             case 'REGINA OFFICE':
                                 return 'High';
 
-                            case 'NURSING ARTS LAB':
-                            case 'SBPA OFFICE':
-                            case 'VPAA':
-                            case 'PREFECT OF DISCIPLINE':
-                            case 'GUIDANCE & ADMISSION':
-                            case 'CITCLS OFFICE':
-                            case 'CITCLS DEAN OFFICE':
-                            case 'CEA OFFICE':
-                            case 'SAS OFFICE':
-                            case 'SED OFFICE':
-                            case 'CONP OFFICE':
-                            case 'CHTM OFFICE':
-                            case 'ITRS':
-                            case 'REGISTRAR’S OFFICE':
+                            case 'NURSING ARTS LAB':        case 'SBPA OFFICE':
+                            case 'VPAA':                    case 'PREFECT OF DISCIPLINE':
+                            case 'GUIDANCE & ADMISSION':    case 'CITCLS OFFICE':
+                            case 'CITCLS DEAN OFFICE':      case 'CEA OFFICE':
+                            case 'SAS OFFICE':              case 'SED OFFICE':
+                            case 'CONP OFFICE':             case 'CHTM OFFICE':
+                            case 'ITRS':                    case 'REGISTRAR’S OFFICE':
                             case 'RPO':
                             case 'COLLEGE LIBRARY':
                             case 'VPF':
@@ -279,13 +270,12 @@ class TicketQueueResource extends Resource
                         };
                     })
                     ->searchable(),
-                TextColumn::make('location')
+                   TextColumn::make('department')
+                    ->label('Area')
+                    ->searchable(),
+               TextColumn::make('location')
                     ->label('Location')
                     ->searchable(),
-                TextColumn::make('department')
-                    ->label('Department')
-                    ->searchable(),
-
                 TextColumn::make('created_at')
                     ->label('Date created')
                     ->date()
@@ -517,7 +507,7 @@ class TicketQueueResource extends Resource
                                                             ->default($record->subject)
                                                             ->required(),
                                                         Select::make('type_of_issue')
-                                                            ->label('Concern type')
+                                                            ->label('Type of Issue')
                                                             ->options([
                                                                 'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
                                                                 'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
@@ -530,7 +520,7 @@ class TicketQueueResource extends Resource
                                                             ])
                                                             ->default($record->type_of_issue)
                                                             ->required()
-                                                            ->disabled()
+                                                            ->disabled(),
                                                     ]),
                                                 Grid::make(2)
                                                     ->schema([
@@ -548,13 +538,13 @@ class TicketQueueResource extends Resource
                                                     ]),
                                             ]),
 
-                                        Card::make('Place of issue')
-                                            ->description('Select where the equipment is currently located.')
+                                        Card::make('Where did it occur ?')
+                                            ->description('Enter the information about the place of issue.')
                                             ->schema([
                                                 Grid::make(4)
                                                     ->schema([
                                                         TextInput::make('department')
-                                                            ->label('Department')
+                                                            ->label('Area')
                                                             ->disabled()
                                                             ->default($record->department)
                                                             ->required(),

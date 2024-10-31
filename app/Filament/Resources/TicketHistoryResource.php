@@ -260,11 +260,11 @@ class TicketHistoryResource extends Resource
                             default => null,
                         };
                     }),
+                TextColumn::make('department')
+                    ->label('Area')
+                    ->searchable(),
                 TextColumn::make('location')
                     ->label('Location')
-                    ->searchable(),
-                TextColumn::make('department')
-                    ->label('Department')
                     ->searchable(),
                 ImageColumn::make('attachment')
                     ->label('Image')

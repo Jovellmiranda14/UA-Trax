@@ -265,12 +265,11 @@ class TicketResolvedResource extends Resource
                     })
                     ->searchable(),
 
-
+                Tables\Columns\TextColumn::make('department')
+                    ->label('Area')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('department')
-                    ->label('Department')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('assigned')
@@ -352,7 +351,7 @@ class TicketResolvedResource extends Resource
                                                         ->disabled()
                                                         ->required(),
                                                     Select::make('type_of_issue')
-                                                        ->label('Concern type')
+                                                        ->label('Type of Issue')
                                                         ->options([
                                                             'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
                                                             'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
