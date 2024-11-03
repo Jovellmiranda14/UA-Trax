@@ -59,7 +59,7 @@ class Ticket extends Model
                 $newTicketId = $year . $dateCreated . $nextNumber;
         
                 // Check if the generated ID already exists in tickethistory
-                $ticketExists = \DB::table('ticket_histories')
+                $ticketExists = \DB::table('tickets')
                     ->where('id', $newTicketId)
                     ->exists();
         
