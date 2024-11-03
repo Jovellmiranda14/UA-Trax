@@ -191,7 +191,8 @@ class TicketResource extends Resource
                                         Select::make('department')
                                             ->label('Area')
                                             ->hint('Help')
-                                            ->hintIcon('heroicon-s-question-mark-circle')
+                                            ->hintIcon('heroicon-s-question-mark-circle' , 
+                                            tooltip: 'heroicon-s-question-mark-circleheroicon-s-question-mark-circleheroicon-s-question-mark-circle')
                                             ->extraAttributes([
                                                 'style' => '
                                                     position: relative; 
@@ -338,11 +339,11 @@ class TicketResource extends Resource
     public static function table(Table $table): Table
     {
         $user = auth()->user();
-
+       
         return $table
             // Pagination 
             // ->paginated([10, 25, 50, 100, 'all']) 
-            //->query(Ticket::query()->where('name', $user->name)) 
+            ->query(Ticket::query()->where('name', $user->name))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Ticket ID')
