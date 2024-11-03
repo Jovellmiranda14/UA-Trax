@@ -36,6 +36,9 @@ use Filament\Notifications\Events\DatabaseNotificationsSent;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Placeholder;
+
+
 class IssuePalette
 {
     const Gray = '#808080';
@@ -51,7 +54,23 @@ class TicketsAcceptedResource extends Resource
 
     // protected static ?string $navigationIcon = 'heroicon-o-ticket';
 
-    protected static ?string $navigationGroup = 'Tickets';
+    public static function getNavigationGroup(): ?string
+    {
+        // Check if the authenticated user has one of the specific roles
+        if (
+            auth()->check() && (
+                auth()->user()->role === 'equipmentsuperadmin' ||
+                auth()->user()->role === 'facilitysuperadmin'  ||
+                auth()->user()->role === 'equipment_admin_labcustodian' ||
+                auth()->user()->role === 'equipment_admin_omiss' ||
+                auth()->user()->role === 'facility_admin' 
+            )
+        ) {
+            return 'Tickets'; // Only visible to users with specific admin roles
+        }
+
+        return null; // No navigation group for other users
+    }
     protected static ?int $navigationSort = 2;
 
     public static function canCreate(): bool
@@ -417,7 +436,7 @@ class TicketsAcceptedResource extends Resource
                     Tables\Actions\Action::make('comment-list')
                         ->label('Comment list')
                         ->icon('heroicon-o-chat-bubble-left-right')
-                        ->modalHeading('Comments')
+                        ->modalHeading('')
                         ->modalSubheading('')
                         ->modalActions([
                             Tables\Actions\Modal\Actions\ButtonAction::make('done')
@@ -427,6 +446,13 @@ class TicketsAcceptedResource extends Resource
                         ])
 
                         ->form(function (TicketsAccepted $record) {
+                            $comments = $record->comments->map(function ($comment) {
+                                return [
+                                    'sender' => $comment->sender,
+                                    'comment' => $comment->comment,
+                                    'commented_at' => $comment->commented_at,
+                                ];
+                            })->toArray();  
                             return [
                                 Grid::make(4)
                                     ->schema([
@@ -491,6 +517,15 @@ class TicketsAcceptedResource extends Resource
                                         })->toArray();
                                     })
                                     ->disabled(),
+
+                                    Card::make()
+                                    ->visible(empty($comments))
+                                    ->extraAttributes(['class' => 'd-flex justify-content-center align-items-center', 'style' => 'height: 100px;'])
+                                    ->schema([
+                                        Placeholder::make('')
+                                        ->content('No available comment')
+                                        ->extraAttributes(['style' => 'text-align: center; color: #000000; font-weight: bold; font-size: 15px;']),
+                                    ]), 
                             ];
                         }),
 

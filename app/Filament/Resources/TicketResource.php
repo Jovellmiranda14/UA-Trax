@@ -169,8 +169,9 @@ class TicketResource extends Resource
                                             ->label('Description')
                                             ->autosize()
                                             ->required()
+                                            ->extraAttributes(['style' => 'max-height: 80px; overflow-y: auto;'])
                                             ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
-
+                                           
                                         FileUpload::make('attachment')
                                             ->label('Upload a file (optional)')
                                             ->acceptedFileTypes(['image/jpeg', 'image/png'])
@@ -192,9 +193,14 @@ class TicketResource extends Resource
                                             ->hint('Help')
                                             ->hintIcon('heroicon-s-question-mark-circle')
                                             ->extraAttributes([
-                                                'style' => 'font-size: 0.500rem; '  
+                                                'style' => '
+                                                    position: relative; 
+                                                    font-size: 0.500rem; 
+                                                    cursor: pointer;
+                                                ',
+                                                'class' => 'hover-tooltip',
                                             ])
-                                            ->options([
+                                             ->options([
                                                 'CEA' => 'CEA',
                                                 'CONP' => 'CONP',
                                                 'CITCLS' => 'CITCLS',
