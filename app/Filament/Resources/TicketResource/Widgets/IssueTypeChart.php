@@ -13,9 +13,16 @@ class IssueTypeChart extends ChartWidget
     protected static ?string $heading = 'Issue Types by Department';
 
     protected array $issueTypeMap = [
+        //Laboratory and Equipment
         'computer_issues' => 'Computer Issues',
         'lab_equipment' => 'Laboratory Equipment Issues',
-        // Add other mappings as needed
+        'Other_Devices' => 'Other Devices',
+        //Facility
+        'repair' => 'Repair',
+        'air_conditioning' => 'Air Conditioning',
+        'plumbing' => 'Plumbing',
+        'lighting' => 'Lighting',
+        'electricity' => 'Electricity'
     ];
 
     // Default filter to 'today'

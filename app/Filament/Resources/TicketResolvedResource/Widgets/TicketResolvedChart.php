@@ -116,7 +116,7 @@ class TicketResolvedChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Laboratory and Equipment Resolved Tickets Volume',
+                    'label' => 'Laboratory and Equipment Resolved Tickets',
                     'data' => $resolvedLabEquipmentData->map(fn (TrendValue $value) => $value->aggregate),
                     'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
                     'borderColor' => 'rgba(75, 192, 192, 1)',
@@ -125,7 +125,7 @@ class TicketResolvedChart extends ChartWidget
                     'tension' => 0.4, // Adds curve to the line
                 ],
                 [
-                    'label' => 'Facility Resolved Tickets Volume',
+                    'label' => 'Facility Resolved Tickets',
                     'data' => $resolvedFacilityData->map(fn (TrendValue $value) => $value->aggregate),
                     'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
                     'borderColor' => 'rgba(255, 99, 132, 1)',
@@ -188,7 +188,7 @@ class TicketResolvedChart extends ChartWidget
                 ],
                 'title' => [
                     'display' => true,
-                    'text' => 'Resolved Ticket Volume',
+                    'text' => 'Tickets Resolved Volume',
                 ],
             ],
         ];

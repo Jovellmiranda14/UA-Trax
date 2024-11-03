@@ -209,7 +209,7 @@ class TicketVolumeChart extends ChartWidget
     return [
         'datasets' => [
             [
-                'label' => 'Laboratory and Equipment Ticket Volume',
+                'label' => 'Laboratory and Equipment Tickets',
                 'data' => $combinedLabEquipmentData,
                 'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
                 'borderColor' => 'rgba(75, 192, 192, 1)',
@@ -218,7 +218,7 @@ class TicketVolumeChart extends ChartWidget
                 'tension' => 0.4, // Adds curve to the line
             ],
             [
-                'label' => 'Facility Ticket Volume',
+                'label' => 'Facility Tickets',
                 'data' => $combinedFacilityData,
                 'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
                 'borderColor' => 'rgba(255, 99, 132, 1)',

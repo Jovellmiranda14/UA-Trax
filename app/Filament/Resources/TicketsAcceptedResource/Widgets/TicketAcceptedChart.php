@@ -10,7 +10,7 @@ use Flowframe\Trend\TrendValue;
 
 class TicketAcceptedChart extends ChartWidget
 {
-    protected static ?string $heading = 'Ticket Accepted';
+    protected static ?string $heading = 'Tickets Accepted Volume';
 
     // Default filter to 'today'
     protected function getDefaultFilter(): ?string
@@ -159,7 +159,7 @@ class TicketAcceptedChart extends ChartWidget
     return [
         'datasets' => [
             [
-                'label' => 'Laboratory and Equipment Accepted Tickets Accepted',
+                'label' => 'Laboratory and Equipment Tickets',
                 'data' => $combinedLabEquipmentData,
                 'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
                 'borderColor' => 'rgba(75, 192, 192, 1)',
@@ -168,7 +168,7 @@ class TicketAcceptedChart extends ChartWidget
                 'tension' => 0.4, // Adds curve to the line
             ],
             [
-                'label' => 'Facility Accepted Tickets Accepted',
+                'label' => 'Facility Tickets',
                 'data' => $combinedFacilityData,
                 'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
                 'borderColor' => 'rgba(255, 99, 132, 1)',
@@ -231,7 +231,7 @@ class TicketAcceptedChart extends ChartWidget
                 ],
                 'title' => [
                     'display' => true,
-                    'text' => 'Accepted Tickets',
+                    'text' => 'Ticket Accepted Volume',
                 ],
             ],
         ];
