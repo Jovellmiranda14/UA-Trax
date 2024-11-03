@@ -55,8 +55,7 @@ class RegularUserResource extends Resource
                                     ->required()
                                     ->password()
                                     ->minLength(8)
-                                    ->maxLength(255)
-                                    ->dehydrateStateUsing(fn($state) => bcrypt($state)), // Ensure password is hashed
+                                    ->maxLength(255), // Ensure password is hashed
 
                                 Forms\Components\Select::make('dept_role')
                                     ->label('Department')
