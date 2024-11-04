@@ -10,6 +10,7 @@ use Flowframe\Trend\TrendValue;
 
 class TicketAcceptedChart extends ChartWidget
 {
+    protected int | string | array $columnSpan = 2;
     protected static ?string $heading = 'Tickets Accepted Volume';
 
     // Default filter to 'today'

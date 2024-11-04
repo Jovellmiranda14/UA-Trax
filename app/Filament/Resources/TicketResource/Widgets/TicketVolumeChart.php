@@ -11,18 +11,18 @@ use Flowframe\Trend\TrendValue;
 
 class TicketVolumeChart extends ChartWidget
 {
+    protected int | string | array $columnSpan = 2;
     protected static ?string $heading = 'Ticket Volume';
 
     // Default filter to 'today'
     protected function getDefaultFilter(): ?string
     {
-        return 'today';
+        return 'week';
     }
 
     protected function getFilters(): ?array
     {
         return [
-            'today' => 'Today',
             'week' => 'This Week',
             'last_week' => 'Last Week',
             'month' => 'Last Month',
@@ -44,8 +44,6 @@ class TicketVolumeChart extends ChartWidget
         $filter = $this->filter ?? 'today';
 
         switch ($filter) {
-            case 'today':
-                return [now()->startOfDay(), now()->endOfDay()];
             case 'week':
                 return [now()->startOfWeek(), now()->endOfWeek()];
             case 'last_week':
@@ -58,7 +56,7 @@ class TicketVolumeChart extends ChartWidget
             case 'year':
                 return [now()->startOfYear(), now()->endOfYear()];
             default:
-                return [now()->startOfYear(), now()->endOfYear()];
+                return [now()->startOfWeek(), now()->endOfWeek()];
         }
     }
 
