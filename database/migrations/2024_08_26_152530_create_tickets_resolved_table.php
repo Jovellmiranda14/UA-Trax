@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('location')->default('N/A');  
             $table->string('attachment')->nullable();  
             $table->string('assigned')->nullable();
+            $table->enum('dept_role', ['SAS (PSYCH)', 'SAS (CRIM)', 'SAS (AB COMM)', 'CEA', 'CONP', 'CITCLS', 'OFFICE', 'PPGS']);
             $table->timestamps();
             $table->timestamp('resolved_at')->nullable();
             $table->timestamp('accepted_at')->nullable();
