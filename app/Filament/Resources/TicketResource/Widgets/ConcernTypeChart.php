@@ -3,8 +3,6 @@
 namespace App\Filament\Resources\TicketResource\Widgets;
 
 use Filament\Widgets\ChartWidget;
-use Flowframe\Trend\Trend;
-use Flowframe\Trend\TrendValue;
 use App\Models\Ticket;
 use App\Models\TicketsAccepted;
 use App\Models\TicketResolved;
@@ -19,7 +17,6 @@ class ConcernTypeChart extends ChartWidget
         return 'today';
     }
 
-    // Define available filters
     protected function getFilters(): ?array
     {
         return [
@@ -40,7 +37,6 @@ class ConcernTypeChart extends ChartWidget
         ];
     }
 
-    // Get the date range based on the selected filter
     protected function getFilterDateRange(): array
     {
         $filter = $this->filter ?? 'today';
@@ -66,86 +62,86 @@ class ConcernTypeChart extends ChartWidget
 
     protected function getData(): array
     {
-        // Get the date range based on the filter
         [$startDate, $endDate] = $this->getFilterDateRange();
 
-        // Initialize an array to hold the aggregated data
-        $concernData = [];
+        // Initialize the data array
+        $data = [];
 
-        // Fetch concern data from Ticket
+        // Fetch data from Ticket
         $submittedConcerns = Ticket::query()
             ->select('concern_type', \DB::raw('count(*) as total'))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('concern_type')
             ->get();
 
-        // Fetch concern data from TicketsAccepted
+        // Fetch data from TicketsAccepted
         $acceptedConcerns = TicketsAccepted::query()
             ->select('concern_type', \DB::raw('count(*) as total'))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('concern_type')
             ->get();
 
-        // Fetch concern data from TicketResolved
+        // Fetch data from TicketResolved
         $resolvedConcerns = TicketResolved::query()
             ->select('concern_type', \DB::raw('count(*) as total'))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('concern_type')
             ->get();
 
-        // Aggregate data from all three models
-        $aggregateConcerns = function ($dataCollection) use (&$concernData) {
+        // Initialize array to hold labels and values
+        $concernLabels = [];
+        $totalCounts = [];
+
+        // Helper method to aggregate data
+        $aggregateData = function ($dataCollection) use (&$totalCounts) {
             foreach ($dataCollection as $concern) {
-                if (!isset($concernData[$concern->concern_type])) {
-                    $concernData[$concern->concern_type] = 0;
+                if (!isset($totalCounts[$concern->concern_type])) {
+                    $totalCounts[$concern->concern_type] = 0;
                 }
-                $concernData[$concern->concern_type] += $concern->total;
+                $totalCounts[$concern->concern_type] += $concern->total;
             }
         };
 
-        // Apply aggregation for each dataset
-        $aggregateConcerns($submittedConcerns);
-        $aggregateConcerns($acceptedConcerns);
-        $aggregateConcerns($resolvedConcerns);
+        // Aggregate submitted, accepted, and resolved concerns
+        $aggregateData($submittedConcerns);
+        $aggregateData($acceptedConcerns);
+        $aggregateData($resolvedConcerns);
 
-        // Prepare labels and values for the chart
-        $concernLabels = array_keys($concernData);
-        $concernValues = array_values($concernData);
+        // Prepare labels and data for the chart
+        foreach ($totalCounts as $label => $count) {
+            $concernLabels[] = $label;
+            $data[] = $count; // Ensure this is populated even if no data exists
+        }
 
         // Ensure that if no data was found, we still return a valid structure
-        if (empty($concernValues)) {
-            $concernValues = [0]; // Default to zero if there are no issues
+        if (empty($data)) {
+            $data = [0]; // Default to zero if there are no issues
             $concernLabels = ['No Data Available']; // Set a label to indicate no data
         }
 
         return [
+            'labels' => $concernLabels,
             'datasets' => [
                 [
-                    'label' => 'Concern Types',
-                    'data' => $concernValues,
+                    'data' => $data, // Now always defined
                     'backgroundColor' => [
-                        '#FF6384', // Red
-                        '#36A2EB', // Blue
-                        '#FFCE56', // Yellow
-                        '#4BC0C0', // Teal
-                        '#9966FF', // Purple
+                        '#FF6384', // Color for submitted
+                        '#36A2EB', // Color for accepted
+                        '#FFCE56', // Color for resolved
                     ],
                     'hoverBackgroundColor' => [
-                        '#FF6384', // Red
-                        '#36A2EB', // Blue
-                        '#FFCE56', // Yellow
-                        '#4BC0C0', // Teal
-                        '#9966FF', // Purple
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
                     ],
                 ],
             ],
-            'labels' => $concernLabels,
         ];
     }
 
     protected function getType(): string
     {
-        return 'doughnut'; // Doughnut chart for Concern Types
+        return 'doughnut'; // Set to doughnut chart
     }
 
     protected function getOptions(): array
@@ -156,7 +152,7 @@ class ConcernTypeChart extends ChartWidget
                 [
                     'legend' => [
                         'display' => true,
-                        'position' => 'top', // Can be 'top', 'left', 'bottom', 'right'
+                        'position' => 'top',
                     ],
                 ],
                 [
@@ -164,7 +160,20 @@ class ConcernTypeChart extends ChartWidget
                         'enabled' => true,
                     ],
                 ],
+                [
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Concern Types Distribution',
+                    ],
+                ],
             ],
         ];
+    }
+
+    // Method to get the description with date range
+    public function getDescription(): string
+    {
+        [$startDate, $endDate] = $this->getFilterDateRange();
+        return "Data from " . $startDate->format('Y-m-d') . " to " . $endDate->format('Y-m-d');
     }
 }
