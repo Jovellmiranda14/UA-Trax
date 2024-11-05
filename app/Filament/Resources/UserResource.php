@@ -18,7 +18,16 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
     //protected static ?string $navigationIcon = 'heroicon-o-user';
     protected static ?string $navigationGroup = 'Users';
+    
+    public static function canCreate(): bool
+{
+    $user = auth()->user();
 
+ 
+    $allowedRoles = ['equipmentsuperadmin', 'facilitysuperadmin'];
+
+    return $user && in_array($user->role, $allowedRoles);
+}
 
     public static function form(Form $form): Form
     {
@@ -46,8 +55,8 @@ class UserResource extends Resource
                                     ->required()
                                     ->password()
                                     ->minLength(8)
-                                    ->maxLength(255),
-                                    // ->dehydrateStateUsing(fn($state) => bcrypt($state)), // Ensure password is hashed
+                                    ->maxLength(255)
+                                     ->dehydrateStateUsing(fn($state) => bcrypt($state)), // Ensure password is hashed
 
                                 Forms\Components\Select::make('dept_role')
                                     ->label('Department Assigned')
@@ -75,14 +84,26 @@ class UserResource extends Resource
         $user = auth()->user();
 
         return $table
-            // Pagination 
-            // ->paginated([10, 25, 50, 100, 'all']) 
-            ->query(
-                User::query()
-                    ->when($user->role === 'equipmentsuperadmin' || $user->role === 'facilitysuperadmin', function ($query) {
+    
+        ->query(
+            User::query()
+                ->when(
+                    // Check if the user is NOT a superadmin
+                    !($user->role === 'facilitysuperadmin' || $user->role === 'equipmentsuperadmin'), 
+                    function ($query) {
+                        // If the user is not a superadmin, only show superadmins
                         $query->whereIn('role', ['equipmentsuperadmin', 'facilitysuperadmin']);
-                    })
-            )
+                    }
+                )
+                // This will return all users for superadmins
+                ->orWhere(function ($query) use ($user) {
+                    if ($user->role === 'facilitysuperadmin' || $user->role === 'equipmentsuperadmin') {
+                        // If the user is a superadmin, show all users
+                        // Note: You may not need to add this clause, as it would show all users anyway
+                        $query->whereIn('role', ['equipmentsuperadmin', 'facilitysuperadmin']);
+                    }
+                })
+        )
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
@@ -108,9 +129,13 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\EditAction::make()
+                        ->visible(fn() => auth()->user()->role === 'equipmentsuperadmin' || auth()->user()->role === 'facilitysuperadmin'),
+            
+                    Tables\Actions\DeleteAction::make()
+                        ->visible(fn() => auth()->user()->role === 'equipmentsuperadmin' || auth()->user()->role === 'facilitysuperadmin'),
                 ]),
+            
 
             ]);
     }
