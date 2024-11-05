@@ -41,31 +41,33 @@ class User extends Authenticatable implements FilamentUser
     const None = 'N/A';
 
     const Pos = [
-        self::rso => 'RSO',
         self::Faculty => 'Faculty',
-        self::Secretary => 'Secretary',
         self::None => 'N/A',
+        self::rso => 'RSO',
+        self::Secretary => 'Secretary',
     ];
     // Define the roles array using the constants
     const ROLES = [
-        self::REGULAR_USER => 'Regular User',
-        self::FacilitySUPER_ADMIN => 'Faciltiy Super Admin',
+        self::EQUIPMENT_ADMIN_labcustodian => 'equipment_admin_labcustodian',
+        self::EQUIPMENT_ADMIN_Omiss => 'equipment_admin_omiss',
         self::EquipmentSUPER_ADMIN => 'Equipment Super Admin',
         self::FACILITY_ADMIN => 'Facility Admin',
-        self::EQUIPMENT_ADMIN_Omiss => 'equipment_admin_omiss',
-        self::EQUIPMENT_ADMIN_labcustodian => 'equipment_admin_labcustodian',
+        self::FacilitySUPER_ADMIN => 'Facility Super Admin',
+        self::REGULAR_USER => 'Regular User',
     ];
 
     const Dept = [
-        self::PSYCH => 'SAS (PSYCH)',
         self::CEA => 'CEA',
-        self::COMM => 'SAS (AB COMM)',
-        self::CRIM => 'SAS (CRIM)',
         self::CITCLS => 'CITCLS',
-        self::OFFICE => 'OFFICE',
+        self::COMM => 'SAS (AB COMM)',
         self::CONP => 'CONP',
+        self::CRIM => 'SAS (CRIM)',
+        self::OFFICE => 'OFFICE',
         self::PPGS => 'PPGS',
+        self::PSYCH => 'SAS (PSYCH)',
     ];
+
+
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->isFacilitySuperAdmin() ||
@@ -133,7 +135,7 @@ class User extends Authenticatable implements FilamentUser
     {
         return [
             'email_verified_at' => 'datetime',
-            // 'password' => 'hashed',
+             'password' => 'hashed',
         ];
     }
     public function ticketsCreated()
