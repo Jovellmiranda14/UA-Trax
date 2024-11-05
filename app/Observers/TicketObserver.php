@@ -199,7 +199,7 @@ class TicketObserver
             // Send a database notification for each admin
             Notification::make()
                 ->title($ticket->name . ' reported a ticket (#' . $ticket->id . ')')
-                ->body('Concern: ' . Str::words($ticket->description, 10, '...'))
+                ->body('Concern: "' . Str::words($ticket->description, 10, '...') . '"')
                 ->sendToDatabase($admin, true);
 
             // Dispatch the event after sending each notification
