@@ -281,7 +281,8 @@ class TicketHistoryResource extends Resource
                 TextColumn::make('created_at')
                     ->label('Date created')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('id', 'desc')
 
