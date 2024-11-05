@@ -12,6 +12,8 @@ use App\Notifications\TicketCreated;
 use Filament\Notifications\Notification;
 use Filament\Notifications\Events\DatabaseNotificationsSent;
 use App\Notifications\NewCommentNotification;
+use Illuminate\Support\Str;
+use Filament\Notifications\Actions\Action;
 class TicketObserver
 {
 
@@ -24,6 +26,15 @@ class TicketObserver
      */
     public function created(Ticket $ticket)
     {
+
+        Notification::make()
+            ->success();
+
+       
+        // Notification::make()
+        // ->title('Created ticket successfully')
+        // ->send();
+
         function getPriorityByLocation($location, $record)
         {
             switch ($location) {
@@ -146,15 +157,26 @@ class TicketObserver
             }
         }
         $category = $ticket->concern_type;
-
-        // Get the admins based on category
-        $admins = User::where(function ($query) use ($category) {
+        $dept_role = [
+            'SAS (PSYCH)', // Example department values
+            'CEA',
+            'SAS (AB COMM)',
+            'SAS (CRIM)',
+            'CITCLS',
+            'OFFICE',
+            'CONP',
+        ];
+        $admins = User::where(function ($query) use ($category, $dept_role) {
             if ($category === 'Laboratory and Equipment') {
-                $query->whereIn('role', [
-                    User::EQUIPMENT_ADMIN_Omiss,
-                    User::EQUIPMENT_ADMIN_labcustodian,
-                    User::EquipmentSUPER_ADMIN,
-                ]);
+                // Check if $dept_role is not empty
+                if (!empty($dept_role)) {
+                    $query->whereIn('dept_role', $dept_role) // Filter by department
+                          ->whereIn('role', [
+                              User::EQUIPMENT_ADMIN_Omiss,
+                              User::EQUIPMENT_ADMIN_labcustodian,
+                          ]);
+                }
+                // If $dept_role is empty, nothing is added to the query for this category
             } elseif ($category === 'Facility') {
                 $query->whereIn('role', [
                     User::FACILITY_ADMIN,
@@ -176,8 +198,8 @@ class TicketObserver
 
             // Send a database notification for each admin
             Notification::make()
-                ->title('Regular: Ticket Created:')
-                ->body('Created a ticket: ' . $ticket->description)
+                ->title($ticket->name . ' reported a ticket (#' . $ticket->id . ')')
+                ->body('Concern: ' . Str::words($ticket->description, 10, '...'))
                 ->sendToDatabase($admin, true);
 
             // Dispatch the event after sending each notification
@@ -202,7 +224,7 @@ class TicketObserver
             ]
         );
 
-      
+
         TicketQueue::create([
             'id' => $ticket->id,
             'name' => auth()->user()->name,
