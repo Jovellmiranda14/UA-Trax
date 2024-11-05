@@ -192,7 +192,7 @@ class TicketResource extends Resource
                                             ->label('Area')
                                             ->hint('Help')
                                             ->hintIcon('heroicon-s-question-mark-circle' , 
-                                            tooltip: 'heroicon-s-question-mark-circleheroicon-s-question-mark-circleheroicon-s-question-mark-circle')
+                                            tooltip: 'Select the area where the issue occurred, not your own department. For example, if a CONP member reports an issue in the CITCLS lab, choose CITCLS. Select OFFICE for issues outside these areas.')
                                             ->extraAttributes([
                                                 'style' => '
                                                     position: relative; 
