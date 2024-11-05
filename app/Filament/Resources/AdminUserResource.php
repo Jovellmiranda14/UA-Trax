@@ -68,11 +68,21 @@ class AdminUserResource extends Resource
                                 Forms\Components\Select::make('role')
                                     ->label('Role')
                                     ->required()
+                                    ->reactive()
                                     ->options([
                                         'equipment_admin_omiss' => 'Equipment OMISS',
                                         'equipment_admin_labcustodian' => 'Equipment LabCustodian',
                                         'facility_admin' => 'Facility Admin',
-                                    ]),
+                                    ])
+                                    ->afterStateUpdated(function (callable $set, $state) {
+                                        // Conditionally set the department based on the selected role
+                                        if ($state === 'equipment_admin_omiss') {
+                                            $set('dept_role', 'OFFICE'); // Automatically select 'Office'
+                                        } else {
+                                            $set('dept_role', ''); // Clear selection for other roles
+                                        }
+                                    }),
+                                  
                                 Forms\Components\Select::make('dept_role')
                                     ->label('Department role')
                                     ->required()
