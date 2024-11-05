@@ -15,7 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use App\Notifications\TicketResolvedNotification;
-
+use Illuminate\Support\Str;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Forms\Components\Card;
@@ -598,8 +598,8 @@ class TicketsAcceptedResource extends Resource
                             if ($assignedAdmin) { // Check if the assigned admin exists
                                 $RegularUser->notify(new NewCommentNotification($comment));
                                 Notification::make()
-                                    ->title('Admin Comment on Ticket:')
-                                    ->body('The ticket owner commented: ' . $comment->comment)
+                                ->title('Admin commented on your ticket (#' . $comment->id . ')')
+                                ->body('Comment: "' . Str::limit($comment->comment, 10) . '"')
                                     ->sendToDatabase($RegularUser);
                                 event(new DatabaseNotificationsSent($RegularUser));
                             } else {
@@ -610,8 +610,8 @@ class TicketsAcceptedResource extends Resource
                                 // Notify the regular user about the new comment
                                 $assignedAdmin->notify(new NewCommentNotification($comment));
                                 Notification::make()
-                                    ->title('User Comment on Ticket:')
-                                    ->body('The ticket owner commented: ' . $comment->comment)
+                                    ->title( $comment->sender. 'commented on your ticket (#' . $comment->id . ')')
+                                    ->body('Comment: "' . Str::limit($comment->comment, 10) . '"')
                                     ->sendToDatabase($assignedAdmin);
                                 event(new DatabaseNotificationsSent($assignedAdmin));
                             } else {
@@ -792,8 +792,8 @@ class TicketsAcceptedResource extends Resource
                             if ($user) {
                                 $user->notify(new TicketResolvedNotification($record));
                                 Notification::make()
-                                    ->title('Admin Closed the Ticket:')
-                                    ->body('The admin has closed your ticket with ID: ' . $record->id)
+                                ->title('Admin resolved the Ticket: (#' . $record->id . ')')
+                                    ->body('Concern: "' . Str::limit($record->description, 10) . '"')
                                     ->sendToDatabase($user);
                                 event(new DatabaseNotificationsSent($user));
                             }

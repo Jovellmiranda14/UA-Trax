@@ -40,6 +40,7 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Html;
 use Filament\Forms\Components\View;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Str;
 class UTicketColors
 {
     const Gray = '#808080';
@@ -278,7 +279,8 @@ class TicketQueueResource extends Resource
                 TextColumn::make('created_at')
                     ->label('Date created')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('id', 'desc')
             ->filters([
@@ -437,9 +439,10 @@ class TicketQueueResource extends Resource
                             if ($user) {
                                 $user->notify(new TicketGrabbedNotification($record));
                                 Notification::make()
-                                    ->title('Admin Claim the Ticket:')
-                                    ->body('The admin have claimed your ticket.' . $record->id)
+                                    ->title('Admin accepted your ticket: (#' . $record->id . ')')
+                                    ->body('Concern: "' . Str::words($record->description, 10, '...') . '"')
                                     ->sendToDatabase($user);
+
                                 event(new DatabaseNotificationsSent($user));
                             }
                             // Delete the original ticket record
@@ -552,11 +555,6 @@ class TicketQueueResource extends Resource
                                                             ->disabled()
                                                             ->default($record->location)
                                                             ->required(),
-                                                        // TextInput::make('dept_role')
-                                                        //     ->label('Dept assigned')
-                                                        //     ->disabled()
-                                                        //     ->default($record->dept_role)
-                                                        //     ->required(),
                                                         DatePicker::make('created_at')
                                                             ->label('Date created')
                                                             ->disabled()
