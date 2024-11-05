@@ -200,6 +200,10 @@ class TicketObserver
             Notification::make()
                 ->title($ticket->name . ' reported a ticket (#' . $ticket->id . ')')
                 ->body('Concern: "' . Str::words($ticket->description, 10, '...') . '"')
+                ->actions([
+                    Action::make('view')
+                    ->label('View Ticket')
+                ])
                 ->sendToDatabase($admin, true);
 
             // Dispatch the event after sending each notification
