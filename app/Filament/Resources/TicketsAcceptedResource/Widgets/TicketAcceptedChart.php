@@ -7,6 +7,7 @@ use App\Models\TicketsAccepted;
 use App\Models\TicketResolved;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
+use App\Models\User;
 
 class TicketAcceptedChart extends ChartWidget
 {
@@ -66,121 +67,79 @@ class TicketAcceptedChart extends ChartWidget
 {
     [$startDate, $endDate] = $this->getFilterDateRange();
     $selectedDepartment = $this->filter;
+    $user = auth()->user();
 
-    // Determine if the year filter is selected or if the selected filter is a department
-    $isYearFilter = $this->filter === 'year';
-    $isDepartmentFilter = in_array($selectedDepartment, $this->getDepartmentFilters());
+    // Check user roles to determine concern type
+    $isEquipmentRole = in_array($user->role, [
+        User::EquipmentSUPER_ADMIN,
+        User::EQUIPMENT_ADMIN_Omiss,
+        User::EQUIPMENT_ADMIN_labcustodian,
+    ]);
 
-    // Create base queries for accepted and resolved tickets
-    $acceptedLabEquipmentQuery = TicketsAccepted::query()
-        ->where('concern_type', 'Laboratory and Equipment')
-        ->when($isDepartmentFilter, function ($query) use ($selectedDepartment) {
-            return $query->where('department', $selectedDepartment);
-        });
+    $isFacilityRole = in_array($user->role, [
+        User::FacilitySUPER_ADMIN,
+        User::FACILITY_ADMIN,
+    ]);
 
-    $resolvedLabEquipmentQuery = TicketResolved::query()
-        ->where('concern_type', 'Laboratory and Equipment')
-        ->when($isDepartmentFilter, function ($query) use ($selectedDepartment) {
-            return $query->where('department', $selectedDepartment);
-        });
-
-    $acceptedFacilityQuery = TicketsAccepted::query()
-        ->where('concern_type', 'Facility')
-        ->when($isDepartmentFilter, function ($query) use ($selectedDepartment) {
-            return $query->where('department', $selectedDepartment);
-        });
-
-    $resolvedFacilityQuery = TicketResolved::query()
-        ->where('concern_type', 'Facility')
-        ->when($isDepartmentFilter, function ($query) use ($selectedDepartment) {
-            return $query->where('department', $selectedDepartment);
-        });
-
-    // If it's the "This Year" or a department filter, aggregate data monthly
-    if ($isYearFilter || $isDepartmentFilter) {
-        $acceptedLabEquipmentData = Trend::query($acceptedLabEquipmentQuery)
-            ->between($startDate, $endDate)
-            ->perMonth() // Aggregate by month
-            ->count();
-
-        $resolvedLabEquipmentData = Trend::query($resolvedLabEquipmentQuery)
-            ->between($startDate, $endDate)
-            ->perMonth() // Aggregate by month
-            ->count();
-
-        $acceptedFacilityData = Trend::query($acceptedFacilityQuery)
-            ->between($startDate, $endDate)
-            ->perMonth() // Aggregate by month
-            ->count();
-
-        $resolvedFacilityData = Trend::query($resolvedFacilityQuery)
-            ->between($startDate, $endDate)
-            ->perMonth() // Aggregate by month
-            ->count();
-    } else {
-        // For other filters, aggregate by day
-        $acceptedLabEquipmentData = Trend::query($acceptedLabEquipmentQuery)
-            ->between($startDate, $endDate)
-            ->perDay() // Aggregate by day
-            ->count();
-
-        $resolvedLabEquipmentData = Trend::query($resolvedLabEquipmentQuery)
-            ->between($startDate, $endDate)
-            ->perDay() // Aggregate by day
-            ->count();
-
-        $acceptedFacilityData = Trend::query($acceptedFacilityQuery)
-            ->between($startDate, $endDate)
-            ->perDay() // Aggregate by day
-            ->count();
-
-        $resolvedFacilityData = Trend::query($resolvedFacilityQuery)
-            ->between($startDate, $endDate)
-            ->perDay() // Aggregate by day
-            ->count();
+    // Determine concern type based on role
+    $concernType = $isEquipmentRole ? 'Laboratory and Equipment' : ($isFacilityRole ? 'Facility' : null);
+    if (!$concernType) {
+        return []; // No data if user role does not match
     }
 
-    // Combine Laboratory and Equipment tickets
-    $combinedLabEquipmentData = $acceptedLabEquipmentData->map(function (TrendValue $value, $key) use ($resolvedLabEquipmentData) {
-        return $value->aggregate + ($resolvedLabEquipmentData[$key]->aggregate ?? 0);
+    // Base queries for accepted and resolved tickets
+    $acceptedTicketsQuery = TicketsAccepted::query()
+        ->where('concern_type', $concernType)
+        ->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
+            return $query->where('department', $selectedDepartment);
+        });
+
+    $resolvedTicketsQuery = TicketResolved::query()
+        ->where('concern_type', $concernType)
+        ->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
+            return $query->where('department', $selectedDepartment);
+        });
+
+    // Determine aggregation method based on filter
+    $aggregationMethod = ($this->filter === 'year' || in_array($selectedDepartment, $this->getDepartmentFilters())) ? 'perMonth' : 'perDay';
+
+    // Aggregate data for accepted and resolved tickets
+    $acceptedTicketsData = Trend::query($acceptedTicketsQuery)
+        ->between($startDate, $endDate)
+        ->{$aggregationMethod}()
+        ->count();
+
+    $resolvedTicketsData = Trend::query($resolvedTicketsQuery)
+        ->between($startDate, $endDate)
+        ->{$aggregationMethod}()
+        ->count();
+
+    // Combine accepted and resolved data for total volume
+    $totalTicketVolume = $acceptedTicketsData->map(function (TrendValue $accepted, $key) use ($resolvedTicketsData) {
+        return $accepted->aggregate + ($resolvedTicketsData[$key]->aggregate ?? 0);
     });
 
-    // Combine Facility tickets
-    $combinedFacilityData = $acceptedFacilityData->map(function (TrendValue $value, $key) use ($resolvedFacilityData) {
-        return $value->aggregate + ($resolvedFacilityData[$key]->aggregate ?? 0);
-    });
-
-    // Create unique labels for the data
-    $labels = ($isYearFilter || $isDepartmentFilter)
-        ? $acceptedLabEquipmentData->groupBy(function ($item) {
-            return \Carbon\Carbon::parse($item->date)->format('Y-m'); // Group by year and month
-        })->keys()->map(fn($date) => \Carbon\Carbon::parse($date)->format('M Y')) // Format to "M Y"
-        : $acceptedLabEquipmentData->map(fn (TrendValue $value) => \Carbon\Carbon::parse($value->date)->format('Y-m-d')); // Daily labels
+    // Create labels based on aggregation method
+    $labels = ($aggregationMethod === 'perMonth')
+        ? $acceptedTicketsData->groupBy(fn($item) => \Carbon\Carbon::parse($item->date)->format('Y-m'))->keys()->map(fn($date) => \Carbon\Carbon::parse($date)->format('M Y'))
+        : $acceptedTicketsData->map(fn(TrendValue $value) => \Carbon\Carbon::parse($value->date)->format('Y-m-d'));
 
     return [
         'datasets' => [
             [
-                'label' => 'Laboratory and Equipment Tickets',
-                'data' => $combinedLabEquipmentData,
-                'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
-                'borderColor' => 'rgba(75, 192, 192, 1)',
-                'borderWidth' => 2,
-                'fill' => true,
-                'tension' => 0.4, // Adds curve to the line
-            ],
-            [
-                'label' => 'Facility Tickets',
-                'data' => $combinedFacilityData,
-                'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
-                'borderColor' => 'rgba(255, 99, 132, 1)',
+                'label' => "$concernType Tickets Accepted Volume",
+                'data' => $totalTicketVolume,
+                'backgroundColor' => $isEquipmentRole ? 'rgba(75, 192, 192, 0.2)' : 'rgba(255, 99, 132, 0.2)',
+                'borderColor' => $isEquipmentRole ? 'rgba(75, 192, 192, 1)' : 'rgba(255, 99, 132, 1)',
                 'borderWidth' => 2,
                 'fill' => true,
                 'tension' => 0.4, // Adds curve to the line
             ],
         ],
-        'labels' => $labels, // Use the unique labels
+        'labels' => $labels,
     ];
 }
+
 
     // Helper method to get department filters
     protected function getDepartmentFilters(): array

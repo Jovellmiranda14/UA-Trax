@@ -6,6 +6,7 @@ use Filament\Widgets\ChartWidget;
 use App\Models\TicketResolved;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
+use App\Models\User;
 
 class TicketResolvedChart extends ChartWidget
 {
@@ -27,7 +28,7 @@ class TicketResolvedChart extends ChartWidget
             'year' => 'This Year',
             'CRIM' => 'CRIM Department',
             'PSYCH' => 'PSYCH Department',
-            'BS COMM' => 'BS COMM Department',
+            'SAS (AB COMM)' => 'AB COMM Department',
             'CEA' => 'CEA Department',
             'CONP' => 'CONP Department',
             'CITCLS' => 'CITCLS Department',
@@ -39,7 +40,7 @@ class TicketResolvedChart extends ChartWidget
 
     protected function getFilterDateRange(): array
     {
-        $filter = $this->filter ?? 'today';
+        $filter = $this->filter ?? 'week';
 
         switch ($filter) {
             case 'week':
@@ -54,7 +55,7 @@ class TicketResolvedChart extends ChartWidget
             case 'year':
                 return [now()->startOfYear(), now()->endOfYear()];
             default:
-                return [now()->startOfWeek(), now()->endOfWeek()];
+                return [now()->startOfYear(), now()->endOfYear()];
         }
     }
 
@@ -62,77 +63,63 @@ class TicketResolvedChart extends ChartWidget
     {
         [$startDate, $endDate] = $this->getFilterDateRange();
         $selectedDepartment = $this->filter;
+        $user = auth()->user();
 
-        // Determine if the year filter is selected or if the selected filter is a department
-        $isYearFilter = $this->filter === 'year';
-        $isDepartmentFilter = in_array($selectedDepartment, $this->getDepartmentFilters());
+        // Check user roles to determine concern type
+        $isEquipmentRole = in_array($user->role, [
+            User::EquipmentSUPER_ADMIN,
+            User::EQUIPMENT_ADMIN_Omiss,
+            User::EQUIPMENT_ADMIN_labcustodian,
+        ]);
 
-        // Create base queries for resolved tickets
-        $resolvedLabEquipmentQuery = TicketResolved::query()
-            ->where('concern_type', 'Laboratory and Equipment')
-            ->when($isDepartmentFilter, function ($query) use ($selectedDepartment) {
-                return $query->where('department', $selectedDepartment);
-            });
+        $isFacilityRole = in_array($user->role, [
+            User::FacilitySUPER_ADMIN,
+            User::FACILITY_ADMIN,
+        ]);
 
-        $resolvedFacilityQuery = TicketResolved::query()
-            ->where('concern_type', 'Facility')
-            ->when($isDepartmentFilter, function ($query) use ($selectedDepartment) {
-                return $query->where('department', $selectedDepartment);
-            });
-
-        // If it's the "This Year" or a department filter, aggregate data monthly
-        if ($isYearFilter || $isDepartmentFilter) {
-            $resolvedLabEquipmentData = Trend::query($resolvedLabEquipmentQuery)
-                ->between($startDate, $endDate)
-                ->perMonth() // Aggregate by month
-                ->count();
-
-            $resolvedFacilityData = Trend::query($resolvedFacilityQuery)
-                ->between($startDate, $endDate)
-                ->perMonth() // Aggregate by month
-                ->count();
-        } else {
-            // For other filters, aggregate by day
-            $resolvedLabEquipmentData = Trend::query($resolvedLabEquipmentQuery)
-                ->between($startDate, $endDate)
-                ->perDay() // Aggregate by day
-                ->count();
-
-            $resolvedFacilityData = Trend::query($resolvedFacilityQuery)
-                ->between($startDate, $endDate)
-                ->perDay() // Aggregate by day
-                ->count();
+        // Determine concern type based on role
+        $concernType = $isEquipmentRole ? 'Laboratory and Equipment' : ($isFacilityRole ? 'Facility' : null);
+        if (!$concernType) {
+            return []; // No data if user role does not match
         }
 
-        // Create unique labels for the data
-        $labels = ($isYearFilter || $isDepartmentFilter)
-            ? $resolvedLabEquipmentData->groupBy(function ($item) {
-                return \Carbon\Carbon::parse($item->date)->format('Y-m'); // Group by year and month
-            })->keys()->map(fn($date) => \Carbon\Carbon::parse($date)->format('M Y')) // Format to "M Y"
-            : $resolvedLabEquipmentData->map(fn (TrendValue $value) => \Carbon\Carbon::parse($value->date)->format('Y-m-d')); // Daily labels
+        // Base query for resolved tickets
+        $resolvedTicketsQuery = TicketResolved::query()
+            ->where('concern_type', $concernType)
+            ->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
+                return $query->where('department', $selectedDepartment);
+            });
+
+        // Determine aggregation method based on filter
+        $aggregationMethod = ($this->filter === 'year' || in_array($selectedDepartment, $this->getDepartmentFilters())) ? 'perMonth' : 'perDay';
+
+        // Aggregate data for resolved tickets
+        $resolvedTicketsData = Trend::query($resolvedTicketsQuery)
+            ->between($startDate, $endDate)
+            ->{$aggregationMethod}()
+            ->count();
+
+        // Combine data into total resolved tickets volume
+        $totalResolvedVolume = $resolvedTicketsData->map(fn(TrendValue $value) => $value->aggregate);
+
+        // Create labels based on aggregation method
+        $labels = ($aggregationMethod === 'perMonth')
+            ? $resolvedTicketsData->groupBy(fn($item) => \Carbon\Carbon::parse($item->date)->format('Y-m'))->keys()->map(fn($date) => \Carbon\Carbon::parse($date)->format('M Y'))
+            : $resolvedTicketsData->map(fn(TrendValue $value) => \Carbon\Carbon::parse($value->date)->format('Y-m-d'));
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Laboratory and Equipment Resolved Tickets',
-                    'data' => $resolvedLabEquipmentData->map(fn (TrendValue $value) => $value->aggregate),
-                    'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
-                    'borderColor' => 'rgba(75, 192, 192, 1)',
+                    'label' => "$concernType Resolved Tickets Volume",
+                    'data' => $totalResolvedVolume,
+                    'backgroundColor' => $isEquipmentRole ? 'rgba(75, 192, 192, 0.2)' : 'rgba(255, 99, 132, 0.2)',
+                    'borderColor' => $isEquipmentRole ? 'rgba(75, 192, 192, 1)' : 'rgba(255, 99, 132, 1)',
                     'borderWidth' => 2,
                     'fill' => true,
-                    'tension' => 0.4, // Adds curve to the line
-                ],
-                [
-                    'label' => 'Facility Resolved Tickets',
-                    'data' => $resolvedFacilityData->map(fn (TrendValue $value) => $value->aggregate),
-                    'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
-                    'borderColor' => 'rgba(255, 99, 132, 1)',
-                    'borderWidth' => 2,
-                    'fill' => true,
-                    'tension' => 0.4, // Adds curve to the line
+                    'tension' => 0.4,
                 ],
             ],
-            'labels' => $labels, // Use the unique labels
+            'labels' => $labels,
         ];
     }
 
@@ -142,7 +129,7 @@ class TicketResolvedChart extends ChartWidget
         return [
             'CRIM',
             'PSYCH',
-            'BS COMM',
+            'SAS (AB COMM)',
             'CEA',
             'CONP',
             'CITCLS',
