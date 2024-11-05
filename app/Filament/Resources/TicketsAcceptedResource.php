@@ -299,7 +299,8 @@ class TicketsAcceptedResource extends Resource
                     ->label('Accepted On')
                     ->date()
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 // Tickets filter
@@ -598,7 +599,7 @@ class TicketsAcceptedResource extends Resource
                             if ($assignedAdmin) { // Check if the assigned admin exists
                                 $RegularUser->notify(new NewCommentNotification($comment));
                                 Notification::make()
-                                ->title('Admin commented on your ticket (#' . $comment->id . ')')
+                                ->title('Admin commented on your ticket (#' . $record->id . ')')
                                 ->body('Comment: "' . Str::limit($comment->comment, 10) . '"')
                                     ->sendToDatabase($RegularUser);
                                 event(new DatabaseNotificationsSent($RegularUser));
@@ -608,9 +609,9 @@ class TicketsAcceptedResource extends Resource
 
                             if ($RegularUser) { // Check if the regular user exists
                                 // Notify the regular user about the new comment
-                                $assignedAdmin->notify(new NewCommentNotification($comment));
+                                // $assignedAdmin->notify(new NewCommentNotification($comment));
                                 Notification::make()
-                                    ->title( $comment->sender. 'commented on your ticket (#' . $comment->id . ')')
+                                    ->title( $comment->sender. ' commented on your ticket (#' .  $record->id. ')')
                                     ->body('Comment: "' . Str::limit($comment->comment, 10) . '"')
                                     ->sendToDatabase($assignedAdmin);
                                 event(new DatabaseNotificationsSent($assignedAdmin));
@@ -808,7 +809,12 @@ class TicketsAcceptedResource extends Resource
                         ->requiresConfirmation()
                         ->modalHeading('Confirm Resolve Ticket')
                         ->modalSubheading('Are you sure you want to resolve this ticket?')
-
+                        ->hidden(function () {
+                            // Get the authenticated user
+                            $user = auth()->user();
+                            // Hide the modal only for users with the 'user' role
+                            return $user && in_array($user->role, ['user']); // Returns true to hide the modal for 'user' role
+                        })
                 ]),
             ]);
     }
