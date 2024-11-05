@@ -57,8 +57,8 @@ class AdminUserResource extends Resource
                                     ->required()
                                     ->password()
                                     ->minLength(8)
-                                    ->maxLength(255),
-                                    // ->dehydrateStateUsing(fn($state) => bcrypt($state)), // Ensure password is hashed
+                                    ->maxLength(255)
+                                    ->dehydrateStateUsing(fn($state) => bcrypt($state)), // Ensure password is hashed
 
                             ]),
 
@@ -153,11 +153,6 @@ class AdminUserResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
     public static function getRelations(): array
