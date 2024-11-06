@@ -4,17 +4,14 @@ namespace App\Filament\Resources\TicketResource\Widgets;
 
 use Filament\Widgets\ChartWidget;
 use App\Models\Ticket;
-use App\Models\TicketsAccepted;
-use App\Models\TicketResolved;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
-class OtherIssueChart extends ChartWidget
+class OfficeIssueChart extends ChartWidget
 {
-    protected static ?string $heading = 'Other Devices Issue by Department';
+    protected static ?string $heading = 'Office Issues by Department';
 
     protected array $issueTypeMap = [
-        'Other_Devices' => 'Other Devices Issues',
+        'Office' => 'Office Issues',
         // Other issue types are removed as they are not needed for this role
     ];
 
@@ -58,7 +55,7 @@ class OtherIssueChart extends ChartWidget
     protected function getData(): array
     {
         // Restrict access to users with the 'equipment_admin_labcustodian' or 'equipment_superadmin' role
-        if (!in_array(Auth::user()->role, ['equipment_admin_labcustodian', 'equipmentsuperadmin'])) {
+        if (!in_array(Auth::user()->role, ['equipment_admin_omiss', 'equipmentsuperadmin'])) {
             return [
                 'labels' => ['No Access'],
                 'datasets' => [
@@ -72,10 +69,10 @@ class OtherIssueChart extends ChartWidget
 
         [$startDate, $endDate] = $this->getFilterDateRange();
 
-        // Filter tickets for "Other Devices" and by department, grouped by department
+        // Filter tickets for "Office" issues and by department, grouped by department
         $submittedIssues = Ticket::query()
             ->select('department', \DB::raw('count(*) as total'))
-            ->where('type_of_issue', 'Other_Devices')
+            ->where('type_of_issue', 'Office')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('department')
             ->get();
@@ -85,7 +82,7 @@ class OtherIssueChart extends ChartWidget
         $data = [];
 
         foreach ($submittedIssues as $issue) {
-            $issueLabels[] = "{$issue->department} - Other Devices Issues";
+            $issueLabels[] = "{$issue->department} - Office Issues";
             $data[] = $issue->total;
         }
 
@@ -136,7 +133,7 @@ class OtherIssueChart extends ChartWidget
                 ],
                 'title' => [
                     'display' => true,
-                    'text' => 'Other Devices Issues',
+                    'text' => 'Office Issues',
                 ],
             ],
         ];
@@ -152,6 +149,6 @@ class OtherIssueChart extends ChartWidget
     public static function canView(): bool
     {
         // Allow view for both equipment_admin_labcustodian and equipment_superadmin roles
-        return in_array(Auth::user()->role, ['equipment_admin_labcustodian', 'equipmentsuperadmin']);
+        return in_array(Auth::user()->role, ['equipment_admin_omiss', 'equipmentsuperadmin']);
     }
 }

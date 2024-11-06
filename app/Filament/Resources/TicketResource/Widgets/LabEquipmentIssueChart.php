@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LabEquipmentIssueChart extends ChartWidget
 {
-    protected static ?string $heading = 'Issue Types by Department';
+    protected static ?string $heading = 'Laboratory Equipment Issue by Department';
 
     protected array $issueTypeMap = [
         'lab_equipment' => 'Laboratory Equipment Issues',
@@ -136,7 +136,7 @@ class LabEquipmentIssueChart extends ChartWidget
                 ],
                 'title' => [
                     'display' => true,
-                    'text' => 'Laboratory Equipment Issues by Department',
+                    'text' => 'Laboratory Equipment Issues',
                 ],
             ],
         ];

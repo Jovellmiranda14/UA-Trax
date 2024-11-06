@@ -140,7 +140,7 @@ class FacilityIssueChart extends ChartWidget
                 ],
                 'title' => [
                     'display' => true,
-                    'text' => 'Facility Issues by Department',
+                    'text' => 'Facility Issues',
                 ],
             ],
         ];
@@ -150,5 +150,10 @@ class FacilityIssueChart extends ChartWidget
     {
         [$startDate, $endDate] = $this->getFilterDateRange();
         return "Data from " . $startDate->format('Y-m-d') . " to " . $endDate->format('Y-m-d');
+    }
+    public static function canView(): bool
+    {
+        // Allow view for both equipment_admin_labcustodian and equipment_superadmin roles
+        return in_array(Auth::user()->role, ['facility_admin', 'facilitysuperadmin']);
     }
 }

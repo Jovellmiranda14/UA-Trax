@@ -9,6 +9,7 @@ use App\Filament\Resources\TicketResolvedResource\Widgets\TicketResolvedChart;
 use App\Filament\Resources\TicketResource\Widgets\LabEquipmentIssueChart;
 use App\Filament\Resources\TicketResource\Widgets\ComputerIssueChart;
 use App\Filament\Resources\TicketResource\Widgets\OtherIssueChart;
+use App\Filament\Resources\TicketResource\Widgets\OfficeIssueChart;
 use App\Filament\Resources\TicketResource\Widgets\FacilityIssueChart;
 use App\Filament\Widgets\TicketOverviewWidget;
 
@@ -27,6 +28,7 @@ class AnalyticsChart extends Page
             ComputerIssueChart::class,
             LabEquipmentIssueChart::class,
             OtherIssueChart::class,
+            OfficeIssueChart::class,
             FacilityIssueChart::class,
         ];
     }
