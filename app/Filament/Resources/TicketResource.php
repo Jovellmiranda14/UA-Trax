@@ -135,6 +135,7 @@ class TicketResource extends Resource
                                                 return function ($attribute, $value, $fail) {
                                                     if ($value !== auth()->user()?->name) {
                                                         $fail('The entered name does not match your registered name.');
+                                                        // The name entered does not match our record
                                                     }
                                                 };
                                             })
