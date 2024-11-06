@@ -20,16 +20,16 @@ class TicketOverviewWidget extends BaseWidget
         // Initialize statistics array
         $stats = [];
 
-        if ($user->isFacilitySuperAdmin() || $user->isEquipmentSuperAdmin() || $user->isFacilityAdmin()) {
+        if ($user->isFacilitySuperAdmin() || $user->isEquipmentSuperAdmin() || $user->isFacilityAdmin() || $user->isEquipmentAdminOmiss() || $user->isEquipmentAdminlabcustodian()) {
             // For admins and superadmins based on their dept_roles
             $stats[] = Stat::make('Today\'s Latest Ticket Queues', TicketQueue::whereDate('created_at', now())->count());
             $stats[] = Stat::make('Today\'s Latest Accepted Tickets', TicketsAccepted::whereDate('accepted_at', now())->count());
             $stats[] = Stat::make('Today\'s Latest Resolved Tickets', TicketResolved::whereDate('resolved_at', now())->count());
         } else {
             // For regular users, count tickets based on their ID or other relevant field
-            $stats[] = Stat::make('Tickets Created', Ticket::where('name', $user->name)->whereDate('created_at', now())->count());
-            $stats[] = Stat::make('Tickets Accepted', TicketsAccepted::where('name', $user->name)->whereDate('accepted_at', now())->count());
-            $stats[] = Stat::make('Tickets Resolved', TicketResolved::where('name', $user->name)->whereDate('resolved_at', now())->count());
+            $stats[] = Stat::make('Today\'s Tickets Created', Ticket::where('name', $user->name)->whereDate('created_at', now())->count());
+            $stats[] = Stat::make('Today\'s Tickets Accepted', TicketsAccepted::where('name', $user->name)->whereDate('accepted_at', now())->count());
+            $stats[] = Stat::make('Today\'s Tickets Resolved', TicketResolved::where('name', $user->name)->whereDate('resolved_at', now())->count());
         }
 
         return $stats;
