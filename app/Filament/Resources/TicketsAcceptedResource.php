@@ -35,7 +35,6 @@ use Illuminate\Support\Facades\Log;
 use Filament\Notifications\Events\DatabaseNotificationsSent;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Placeholder;
 
 
@@ -302,6 +301,7 @@ class TicketsAcceptedResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
                 // Tickets filter
                 SelectFilter::make('status')
@@ -794,8 +794,8 @@ class TicketsAcceptedResource extends Resource
                                 $user->notify(new TicketResolvedNotification($record));
                                 Notification::make()
                                 ->title('Admin resolved the Ticket: (#' . $record->id . ')')
-                                    ->body('Concern: "' . Str::limit($record->description, 10) . '"')
-                                    ->sendToDatabase($user);
+                                ->body('Concern: "' . Str::limit($record->description, 10) . '"')
+                                ->sendToDatabase($user);
                                 event(new DatabaseNotificationsSent($user));
                             }
 
