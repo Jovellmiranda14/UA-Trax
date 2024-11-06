@@ -525,7 +525,7 @@ class TicketsAcceptedResource extends Resource
                                     ->schema([
                                         Placeholder::make('')
                                         ->content('No available comment')
-                                        ->extraAttributes(['style' => 'text-align: center; color: #000000; font-weight: bold; font-size: 15px;']),
+                                        ->extraAttributes(['style' => 'text-align: center; color: #808080; font-weight: bold; font-size: 15px;']),
                                     ]), 
                             ];
                         }),

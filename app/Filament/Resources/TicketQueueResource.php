@@ -460,7 +460,7 @@ class TicketQueueResource extends Resource
 
                 ActionGroup::make([
                     Action::make('View')
-                        ->icon('heroicon-o-rectangle-stack')
+                        ->icon('heroicon-s-eye')
                         ->modalHeading('Ticket Details')
                         ->modalSubheading('Full details of the selected ticket.')
                         ->extraAttributes([

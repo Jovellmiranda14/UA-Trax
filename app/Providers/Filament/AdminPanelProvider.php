@@ -30,8 +30,8 @@ class AdminPanelProvider extends PanelProvider
             ->topNavigation()
             ->id('admin')
             // ->path('')
-            ->brandLogo(asset('images/UATRAX-logo-dark-transparent.png'))
-            ->brandLogoHeight('4rem')
+            ->brandLogo(asset('images/UATRAX-logo-wordmark-light-transparent.png'))
+            ->brandLogoHeight('6rem')
             ->login()
             ->colors([
                 'primary' => '#4D68C9',
@@ -39,13 +39,13 @@ class AdminPanelProvider extends PanelProvider
                 //     'info' => Color::Blue,
                 //     'success' => Color::Green,
             ])
-            ->favicon(asset('images/UATRAX-logo-dark-transparent.png'))
+            ->favicon(asset('images/UATRAX-logo-light-transparent.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             // Wag cocooment
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             // Wag cocooment
 
-
+            ->font('Plus Jakarta Sans')
             ->pages([
                 //Pages\Dashboard::class,
                 //  Pages\FacilityDashboard::class,

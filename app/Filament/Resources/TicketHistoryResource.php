@@ -217,6 +217,7 @@ class TicketHistoryResource extends Resource
                             case 'RY307':
                             case 'RY308':
                             case 'RY309':
+                            case 'PHARMACY LECTURE ROOM':
                             case 'PHARMACY STOCKROOM':
                             case 'G103 - NURSING LAB':
                             case 'G105 - NURSING LAB':

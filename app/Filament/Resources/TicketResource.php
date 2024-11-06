@@ -130,6 +130,16 @@ class TicketResource extends Resource
                                     ->schema([
                                         TextInput::make('name')
                                             ->label('Sender')
+                                            ->hintIcon('heroicon-s-question-mark-circle' , 
+                                            tooltip: 'Do not change the sender name.')
+                                            ->extraAttributes([
+                                                'style' => '
+                                                    position: relative; 
+                                                    font-size: 0.500rem; 
+                                                    cursor: pointer;
+                                                ',
+                                                'class' => 'hover-tooltip',
+                                            ])
                                             ->default(fn() => auth()->user()->name)
                                             ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
 
