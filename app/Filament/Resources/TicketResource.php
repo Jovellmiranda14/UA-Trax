@@ -130,6 +130,14 @@ class TicketResource extends Resource
                                     ->schema([
                                         TextInput::make('name')
                                             ->label('Sender')
+                                            ->required()
+                                            ->rule(function () {
+                                                return function ($attribute, $value, $fail) {
+                                                    if ($value !== auth()->user()?->name) {
+                                                        $fail('The entered name does not match your registered name.');
+                                                    }
+                                                };
+                                            })
                                             ->hintIcon('heroicon-s-question-mark-circle' , 
                                             tooltip: 'Do not change the sender name.')
                                             ->extraAttributes([
