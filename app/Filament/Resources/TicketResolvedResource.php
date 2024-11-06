@@ -298,7 +298,7 @@ class TicketResolvedResource extends Resource
                     ->sortable()
                     ->searchable(),
             ])
-
+            ->defaultSort('id', 'desc')
             ->filters([
                 //
             ])
