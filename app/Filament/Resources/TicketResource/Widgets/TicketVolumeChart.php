@@ -12,7 +12,6 @@ use App\Models\User;
 
 class TicketVolumeChart extends ChartWidget
 {
-    protected int | string | array $columnSpan = 2;
     protected static ?string $heading = 'Ticket Volume';
 
     // Default filter to 'today'
@@ -45,6 +44,7 @@ class TicketVolumeChart extends ChartWidget
         $filter = $this->filter ?? 'week';
 
         switch ($filter) {
+
             case 'week':
                 return [now()->startOfWeek(), now()->endOfWeek()];
             case 'last_week':
@@ -62,94 +62,89 @@ class TicketVolumeChart extends ChartWidget
     }
 
     protected function getData(): array
-    {
-        [$startDate, $endDate] = $this->getFilterDateRange();
-        $selectedDepartment = $this->filter;
-        $user = auth()->user();
+{
+    // Retrieve and validate the date range from filters
+    [$startDate, $endDate] = $this->getFilterDateRange();
 
-        // Check user roles to determine concern type
-        $isEquipmentRole = in_array($user->role, [
-            User::EquipmentSUPER_ADMIN,
-            User::EQUIPMENT_ADMIN_Omiss,
-            User::EQUIPMENT_ADMIN_labcustodian,
-        ]);
+    // Ensure start and end dates are set properly to avoid uninitialized access
+    if (!$startDate || !$endDate) {
+        // Default to the last 7 days if no valid date range is provided
+        $startDate = now()->subDays(7);
+        $endDate = now();
+    }
 
-        $isFacilityRole = in_array($user->role, [
-            User::FacilitySUPER_ADMIN,
-            User::FACILITY_ADMIN,
-        ]);
+    $selectedDepartment = $this->filter;
+    $user = auth()->user();
 
-        // Determine concern type based on role
-        $concernType = $isEquipmentRole ? 'Laboratory and Equipment' : ($isFacilityRole ? 'Facility' : null);
-        if (!$concernType) {
-            return []; // No data if user role does not match
-        }
+    // Check user roles
+    $isEquipmentRole = in_array($user->role, [
+        User::EquipmentSUPER_ADMIN,
+        User::EQUIPMENT_ADMIN_Omiss,
+        User::EQUIPMENT_ADMIN_labcustodian,
+    ]);
+    $isFacilityRole = in_array($user->role, [
+        User::FacilitySUPER_ADMIN,
+        User::FACILITY_ADMIN,
+    ]);
 
-        // Base queries for created, accepted, and resolved tickets
-        $createdTicketsQuery = Ticket::query()
-            ->where('concern_type', $concernType)
-            ->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
-                return $query->where('department', $selectedDepartment);
-            });
+    // Determine concern type based on role
+    $concernType = $isEquipmentRole ? 'Laboratory and Equipment' : ($isFacilityRole ? 'Facility' : null);
+    if (!$concernType && $user->role !== User::REGULAR_USER) {
+        return []; // Return empty data if no matching concern type
+    }
 
-        $acceptedTicketsQuery = TicketsAccepted::query()
-            ->where('concern_type', $concernType)
-            ->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
-                return $query->where('department', $selectedDepartment);
-            });
-
-        $resolvedTicketsQuery = TicketResolved::query()
-            ->where('concern_type', $concernType)
-            ->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
-                return $query->where('department', $selectedDepartment);
-            });
-
-        // Determine aggregation method based on filter
-        $aggregationMethod = ($this->filter === 'year' || in_array($selectedDepartment, $this->getDepartmentFilters())) ? 'perMonth' : 'perDay';
-
-        // Aggregate data for created, accepted, and resolved tickets
-        $createdTicketsData = Trend::query($createdTicketsQuery)
-            ->between($startDate, $endDate)
-            ->{$aggregationMethod}()
-            ->count();
-
-        $acceptedTicketsData = Trend::query($acceptedTicketsQuery)
-            ->between($startDate, $endDate)
-            ->{$aggregationMethod}()
-            ->count();
-
-        $resolvedTicketsData = Trend::query($resolvedTicketsQuery)
-            ->between($startDate, $endDate)
-            ->{$aggregationMethod}()
-            ->count();
-
-        // Combine all ticket data for total volume
-        $totalTicketVolume = $createdTicketsData->map(function (TrendValue $created, $key) use ($acceptedTicketsData, $resolvedTicketsData) {
-            return $created->aggregate
-                + ($acceptedTicketsData[$key]->aggregate ?? 0)
-                + ($resolvedTicketsData[$key]->aggregate ?? 0);
+    // Base query for tickets, filtering by user `name` for regular users or by concern type for admins
+    $query = Ticket::query()
+        ->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
+            return $query->where('department', $selectedDepartment);
+        })
+        ->when($user->role === User::REGULAR_USER, function ($query) use ($user) {
+            return $query->where('name', $user->name);
+        }, function ($query) use ($concernType) {
+            return $query->where('concern_type', $concernType);
         });
 
-        // Create labels based on aggregation method
-        $labels = ($aggregationMethod === 'perMonth')
-            ? $createdTicketsData->groupBy(fn($item) => \Carbon\Carbon::parse($item->date)->format('Y-m'))->keys()->map(fn($date) => \Carbon\Carbon::parse($date)->format('M Y'))
-            : $createdTicketsData->map(fn(TrendValue $value) => \Carbon\Carbon::parse($value->date)->format('Y-m-d'));
+    // Determine aggregation method
+    $aggregationMethod = ($this->filter === 'year' || in_array($selectedDepartment, $this->getDepartmentFilters())) ? 'perMonth' : 'perDay';
 
-        return [
-            'datasets' => [
-                [
-                    'label' => "$concernType Tickets Volume",
-                    'data' => $totalTicketVolume,
-                    'backgroundColor' => $isEquipmentRole ? 'rgba(75, 192, 192, 0.2)' : 'rgba(255, 99, 132, 0.2)',
-                    'borderColor' => $isEquipmentRole ? 'rgba(75, 192, 192, 1)' : 'rgba(255, 99, 132, 1)',
-                    'borderWidth' => 2,
-                    'fill' => true,
-                    'tension' => 0.4,
-                ],
-            ],
-            'labels' => $labels,
-        ];
+    // Aggregate data for total ticket volume using Trend
+    $ticketData = Trend::query($query)
+        ->between($startDate, $endDate) // Set the date range explicitly
+        ->{$aggregationMethod}('created_at')
+        ->count();
+
+    // Format labels based on aggregation
+    $labels = $ticketData->map(fn(TrendValue $value) => \Carbon\Carbon::parse($value->date)->format($aggregationMethod === 'perMonth' ? 'M Y' : 'Y-m-d'));
+
+    // Set the color based on user role
+    if ($user->role === User::REGULAR_USER) {
+        $lineColor = 'rgba(255, 255, 0, 0.2)'; // Yellow for Regular Users
+        $borderColor = 'rgba(255, 255, 0, 1)';
+    } elseif (in_array($user->role, [User::FacilitySUPER_ADMIN, User::FACILITY_ADMIN])) {
+        $lineColor = 'rgba(255, 0, 0, 0.2)'; // Red for Facility Super Admin and Admin
+        $borderColor = 'rgba(255, 0, 0, 1)';
+    } else {
+        $lineColor = 'rgba(75, 192, 192, 0.2)'; // Default color for Equipment Roles
+        $borderColor = 'rgba(75, 192, 192, 1)';
     }
+
+    return [
+        'datasets' => [
+            [
+                'label' => $concernType ? "$concernType Tickets Volume" : "User Ticket Volume",
+                'data' => $ticketData->pluck('aggregate'),
+                'backgroundColor' => $lineColor,
+                'borderColor' => $borderColor,
+                'borderWidth' => 2,
+                'fill' => true,
+                'tension' => 0.4,
+            ],
+        ],
+        'labels' => $labels,
+    ];
+}
+
+
 
     // Helper method to get department filters
     protected function getDepartmentFilters(): array

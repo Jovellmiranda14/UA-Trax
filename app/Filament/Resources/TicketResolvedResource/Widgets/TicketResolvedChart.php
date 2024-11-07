@@ -77,18 +77,36 @@ class TicketResolvedChart extends ChartWidget
             User::FACILITY_ADMIN,
         ]);
 
+        $isRegularUser = $user->role === User::REGULAR_USER;
+
         // Determine concern type based on role
-        $concernType = $isEquipmentRole ? 'Laboratory and Equipment' : ($isFacilityRole ? 'Facility' : null);
-        if (!$concernType) {
+        $concernType = null;
+        if ($isEquipmentRole) {
+            $concernType = 'Laboratory and Equipment';
+        } elseif ($isFacilityRole) {
+            $concernType = 'Facility';
+        }
+
+        // If the user is a regular user, no need to filter by concern type
+        if (!$concernType && !$isRegularUser) {
             return []; // No data if user role does not match
         }
 
         // Base query for resolved tickets
         $resolvedTicketsQuery = TicketResolved::query()
-            ->where('concern_type', $concernType)
+            ->when($concernType, function ($query) use ($concernType) {
+                return $query->where('concern_type', $concernType);
+            })
             ->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
                 return $query->where('department', $selectedDepartment);
             });
+
+        // For regular users, only filter by department if selected
+        if ($isRegularUser) {
+            $resolvedTicketsQuery = $resolvedTicketsQuery->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
+                return $query->where('department', $selectedDepartment);
+            });
+        }
 
         // Determine aggregation method based on filter
         $aggregationMethod = ($this->filter === 'year' || in_array($selectedDepartment, $this->getDepartmentFilters())) ? 'perMonth' : 'perDay';
@@ -107,16 +125,27 @@ class TicketResolvedChart extends ChartWidget
             ? $resolvedTicketsData->groupBy(fn($item) => \Carbon\Carbon::parse($item->date)->format('Y-m'))->keys()->map(fn($date) => \Carbon\Carbon::parse($date)->format('M Y'))
             : $resolvedTicketsData->map(fn(TrendValue $value) => \Carbon\Carbon::parse($value->date)->format('Y-m-d'));
 
+        if ($isRegularUser) {
+            $lineColor = 'rgba(255, 255, 0, 0.2)'; // Yellow for Regular Users
+            $borderColor = 'rgba(255, 255, 0, 1)';
+        } elseif ($isFacilityRole) {
+            $lineColor = 'rgba(255, 0, 0, 0.2)'; // Red for Facility Super Admin and Admin
+            $borderColor = 'rgba(255, 0, 0, 1)';
+        } else {
+            $lineColor = 'rgba(75, 192, 192, 0.2)'; // Default color for Equipment Roles
+            $borderColor = 'rgba(75, 192, 192, 1)';
+        }
+
         return [
             'datasets' => [
                 [
                     'label' => "$concernType Resolved Tickets Volume",
                     'data' => $totalResolvedVolume,
-                    'backgroundColor' => $isEquipmentRole ? 'rgba(75, 192, 192, 0.2)' : 'rgba(255, 99, 132, 0.2)',
-                    'borderColor' => $isEquipmentRole ? 'rgba(75, 192, 192, 1)' : 'rgba(255, 99, 132, 1)',
+                    'backgroundColor' => $lineColor,
+                    'borderColor' => $borderColor,
                     'borderWidth' => 2,
                     'fill' => true,
-                    'tension' => 0.4,
+                    'tension' => 0.4, // Adds curve to the line
                 ],
             ],
             'labels' => $labels,

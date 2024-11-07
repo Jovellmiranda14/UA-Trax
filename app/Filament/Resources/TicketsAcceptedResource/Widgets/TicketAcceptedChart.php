@@ -11,10 +11,8 @@ use App\Models\User;
 
 class TicketAcceptedChart extends ChartWidget
 {
-    protected int | string | array $columnSpan = 2;
     protected static ?string $heading = 'Tickets Accepted Volume';
 
-    // Default filter to 'today'
     protected function getDefaultFilter(): ?string
     {
         return 'today';
@@ -81,23 +79,44 @@ class TicketAcceptedChart extends ChartWidget
         User::FACILITY_ADMIN,
     ]);
 
+    $isRegularUser = $user->role === User::REGULAR_USER;
+
     // Determine concern type based on role
-    $concernType = $isEquipmentRole ? 'Laboratory and Equipment' : ($isFacilityRole ? 'Facility' : null);
-    if (!$concernType) {
+    $concernType = null;
+    if ($isEquipmentRole) {
+        $concernType = 'Laboratory and Equipment';
+    } elseif ($isFacilityRole) {
+        $concernType = 'Facility';
+    }
+
+    // If the user is a regular user, no need to filter by concern type
+    if (!$concernType && !$isRegularUser) {
         return []; // No data if user role does not match
     }
 
     // Base queries for accepted and resolved tickets
     $acceptedTicketsQuery = TicketsAccepted::query()
-        ->where('concern_type', $concernType)
-        ->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
-            return $query->where('department', $selectedDepartment);
+        ->when($isRegularUser, function ($query) use ($selectedDepartment) {
+            // For regular users, don't filter by concern_type, only by department
+            return $query->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
+                return $query->where('department', $selectedDepartment);
+            });
+        })
+        ->when($concernType, function ($query) use ($concernType) {
+            // For equipment or facility roles, filter by concern_type
+            return $query->where('concern_type', $concernType);
         });
 
     $resolvedTicketsQuery = TicketResolved::query()
-        ->where('concern_type', $concernType)
-        ->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
-            return $query->where('department', $selectedDepartment);
+        ->when($isRegularUser, function ($query) use ($selectedDepartment) {
+            // For regular users, don't filter by concern_type, only by department
+            return $query->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
+                return $query->where('department', $selectedDepartment);
+            });
+        })
+        ->when($concernType, function ($query) use ($concernType) {
+            // For equipment or facility roles, filter by concern_type
+            return $query->where('concern_type', $concernType);
         });
 
     // Determine aggregation method based on filter
@@ -124,13 +143,25 @@ class TicketAcceptedChart extends ChartWidget
         ? $acceptedTicketsData->groupBy(fn($item) => \Carbon\Carbon::parse($item->date)->format('Y-m'))->keys()->map(fn($date) => \Carbon\Carbon::parse($date)->format('M Y'))
         : $acceptedTicketsData->map(fn(TrendValue $value) => \Carbon\Carbon::parse($value->date)->format('Y-m-d'));
 
+    // Determine the line color based on user role
+    if ($isRegularUser) {
+        $lineColor = 'rgba(255, 255, 0, 0.2)'; // Yellow for Regular Users
+        $borderColor = 'rgba(255, 255, 0, 1)';
+    } elseif ($isFacilityRole) {
+        $lineColor = 'rgba(255, 0, 0, 0.2)'; // Red for Facility Super Admin and Admin
+        $borderColor = 'rgba(255, 0, 0, 1)';
+    } else {
+        $lineColor = 'rgba(75, 192, 192, 0.2)'; // Default color for Equipment Roles
+        $borderColor = 'rgba(75, 192, 192, 1)';
+    }
+
     return [
         'datasets' => [
             [
                 'label' => "$concernType Tickets Accepted Volume",
                 'data' => $totalTicketVolume,
-                'backgroundColor' => $isEquipmentRole ? 'rgba(75, 192, 192, 0.2)' : 'rgba(255, 99, 132, 0.2)',
-                'borderColor' => $isEquipmentRole ? 'rgba(75, 192, 192, 1)' : 'rgba(255, 99, 132, 1)',
+                'backgroundColor' => $lineColor,
+                'borderColor' => $borderColor,
                 'borderWidth' => 2,
                 'fill' => true,
                 'tension' => 0.4, // Adds curve to the line
@@ -141,7 +172,6 @@ class TicketAcceptedChart extends ChartWidget
 }
 
 
-    // Helper method to get department filters
     protected function getDepartmentFilters(): array
     {
         return [

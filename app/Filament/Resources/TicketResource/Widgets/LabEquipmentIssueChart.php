@@ -76,6 +76,7 @@ class LabEquipmentIssueChart extends ChartWidget
         $submittedIssues = Ticket::query()
             ->select('department', \DB::raw('count(*) as total'))
             ->where('type_of_issue', 'lab_equipment')
+            ->where('department', '!=', 'Office') // Exclude the Office department
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('department')
             ->get();

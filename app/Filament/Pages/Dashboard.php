@@ -13,7 +13,7 @@ use App\Filament\Resources\TicketResource\Widgets\OfficeIssueChart;
 use App\Filament\Resources\TicketResource\Widgets\FacilityIssueChart;
 use App\Filament\Widgets\TicketOverviewWidget;
 
-class AnalyticsChart extends Page
+class Dashboard extends Page
 {
     protected static string $view = 'filament.pages.analytics-chart';
     protected static ?int $navigationSort = 4;

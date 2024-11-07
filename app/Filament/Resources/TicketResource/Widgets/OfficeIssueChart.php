@@ -10,9 +10,11 @@ class OfficeIssueChart extends ChartWidget
 {
     protected static ?string $heading = 'Office Issues by Department';
 
+    // Issue types will be mapped for the chart
     protected array $issueTypeMap = [
-        'Office' => 'Office Issues',
-        // Other issue types are removed as they are not needed for this role
+        'Other_Devices' => 'Other Devices',
+        'computer_issues' => 'Computer Issues',
+        'lab_equipment' => 'Lab Equipment',
     ];
 
     // Default filter to 'today'
@@ -69,20 +71,26 @@ class OfficeIssueChart extends ChartWidget
 
         [$startDate, $endDate] = $this->getFilterDateRange();
 
-        // Filter tickets for "Office" issues and by department, grouped by department
+        // Filter tickets for "Office" issues and by department, grouped by issue type
         $submittedIssues = Ticket::query()
-            ->select('department', \DB::raw('count(*) as total'))
-            ->where('type_of_issue', 'Office')
+            ->select('type_of_issue', \DB::raw('count(*) as total'))
+            ->where('department', 'Office')
+            ->whereIn('type_of_issue', ['Other_Devices', 'computer_issues', 'lab_equipment'])
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupBy('department')
+            ->groupBy('type_of_issue')
             ->get();
 
         // Prepare data for the chart
         $issueLabels = [];
         $data = [];
+        $colors = [
+            'rgba(54, 162, 235, 0.6)', // Blue
+            'rgba(255, 159, 64, 0.6)', // Orange
+            'rgba(75, 192, 192, 0.6)', // Green
+        ];
 
-        foreach ($submittedIssues as $issue) {
-            $issueLabels[] = "{$issue->department} - Office Issues";
+        foreach ($submittedIssues as $index => $issue) {
+            $issueLabels[] = $this->issueTypeMap[$issue->type_of_issue] ?? 'Unknown Issue Type';
             $data[] = $issue->total;
         }
 
@@ -97,20 +105,8 @@ class OfficeIssueChart extends ChartWidget
             'datasets' => [
                 [
                     'data' => $data,
-                    'backgroundColor' => [
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(255, 159, 64, 0.6)',
-                        'rgba(75, 192, 192, 0.6)',
-                        'rgba(153, 102, 255, 0.6)',
-                        'rgba(255, 99, 132, 0.6)',
-                    ],
-                    'hoverBackgroundColor' => [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 99, 132, 1)',
-                    ],
+                    'backgroundColor' => $colors,
+                    'hoverBackgroundColor' => array_map(fn($color) => str_replace('0.6', '1', $color), $colors),
                 ],
             ],
         ];
