@@ -427,7 +427,8 @@ class TicketsAcceptedResource extends Resource
                                                         ->required(),
                                                         DatePicker::make('created_at')
                                                         ->label('Date Created')
-                                                        ->default(fn($record) => $record->created_at)
+                                                        
+                                                        ->default(fn($record) => $record->created_at->format('M d, Y'))
                                                         ->disabled()
                                                         ->required(),   
                                                 ]),
