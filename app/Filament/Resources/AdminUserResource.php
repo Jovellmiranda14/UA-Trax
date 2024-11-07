@@ -153,7 +153,7 @@ class AdminUserResource extends Resource
                     ->label('Department role'),
 
                 Tables\Columns\TextColumn::make('role')
-                    ->label('role')
+                    ->label('Role')
                     ->searchable()
                     ->sortable(),
             ])
@@ -161,8 +161,10 @@ class AdminUserResource extends Resource
                 // Define filters if needed
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ]);
     }
     public static function getRelations(): array
