@@ -295,10 +295,7 @@ class TicketHistoryResource extends Resource
                         'Closed' => 'Closed Tickets',
                         'In progress' => 'In Progress Tickets',
                     ])
-            ])
-            ->actions([
-
-            ]);
+                    ]);
 
     }
 
