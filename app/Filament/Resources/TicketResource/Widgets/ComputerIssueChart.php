@@ -129,6 +129,7 @@ class ComputerIssueChart extends ChartWidget
     protected function getOptions(): array
     {
         return [
+            'aspectRatio' => 1.61,
             'plugins' => [
                 'legend' => [
                     'position' => 'bottom',

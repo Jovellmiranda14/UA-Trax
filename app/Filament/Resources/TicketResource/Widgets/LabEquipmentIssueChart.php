@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LabEquipmentIssueChart extends ChartWidget
 {
-    protected static ?string $heading = 'Laboratory Equipment Issue by Department';
+    protected static ?string $heading = 'Laboratory Issue by Department';
 
     protected array $issueTypeMap = [
         'lab_equipment' => 'Laboratory Equipment Issues',
@@ -129,6 +129,7 @@ class LabEquipmentIssueChart extends ChartWidget
     protected function getOptions(): array
     {
         return [
+            'aspectRatio' => 1.61,
             'plugins' => [
                 'legend' => [
                     'position' => 'bottom',

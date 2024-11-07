@@ -196,6 +196,7 @@ class TicketAcceptedChart extends ChartWidget
     protected function getOptions(): array
     {
         return [
+            'aspectRatio' => 1.5,
             'scales' => [
                 'y' => [
                     'beginAtZero' => true,

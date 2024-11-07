@@ -29,7 +29,7 @@ class Dashboard extends Page
         ) {
             return 3; // Assign a sort order for these roles
         }
-    
+
         return null; // Hide or deprioritize the navigation for other roles
     }
 

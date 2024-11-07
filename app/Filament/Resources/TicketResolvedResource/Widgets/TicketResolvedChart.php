@@ -10,7 +10,7 @@ use App\Models\User;
 
 class TicketResolvedChart extends ChartWidget
 {
-    protected int | string | array $columnSpan = 2;
+    //protected int | string | array $columnSpan = 2;
     protected static ?string $heading = 'Ticket Resolved Volume';
 
     // Default filter to 'today'
@@ -178,6 +178,7 @@ class TicketResolvedChart extends ChartWidget
     protected function getOptions(): array
     {
         return [
+            'aspectRatio' => 1.5,
             'scales' => [
                 'y' => [
                     'beginAtZero' => true,
