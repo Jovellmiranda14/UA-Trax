@@ -167,22 +167,24 @@ class TicketObserver
             'CONP',
         ];
         $admins = User::where(function ($query) use ($category, $dept_role) {
-            if ($category === 'Laboratory and Equipment') {
-                // Check if $dept_role is not empty
+            // If category is 'Laboratory and Equipment', apply department and role filters
+            $query->when($category === 'Laboratory and Equipment', function ($query) use ($dept_role) {
                 if (!empty($dept_role)) {
-                    $query->whereIn('dept_role', $dept_role) // Filter by department
+                    $query->whereIn('dept_role', $dept_role)
                           ->whereIn('role', [
                               User::EQUIPMENT_ADMIN_Omiss,
                               User::EQUIPMENT_ADMIN_labcustodian,
                           ]);
                 }
-                // If $dept_role is empty, nothing is added to the query for this category
-            } elseif ($category === 'Facility') {
+            });
+        
+            // If category is 'Facility', apply role filters
+            $query->when($category === 'Facility', function ($query) {
                 $query->whereIn('role', [
                     User::FACILITY_ADMIN,
                     User::FacilitySUPER_ADMIN,
                 ]);
-            }
+            });
         })->get();
 
         // Log notification details
@@ -199,7 +201,7 @@ class TicketObserver
             // Send a database notification for each admin
             Notification::make()
                 ->title($ticket->name . ' reported a ticket (#' . $ticket->id . ')')
-                ->body('Concern: "' . Str::words($ticket->description, 10, '...') . '"')
+                ->body('Concern: "' . Str::words($ticket->subject, 10, '...') . '"')
                 ->actions([
                     Action::make('view')
                     ->label('View Ticket')

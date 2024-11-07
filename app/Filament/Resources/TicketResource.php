@@ -193,7 +193,7 @@ class TicketResource extends Resource
                                            
                                         FileUpload::make('attachment')
                                             ->label('Upload a file (optional)')
-                                            ->acceptedFileTypes(['image/jpeg', 'image/png'])
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg'])
                                             ->directory('attachments')
                                             ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
                                     ]),
@@ -376,37 +376,7 @@ class TicketResource extends Resource
                     ->label('Concern')
                     ->limit(25)
                     ->searchable(),
-
-                // Tables\Columns\BadgeColumn::make('status')
-                //     ->label('Status')
-                //     ->getStateUsing(function ($record) {
-                //         switch ($record->status) {
-                //             case 'open':
-                //                 return 'Open';
-                //             case 'in progress':
-                //                 return 'In progress';
-                //             case 'on-hold':
-                //                 return 'On-hold';
-                //             case 'resolved':
-                //                 return 'Resolved';
-                //             case 'close':
-                //                 return 'Close';
-                //             default:
-                //                 return $record->status;
-                //         }
-                //     })
-                //     ->color(function ($state) {
-                //         return match ($state) {
-                //             'Open' => Color::Blue,
-                //             'In progress' => Color::Yellow,
-                //             'On-hold' => TicketColors::Black,
-                //             'Resolved' => Color::Green,
-                //             'Close' => TicketColors::Gray,
-                //             default => null,
-                //         };
-                //     })
-                //     ->badge()
-                //     ->searchable(),
+                    
                 Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
                     ->getStateUsing(function ($record) {

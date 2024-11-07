@@ -440,7 +440,7 @@ class TicketQueueResource extends Resource
                                 $user->notify(new TicketGrabbedNotification($record));
                                 Notification::make()
                                     ->title('Admin accepted your ticket: (#' . $record->id . ')')
-                                    ->body('Concern: "' . Str::words($record->description, 10, '...') . '"')
+                                    ->body('Concern: "' . Str::words($record->subject, 10, '...') . '"')
                                     ->sendToDatabase($user);
 
                                 event(new DatabaseNotificationsSent($user));
