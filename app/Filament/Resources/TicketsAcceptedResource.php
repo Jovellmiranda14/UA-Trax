@@ -794,7 +794,7 @@ class TicketsAcceptedResource extends Resource
                                 $user->notify(new TicketResolvedNotification($record));
                                 Notification::make()
                                 ->title('Admin resolved the Ticket: (#' . $record->id . ')')
-                                ->body('Concern: "' . Str::limit($record->description, 10) . '"')
+                                ->body('Concern: "' . Str::limit($record->subject, 10) . '"')
                                 ->sendToDatabase($user);
                                 event(new DatabaseNotificationsSent($user));
                             }
