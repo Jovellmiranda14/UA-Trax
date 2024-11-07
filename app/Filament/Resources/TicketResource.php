@@ -58,37 +58,11 @@ class TicketResource extends Resource
         return $form
 
             ->schema([
-
-                // Radio::make('concern_type')
-                // ->label('My concern is about:')
-                // ->options([
-                //     'Laboratory and Equipment' => 'Laboratory and Equipment',
-                //     'Facility' => 'Facility',
-                // ])
-                // ->reactive()
-                // ->required()
-                // ->default(function () {
-                //     // Check the user's role and return the appropriate default value
-                //     $user = Auth::user();
-
-                //     if ($user->isEquipmentSuperAdmin()) {
-                //         return 'Facility'; // Automatically set to 'Facility' for Equipment Admin or User
-                //     }
-
-                //     // Default to null or another value if needed
-                //     return null;
-                // }), 
-
-
-
-
                 Radio::make('concern_type')
                     ->label('I want to send a ticket to:')
                     ->options(function () {
                         $user = auth()->user();
-                        // Restrict options based on user role
-                        // || $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian()
-            
+
                         if ($user->isEquipmentSuperAdmin()) {
                             return [
                                 'Facility' => 'Facility',
@@ -193,7 +167,7 @@ class TicketResource extends Resource
                                            
                                         FileUpload::make('attachment')
                                             ->label('Upload a file (optional)')
-                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg'])
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/tiff'])
                                             ->directory('attachments')
                                             ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
                                     ]),
