@@ -193,7 +193,7 @@ class TicketResource extends Resource
                                            
                                         FileUpload::make('attachment')
                                             ->label('Upload a file (optional)')
-                                            ->acceptedFileTypes(['image/jpeg', 'image/png'])
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg'])
                                             ->directory('attachments')
                                             ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
                                     ]),
