@@ -107,7 +107,8 @@ class TicketsAcceptedResource extends Resource
             $query = TicketsAccepted::query()->where('assigned', $user->name);
         }
 
-        return $table->query($query)
+        return $table
+        ->query($query)
             // Pagination
             ->columns([
                 Tables\Columns\TextColumn::make('id')
@@ -404,7 +405,7 @@ class TicketsAcceptedResource extends Resource
                                                     FileUpload::make('attachment')
                                                         ->label('Attachment (optional)')
                                                         ->image()
-                                                        // ->default( $record->attachment)
+                                                        ->default(fn($record) => $record->attachment)
                                                         ->disabled(),
                                                 ]),
                                         ]),
