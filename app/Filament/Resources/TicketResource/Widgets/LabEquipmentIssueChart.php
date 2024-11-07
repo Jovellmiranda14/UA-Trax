@@ -37,9 +37,10 @@ class LabEquipmentIssueChart extends ChartWidget
 
     protected function getFilterDateRange(): array
     {
-        $filter = $this->filter ?? 'today';
+        // Default today filter
+        $this->filter = $this->filter ?? 'today';
 
-        switch ($filter) {
+        switch ($this->filter) {
             case 'today':
                 return [now()->startOfDay(), now()->endOfDay()];
             case 'week':
@@ -81,7 +82,7 @@ class LabEquipmentIssueChart extends ChartWidget
             ->groupBy('department')
             ->get();
 
-        // Prepare data for the chart
+        // data for the chart
         $issueLabels = [];
         $data = [];
 
@@ -130,7 +131,7 @@ class LabEquipmentIssueChart extends ChartWidget
         return [
             'plugins' => [
                 'legend' => [
-                    'position' => 'top',
+                    'position' => 'bottom',
                 ],
                 'tooltip' => [
                     'enabled' => true,
@@ -146,10 +147,16 @@ class LabEquipmentIssueChart extends ChartWidget
     public function getDescription(): string
     {
         [$startDate, $endDate] = $this->getFilterDateRange();
-        return "Data from " . $startDate->format('Y-m-d') . " to " . $endDate->format('Y-m-d');
+
+        // Show a single date for the 'today' filter
+        if ($this->filter === 'today') {
+            return "Data from " . $startDate->format('M j, Y');
+        }
+
+        // Show a date range for other filters
+        return "Data from " . $startDate->format('M j, Y') . " to " . $endDate->format('M j, Y');
     }
 
-    // Make this method public as it is required to be accessed by Filament
     public static function canView(): bool
     {
         // Allow view for both equipment_admin_labcustodian and equipment_superadmin roles

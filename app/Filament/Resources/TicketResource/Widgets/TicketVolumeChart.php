@@ -114,7 +114,8 @@ class TicketVolumeChart extends ChartWidget
         ->count();
 
     // Format labels based on aggregation
-    $labels = $ticketData->map(fn(TrendValue $value) => \Carbon\Carbon::parse($value->date)->format($aggregationMethod === 'perMonth' ? 'M Y' : 'Y-m-d'));
+    $labels = $ticketData->map(fn(TrendValue $value) => \Carbon\Carbon::parse($value->date)->format($aggregationMethod === 'perMonth' ? 'M Y' : 'M j, Y'));
+
 
     // Set the color based on user role
     if ($user->role === User::REGULAR_USER) {
@@ -187,7 +188,7 @@ class TicketVolumeChart extends ChartWidget
             ],
             'plugins' => [
                 'legend' => [
-                    'position' => 'top',
+                    'position' => 'bottom',
                 ],
                 'tooltip' => [
                     'enabled' => true,

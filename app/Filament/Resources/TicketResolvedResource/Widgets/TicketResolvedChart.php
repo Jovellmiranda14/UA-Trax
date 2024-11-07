@@ -122,8 +122,10 @@ class TicketResolvedChart extends ChartWidget
 
         // Create labels based on aggregation method
         $labels = ($aggregationMethod === 'perMonth')
-            ? $resolvedTicketsData->groupBy(fn($item) => \Carbon\Carbon::parse($item->date)->format('Y-m'))->keys()->map(fn($date) => \Carbon\Carbon::parse($date)->format('M Y'))
-            : $resolvedTicketsData->map(fn(TrendValue $value) => \Carbon\Carbon::parse($value->date)->format('Y-m-d'));
+        ? $resolvedTicketsData->groupBy(fn($item) => \Carbon\Carbon::parse($item->date)->format('Y-m'))->keys()->map(fn($date) => \Carbon\Carbon::parse($date)->format('M Y'))
+        : $resolvedTicketsData->map(fn(TrendValue $value) => \Carbon\Carbon::parse($value->date)->format('M j, Y'));
+
+
 
         if ($isRegularUser) {
             $lineColor = 'rgba(255, 255, 0, 0.2)'; // Yellow for Regular Users
@@ -193,7 +195,7 @@ class TicketResolvedChart extends ChartWidget
             ],
             'plugins' => [
                 'legend' => [
-                    'position' => 'top',
+                    'position' => 'bottom',
                 ],
                 'tooltip' => [
                     'enabled' => true,
