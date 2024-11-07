@@ -459,6 +459,18 @@ class TicketQueueResource extends Resource
                         ->icon('heroicon-s-eye')
                         ->modalHeading('Ticket Details')
                         ->modalSubheading('Full details of the selected ticket.')
+                        ->modalActions([
+                            // Tables\Actions\Modal\Actions\ButtonAction::make('submit')
+                            //     ->label('Submit') 
+                            //     ->button()
+                            //     ->close(),
+
+                            Tables\Actions\Modal\Actions\ButtonAction::make('discard')
+                                ->label('Close') 
+                                ->button()
+                                ->color('white')
+                                ->close(),
+                        ])
                         ->extraAttributes([
                             'class' => 'sticky-modal-header', // Add sticky header class
                         ])
