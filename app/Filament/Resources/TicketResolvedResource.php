@@ -411,6 +411,18 @@ class TicketResolvedResource extends Resource
                         ->label('Comment list')
                         ->icon('heroicon-o-chat-bubble-left-right')
                         ->modalHeading('Comments')
+                            ->modalActions([
+                            // Tables\Actions\Modal\Actions\ButtonAction::make('submit')
+                            //     ->label('Submit') 
+                            //     ->button()
+                            //     ->close(),
+
+                            Tables\Actions\Modal\Actions\ButtonAction::make('discard')
+                                ->label('Close') 
+                                ->button()
+                                ->color('white')
+                                ->close(),
+                        ])
                         ->form(function (TicketResolved $record) {
                             return [
                                 Grid::make(3)
