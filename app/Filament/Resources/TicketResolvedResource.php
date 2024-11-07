@@ -6,6 +6,7 @@ use App\Filament\Resources\TicketResolvedResource\Pages;
 use App\Filament\Resources\TicketResolvedResource\RelationManagers;
 use App\Models\TicketResolved;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -296,7 +297,8 @@ class TicketResolvedResource extends Resource
                     ->label('Accepted on')
                     ->date()
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('id', 'desc')
             ->filters([
@@ -369,13 +371,15 @@ class TicketResolvedResource extends Resource
                                             // Description and Attachment Fields
                                             Grid::make(2)
                                                 ->schema([
-                                                    TextInput::make('description')
+                                                    Textarea::make('description')
                                                         ->label('Description')
                                                         ->disabled()
-                                                        ->required(),
-                                                    TextInput::make('attachment')
+                                                        ->required()
+                                                        ->autosize(),
+                                                    FileUpload::make('attachment')
                                                         ->label('Attachment')
                                                         ->disabled()
+                                                        ->default(fn($record) => $record->created_at)
                                                         ->required(),
                                                 ]),
                                         ]),
@@ -405,7 +409,7 @@ class TicketResolvedResource extends Resource
 
                     Action::make('ViewComment')
                         ->label('Comment list')
-                        ->icon('heroicon-o-rectangle-stack')
+                        ->icon('heroicon-o-chat-bubble-left-right')
                         ->modalHeading('Comments')
                         ->form(function (TicketResolved $record) {
                             return [
@@ -421,9 +425,9 @@ class TicketResolvedResource extends Resource
                                             ->default($record->subject)
                                             ->disabled()
                                             ->required(),
-                                        TextInput::make('created_at')
+                                        DatePicker::make('created_at')
                                             ->label('Date created')
-                                            ->default($record->created_at)
+                                            ->default(fn($record) => $record->created_at->format('M d, Y'))
                                             ->disabled()
                                             ->required(),
                                     ]),
