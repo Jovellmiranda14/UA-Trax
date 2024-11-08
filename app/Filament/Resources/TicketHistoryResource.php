@@ -90,13 +90,13 @@ class TicketHistoryResource extends Resource
         else if ($user->isEquipmentAdminOmiss() || $user->isEquipmentAdminLabCustodian()) {
             // Filter by 'Laboratory and Equipment' concerns and by assigned department
             $query->whereIn('concern_type', ['Laboratory and Equipment'])
-                ->where('assigned', $user->name)
+                ->where('department', $user->dept_role)
                 ->orderBy('concern_type', 'asc');
         }
         // Check for Facility Admin roles
         else if ($user->isFacilityAdmin() || $user->isFacilitySuperAdmin()) {
             $query->where('concern_type', 'Facility')
-                ->where('assigned', $user->name)
+                // ->where('assigned', $user->name)
                 ->orderBy('concern_type', 'asc');
         }
         // For regular users, filter by the user's own tickets
@@ -190,8 +190,12 @@ class TicketHistoryResource extends Resource
                             case 'HOTEL OFFICE/CAFE MARIA':
                             case 'SPORTS OFFICE':
                             case 'QMO':
+                            case 'HGU OFFICE':
+                            case 'OFFICE OF STUDENT AFFAIRS':
+                            case 'RESEARCH PLANNING OFFICE':
+                            case 'CEO':
+                            case 'SOCIAL HALL':
                                 return 'Moderate';
-
 
                             case 'C100 - PHARMACY LAB':
                             case 'C101 - BIOLOGY LAB/STOCKROOM':
@@ -286,6 +290,9 @@ class TicketHistoryResource extends Resource
                 TextColumn::make('location')
                     ->label('Location')
                     ->searchable(),
+                    TextColumn::make('assigned')
+                    ->label('Assigned')
+                    ->sortable(),
                 ImageColumn::make('attachment')
                     ->label('Image')
                     ->size(50)
@@ -297,7 +304,7 @@ class TicketHistoryResource extends Resource
                     })
                     ->openUrlInNewTab(),
 
-
+                    
                 TextColumn::make('created_at')
                     ->label('Date created')
                     ->date()
@@ -314,7 +321,7 @@ class TicketHistoryResource extends Resource
                         'Closed' => 'Closed Tickets',
                         'In progress' => 'In Progress Tickets',
                     ])
-                    ]);
+            ]);
 
     }
 
