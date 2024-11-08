@@ -77,6 +77,11 @@ class TicketObserver
                 case 'HOTEL OFFICE/CAFE MARIA':
                 case 'SPORTS OFFICE':
                 case 'QMO':
+                case 'HGU OFFICE':
+                case 'OFFICE OF STUDENT AFFAIRS':
+                case 'CEO':
+                    case 'SOCIAL HALL':
+                        case  'RESEARCH PLANNING OFFICE':
                     return 'Moderate';
 
                 // Low priority locations
@@ -123,6 +128,8 @@ class TicketObserver
                 case 'RY307':
                 case 'RY308':
                 case 'RY309':
+
+                case 'PHARMACY LECTURE ROOM':
                 case 'PHARMACY STOCKROOM':
                 case 'G103 - NURSING LAB':
                 case 'G105 - NURSING LAB':

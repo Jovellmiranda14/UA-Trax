@@ -229,7 +229,8 @@ class TicketResource extends Resource
 
                                                 'CITCLS' => [
                                                     'C204 - ROBOTICS LAB',  'C301 - CISCO LAB',
-                                                    'C302 - SPEECH LAB',    'P308',
+                                                    'C302 - SPEECH LAB',    'P307','P308',
+                                                   'P310', 'P311', 'P312',
                                                     'P309 - COMPUTER LAB 4','P310 - COMPUTER LAB 3',
                                                     'P311 - COMPUTER LAB 2','P312 - COMPUTER LAB 1',
                                                     'P313',
@@ -297,7 +298,6 @@ class TicketResource extends Resource
                                                     'BOOKSTORE',
                                                     'HOTEL OFFICE/CAFE MARIA',
                                                     'SPORTS OFFICE',
-                                                    'NURSING ARTS LAB',
                                                 ],
 
 
@@ -366,6 +366,7 @@ class TicketResource extends Resource
                             case 'CITCLS DEAN OFFICE':      case 'CEA OFFICE':
                             case 'SAS OFFICE':              case 'SED OFFICE':
                             case 'CONP OFFICE':             case 'CHTM OFFICE':
+                            case 'HGU OFFICE':
                             case 'ITRS':                    case 'REGISTRAR’S OFFICE':
                             case 'RPO':                     case 'COLLEGE LIBRARY':
                             case 'VPF':                     case 'BUSINESS OFFICE':
@@ -375,6 +376,9 @@ class TicketResource extends Resource
                             case 'DENTAL/MEDICAL CLINIC':   case 'PHYSICAL PLANT & GENERAL SERVICES':
                             case 'OMISS':                   case 'HOTEL OFFICE/CAFE MARIA':
                             case 'SPORTS OFFICE':           case 'QMO':
+                            case 'OFFICE OF STUDENT AFFAIRS': case  'RESEARCH PLANNING OFFICE':
+                                case'CEO':
+                                case 'SOCIAL HALL':
                                 return 'Moderate';
 
 
@@ -402,7 +406,8 @@ class TicketResource extends Resource
                             case 'RY302':                   case 'RY303':
                             case 'RY304':                   case 'RY305':
                             case 'RY306':                   case 'RY307':
-                            case 'RY308':                   case 'RY309':
+                            case 'RY308':
+                            case 'PHARMACY LECTURE ROOM':   case 'RY309':
                             case 'PHARMACY STOCKROOM':      case 'G103 - NURSING LAB':
                             case 'G105 - NURSING LAB':      case 'G107 - NURSING LAB':
                             case 'NURSING CONFERENCE ROOM': case 'C204 - ROBOTICS LAB':

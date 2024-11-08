@@ -191,6 +191,11 @@ class TicketsAcceptedResource extends Resource
                             case 'HOTEL OFFICE/CAFE MARIA':
                             case 'SPORTS OFFICE':
                             case 'QMO':
+                            case 'HGU OFFICE':
+                            case 'OFFICE OF STUDENT AFFAIRS':
+                            case  'RESEARCH PLANNING OFFICE':
+                            case 'CEO':
+                            case 'SOCIAL HALL':
                                 return 'Moderate';
 
 
@@ -237,6 +242,7 @@ class TicketsAcceptedResource extends Resource
                             case 'RY307':
                             case 'RY308':
                             case 'RY309':
+                            case 'PHARMACY LECTURE ROOM':
                             case 'PHARMACY STOCKROOM':
                             case 'G103 - NURSING LAB':
                             case 'G105 - NURSING LAB':
@@ -669,6 +675,11 @@ class TicketsAcceptedResource extends Resource
                                 case 'HOTEL OFFICE/CAFE MARIA':
                                 case 'SPORTS OFFICE':
                                 case 'QMO':
+                                case 'HGU OFFICE':
+                                case 'OFFICE OF STUDENT AFFAIRS':
+                                case  'RESEARCH PLANNING OFFICE':
+                                    case 'CEO':
+                                        case 'SOCIAL HALL':
                                     $priority = 'Moderate';
                                     break;
 
@@ -713,6 +724,7 @@ class TicketsAcceptedResource extends Resource
                                 case 'RY307':
                                 case 'RY308':
                                 case 'RY309':
+                                case 'PHARMACY LECTURE ROOM':
                                 case 'PHARMACY STOCKROOM':
                                 case 'G103 - NURSING LAB':
                                 case 'G105 - NURSING LAB':
