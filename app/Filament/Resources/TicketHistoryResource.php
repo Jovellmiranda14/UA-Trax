@@ -35,7 +35,26 @@ class TicketHistoryResource extends Resource
     protected static ?string $navigationLabel = 'Ticket history';
     protected static ?string $model = TicketHistory::class;
 
-    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Tickets';
+    
+    public static function getNavigationGroup(): ?string
+    {
+        // Check if the authenticated user has one of the specific roles
+        if (
+            auth()->check() && (
+                auth()->user()->role === 'equipmentsuperadmin' ||
+                auth()->user()->role === 'facilitysuperadmin'  ||
+                auth()->user()->role === 'equipment_admin_labcustodian' ||
+                auth()->user()->role === 'equipment_admin_omiss' ||
+                auth()->user()->role === 'facility_admin' 
+            )
+        ) {
+            return 'Tickets'; // Only visible to users with specific admin roles
+        }
+
+        return null; // No navigation group for other users
+    }
+    protected static ?int $navigationSort = 4;
     // protected static ?string $navigationIcon = 'heroicon-s-rectangle-stack';
     // protected static ?string $navigationGroup = 'Users Account';
 

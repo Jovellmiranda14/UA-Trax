@@ -25,6 +25,8 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Placeholder;
+
 class ConcernSpectrum
 {
     const Gray = '#808080';
@@ -309,6 +311,12 @@ class TicketResolvedResource extends Resource
                     ViewAction::make('View')
                         ->modalHeading('Ticket details')
                         ->modalSubHeading('')
+                        ->modalActions([
+                        Tables\Actions\Modal\Actions\ButtonAction::make('close')
+                                ->label('Close')
+                                ->button()
+                                ->close(),
+                        ])
                         ->extraAttributes([
                             'class' => 'sticky-modal-header', // Add sticky header class
                         ])
@@ -411,18 +419,19 @@ class TicketResolvedResource extends Resource
                         ->label('Comment list')
                         ->icon('heroicon-o-chat-bubble-left-right')
                         ->modalHeading('Comments')
-                            ->modalActions([
+                        ->modalActions([
                             // Tables\Actions\Modal\Actions\ButtonAction::make('submit')
                             //     ->label('Submit') 
                             //     ->button()
                             //     ->close(),
 
-                            Tables\Actions\Modal\Actions\ButtonAction::make('discard')
-                                ->label('Close') 
+                            Tables\Actions\Modal\Actions\ButtonAction::make('close')
+                                ->label('Close')
                                 ->button()
-                                ->color('white')
                                 ->close(),
                         ])
+
+
                         ->form(function (TicketResolved $record) {
                             return [
                                 Grid::make(3)
@@ -473,6 +482,15 @@ class TicketResolvedResource extends Resource
                                         })->toArray();
                                     })
                                     ->disabled(),
+
+                                    Card::make()
+                                    ->visible($record->resolvedComments->isEmpty())
+                                    ->extraAttributes(['class' => 'd-flex justify-content-center align-items-center', 'style' => 'height: 100px;'])
+                                    ->schema([
+                                        Placeholder::make('')
+                                            ->content('No comments has been made.')
+                                            ->extraAttributes(['style' => 'text-align: center; color: #808080; font-weight: bold; font-size: 15px;']),
+                                    ]),
                             ];
                         }),
                 ]),

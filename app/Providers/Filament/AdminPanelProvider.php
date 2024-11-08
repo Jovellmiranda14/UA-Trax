@@ -33,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->emailVerification()
             ->id('admin')
             // ->path('')
-            ->brandLogo(asset('images/UATRAX-logo-wordmark-light-transparent.png'))
+            ->brandLogo(asset('images/UATRAX-logo-wordmark-light-transparents.png'))
             ->brandLogoHeight('6rem')
             ->login()
             ->colors([

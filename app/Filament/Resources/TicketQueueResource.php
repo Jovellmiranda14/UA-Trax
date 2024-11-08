@@ -284,7 +284,7 @@ class TicketQueueResource extends Resource
             ->actions([
                 Action::make('grab')
                     ->label('Claim')
-                    ->icon('heroicon-o-rectangle-stack')
+                    ->icon('heroicon-o-ticket')
                     ->action(function ($record) {
                         try {
                             // Assign the ticket to the current user

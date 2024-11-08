@@ -16,6 +16,7 @@ use App\Filament\Widgets\TicketOverviewWidget;
 class Dashboard extends Page
 {
     protected static string $view = 'filament.pages.analytics-chart';
+
     public static function getNavigationSort(): ?int
     {
         if (
@@ -27,7 +28,7 @@ class Dashboard extends Page
                 'facility_admin',
             ])
         ) {
-            return 3; // Assign a sort order for these roles
+            return 2; // Assign a sort order for these roles
         }
 
         return null; // Hide or deprioritize the navigation for other roles
