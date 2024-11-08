@@ -37,7 +37,6 @@ If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Lar
 - php artisan key:generate
 - php artisan migrate
 - php artisan db:seed --class=UserSeeder
-- php artisan db:seed --class=TicketSeeder
 - php artisan serve
 
 
