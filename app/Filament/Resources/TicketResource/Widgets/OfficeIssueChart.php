@@ -36,7 +36,6 @@ class OfficeIssueChart extends ChartWidget
 
     protected function getFilterDateRange(): array
     {
-        //Default today filter
         $this->filter = $this->filter ?? 'today';
 
         switch ($this->filter) {
@@ -81,7 +80,7 @@ class OfficeIssueChart extends ChartWidget
             ->groupBy('type_of_issue')
             ->get();
 
-        // Prepare data for the chart
+        // Data for the chart
         $issueLabels = [];
         $data = [];
         $colors = [

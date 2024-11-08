@@ -10,10 +10,9 @@ use App\Models\User;
 
 class TicketResolvedChart extends ChartWidget
 {
-    //protected int | string | array $columnSpan = 2;
     protected static ?string $heading = 'Ticket Resolved Volume';
 
-    // Default filter to 'today'
+    // Default filter to 'week'
     protected function getDefaultFilter(): ?string
     {
         return 'week';
@@ -26,15 +25,14 @@ class TicketResolvedChart extends ChartWidget
             'last_week' => 'Last Week',
             'month' => 'Last Month',
             'year' => 'This Year',
-            'CRIM' => 'CRIM Department',
-            'PSYCH' => 'PSYCH Department',
+            'SAS (CRIM)' => 'CRIM Department',
+            'SAS (PSYCH)' => 'PSYCH Department',
             'SAS (AB COMM)' => 'AB COMM Department',
             'CEA' => 'CEA Department',
             'CONP' => 'CONP Department',
             'CITCLS' => 'CITCLS Department',
             'RSO' => 'RSO Department',
             'OFFICE' => 'OFFICE Department',
-            'PPGS' => 'PPGS Department',
         ];
     }
 
@@ -125,8 +123,6 @@ class TicketResolvedChart extends ChartWidget
         ? $resolvedTicketsData->groupBy(fn($item) => \Carbon\Carbon::parse($item->date)->format('Y-m'))->keys()->map(fn($date) => \Carbon\Carbon::parse($date)->format('M Y'))
         : $resolvedTicketsData->map(fn(TrendValue $value) => \Carbon\Carbon::parse($value->date)->format('M j, Y'));
 
-
-
         if ($isRegularUser) {
             $lineColor = 'rgba(255, 255, 0, 0.2)'; // Yellow for Regular Users
             $borderColor = 'rgba(255, 255, 0, 1)';
@@ -147,19 +143,19 @@ class TicketResolvedChart extends ChartWidget
                     'borderColor' => $borderColor,
                     'borderWidth' => 2,
                     'fill' => true,
-                    'tension' => 0.4, // Adds curve to the line
+                    'tension' => 0.4,
                 ],
             ],
             'labels' => $labels,
         ];
     }
 
-    // Helper method to get department filters
+    // Get department filters
     protected function getDepartmentFilters(): array
     {
         return [
-            'CRIM',
-            'PSYCH',
+            'SAS (CRIM)',
+            'SAS (PSYCH)',
             'SAS (AB COMM)',
             'CEA',
             'CONP',
@@ -201,7 +197,7 @@ class TicketResolvedChart extends ChartWidget
                 'tooltip' => [
                     'enabled' => true,
                     'mode' => 'index',
-                    'intersect' => false, // Makes the tooltip display on the entire line
+                    'intersect' => false,
                 ],
                 'title' => [
                     'display' => true,

@@ -15,7 +15,6 @@ class ComputerIssueChart extends ChartWidget
 
     protected array $issueTypeMap = [
         'computer_issues' => 'Computer Issues',
-        // Other issue types are removed as they are not needed for this role
     ];
 
     // Default filter to 'today'
@@ -37,7 +36,6 @@ class ComputerIssueChart extends ChartWidget
 
     protected function getFilterDateRange(): array
     {
-        //Default today filter
         $this->filter = $this->filter ?? 'today';
 
         switch ($this->filter) {
@@ -73,28 +71,44 @@ class ComputerIssueChart extends ChartWidget
 
         [$startDate, $endDate] = $this->getFilterDateRange();
 
-        // Filter tickets for "Computer Issues" and by department, grouped by department
+        // Filter tickets for "Computer Issues" by department, excluding "Office"
         $submittedIssues = Ticket::query()
             ->select('department', \DB::raw('count(*) as total'))
             ->where('type_of_issue', 'computer_issues')
-            ->where('department', '!=', 'Office') // Exclude the Office department
+            ->where('department', '!=', 'Office')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('department')
             ->get();
 
-        // Prepare data for the chart
+        // Map colors to departments
+        $departmentColors = [
+            'CEA' => 'rgba(207, 32, 43, 1)',
+            'CITCLS' => 'rgba(77, 104, 201, 1)',
+            'CONP' => 'rgba(73, 184, 71, 1)',
+            'SAS (AB COMM)' => 'rgba(230, 175, 1, 1)',
+            'SAS (CRIM)' => 'rgba(230, 175, 100, 1)',
+            'SAS (PSYCH)' => 'rgba(230, 175, 70, 1)',
+            'OFFICE' => 'rgba(103, 177, 209, 1)',
+        ];
+
+        // Data for the chart
         $issueLabels = [];
         $data = [];
+        $colors = [];
 
         foreach ($submittedIssues as $issue) {
             $issueLabels[] = "{$issue->department} - Computer Issues";
             $data[] = $issue->total;
+
+            // Use the mapped color for each department, or default color if not defined
+            $colors[] = $departmentColors[$issue->department] ?? 'rgba(100, 100, 100, 0.6)';
         }
 
-        // Ensure that if no data was found, a valid structure is still returned
+        // If no data was found, a valid structure is still returned
         if (empty($data)) {
             $data = [0];
             $issueLabels = ['No Data Available'];
+            $colors = ['rgba(211, 211, 211, 0.6)'];
         }
 
         return [
@@ -102,20 +116,8 @@ class ComputerIssueChart extends ChartWidget
             'datasets' => [
                 [
                     'data' => $data,
-                    'backgroundColor' => [
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(255, 159, 64, 0.6)',
-                        'rgba(75, 192, 192, 0.6)',
-                        'rgba(153, 102, 255, 0.6)',
-                        'rgba(255, 99, 132, 0.6)',
-                    ],
-                    'hoverBackgroundColor' => [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 99, 132, 1)',
-                    ],
+                    'backgroundColor' => $colors,
+                    'hoverBackgroundColor' => $colors,
                 ],
             ],
         ];
@@ -158,8 +160,6 @@ class ComputerIssueChart extends ChartWidget
         return "Data from " . $startDate->format('M j, Y') . " to " . $endDate->format('M j, Y');
     }
 
-
-    // Make this method public as it is required to be accessed by Filament
     public static function canView(): bool
     {
         // Allow view for both equipment_admin_labcustodian and equipment_superadmin roles

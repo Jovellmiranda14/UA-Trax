@@ -79,25 +79,41 @@ class FacilityIssueChart extends ChartWidget
         // Filter tickets for facility-related issues
         $submittedIssues = Ticket::query()
             ->select('type_of_issue', 'department', \DB::raw('count(*) as total'))
-            ->whereIn('type_of_issue', array_keys($this->issueTypeMap))  // Filter for the facility issues
+            ->whereIn('type_of_issue', array_keys($this->issueTypeMap))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('type_of_issue', 'department')
             ->get();
 
+        // Map colors to departments
+        $departmentColors = [
+            'CEA' => 'rgba(207, 32, 43, 1)',
+            'CITCLS' => 'rgba(77, 104, 201, 1)',
+            'CONP' => 'rgba(73, 184, 71, 1)',
+            'SAS (AB COMM)' => 'rgba(230, 175, 1, 1)',
+            'SAS (CRIM)' => 'rgba(230, 175, 100, 1)',
+            'SAS (PSYCH)' => 'rgba(230, 175, 70, 1)',
+            'OFFICE' => 'rgba(103, 177, 209, 1)',
+        ];
+
         // Prepare data for the chart
         $issueLabels = [];
         $data = [];
+        $colors = [];
 
         foreach ($submittedIssues as $issue) {
             $issueLabel = $this->issueTypeMap[$issue->type_of_issue] ?? $issue->type_of_issue;
             $issueLabels[] = "{$issueLabel} - {$issue->department}";
             $data[] = $issue->total;
+
+            // Use the mapped color for each department, or default color if not defined
+            $colors[] = $departmentColors[$issue->department] ?? 'rgba(100, 100, 100, 0.6)';
         }
 
         // Ensure that if no data was found, a valid structure is still returned
         if (empty($data)) {
             $data = [0];
             $issueLabels = ['No Data Available'];
+            $colors = ['rgba(211, 211, 211, 0.6)'];
         }
 
         return [
@@ -105,20 +121,8 @@ class FacilityIssueChart extends ChartWidget
             'datasets' => [
                 [
                     'data' => $data,
-                    'backgroundColor' => [
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(255, 159, 64, 0.6)',
-                        'rgba(75, 192, 192, 0.6)',
-                        'rgba(153, 102, 255, 0.6)',
-                        'rgba(255, 99, 132, 0.6)',
-                    ],
-                    'hoverBackgroundColor' => [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 99, 132, 1)',
-                    ],
+                    'backgroundColor' => $colors,
+                    'hoverBackgroundColor' => $colors,
                 ],
             ],
         ];
