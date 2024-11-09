@@ -5,24 +5,40 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TicketHistoryResource\Pages;
 
 use App\Models\TicketHistory;
+use App\Models\TicketResolved;
+use App\Models\TicketsAccepted;
 
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\ButtonAction;
 
 use Filament\Tables\Table;
-
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Support\Colors\Color;
-
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Filters\SelectFilter;
+
+
+use Filament\Forms\Components\Grid;
+
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 
 
 // Admin = By Dept
 // User = Sarili 
 
-use Filament\Support\Facades\FilamentColor;
+
 
 class UTicket
 {
@@ -36,17 +52,17 @@ class TicketHistoryResource extends Resource
     protected static ?string $model = TicketHistory::class;
 
     protected static ?string $navigationGroup = 'Tickets';
-    
+
     public static function getNavigationGroup(): ?string
     {
         // Check if the authenticated user has one of the specific roles
         if (
             auth()->check() && (
                 auth()->user()->role === 'equipmentsuperadmin' ||
-                auth()->user()->role === 'facilitysuperadmin'  ||
+                auth()->user()->role === 'facilitysuperadmin' ||
                 auth()->user()->role === 'equipment_admin_labcustodian' ||
                 auth()->user()->role === 'equipment_admin_omiss' ||
-                auth()->user()->role === 'facility_admin' 
+                auth()->user()->role === 'facility_admin'
             )
         ) {
             return 'Tickets'; // Only visible to users with specific admin roles
@@ -290,7 +306,7 @@ class TicketHistoryResource extends Resource
                 TextColumn::make('location')
                     ->label('Location')
                     ->searchable(),
-                    TextColumn::make('assigned')
+                TextColumn::make('assigned')
                     ->label('Assigned')
                     ->sortable(),
                 ImageColumn::make('attachment')
@@ -304,7 +320,7 @@ class TicketHistoryResource extends Resource
                     })
                     ->openUrlInNewTab(),
 
-                    
+
                 TextColumn::make('created_at')
                     ->label('Date created')
                     ->date()
@@ -312,6 +328,202 @@ class TicketHistoryResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('id', 'desc')
+            ->actions([
+                ActionGroup::make([
+                    ViewAction::make('View')
+                        ->modalHeading('Ticket details')
+                        ->modalSubHeading('')
+                        ->modalActions([
+                            ButtonAction::make('close')
+                                ->label('Close')
+                                ->button()
+                                ->close(),
+                        ])
+                        ->extraAttributes([
+                            'class' => 'sticky-modal-header', // Add sticky header class
+                        ])
+                        ->form([
+                            Card::make()
+
+                                ->extraAttributes([
+                                    'style' => 'max-height: 68vh; overflow-y: auto;',
+                                ])
+
+                                ->schema([
+
+                                    // Top Row: Ticket ID, Status, Priority
+                                    Grid::make(3)
+                                        ->schema([
+                                            TextInput::make('id')
+                                                ->label('Ticket id')
+                                                ->disabled()
+                                                ->required(),
+                                            TextInput::make('status')
+                                                ->label('Status')
+                                                ->disabled()
+                                                ->required(),
+                                            TextInput::make('priority')
+                                                ->label('Priority')
+                                                ->disabled()
+                                                ->required(),
+                                        ]),
+
+                                    // Section: Issue Information
+                                    Card::make('Issue information')
+                                        ->description('View the information about the ticket.')
+                                        ->schema([
+                                            Grid::make(3)
+                                                ->schema([
+                                                    TextInput::make('name')
+                                                        ->label('Sender')
+                                                        ->disabled()
+                                                        ->required(),
+                                                    TextInput::make('subject')
+                                                        ->label('Concern')
+                                                        ->disabled()
+                                                        ->required(),
+                                                    Select::make('type_of_issue')
+                                                        ->label('Type of Issue')
+                                                        ->options([
+                                                            'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
+                                                            'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
+                                                            'other_devices' => 'Other Devices (e.g., Printer, Projector, and TV)',
+                                                            'repair' => 'Repair',
+                                                            'air_conditioning' => 'Air Conditioning',
+                                                            'plumbing' => 'Plumbing',
+                                                            'lighting' => 'Lighting',
+                                                            'electricity' => 'Electricity',
+                                                        ])
+                                                        ->required()
+                                                        ->disabled(),
+                                                ]),
+
+                                            // Description and Attachment Fields
+                                            Grid::make(2)
+                                                ->schema([
+                                                    Textarea::make('description')
+                                                        ->label('Description')
+                                                        ->disabled()
+                                                        ->required()
+                                                        ->autosize(),
+                                                    FileUpload::make('attachment')
+                                                        ->label('Attachment')
+                                                        ->disabled()
+                                                        ->default(fn($record) => $record->created_at)
+                                                        ->required(),
+                                                ]),
+                                        ]),
+
+                                    // Section: Place of Issue
+                                    Card::make('Place of issue')
+                                        ->description('Select where the equipment is currently located.')
+                                        ->schema([
+                                            Grid::make(3)
+                                                ->schema([
+                                                    TextInput::make('department')
+                                                        ->label('Department')
+                                                        ->disabled()
+                                                        ->required(),
+                                                    TextInput::make('location')
+                                                        ->label('Location')
+                                                        ->disabled()
+                                                        ->required(),
+                                                    DatePicker::make('created_at')
+                                                        ->label('Date created')
+                                                        ->disabled()
+                                                        ->required(),
+                                                ]),
+                                        ]),
+                                ]),
+                        ]),
+
+                        Action::make('comment-list')
+                        ->label('Comment list')
+                        ->icon('heroicon-o-chat-bubble-left-right')
+                        ->modalHeading('')
+                        ->modalSubheading('')
+                        ->modalActions([
+                            ButtonAction::make('done')
+                                ->label('Done')
+                                ->button()
+                                ->close(),
+                        ])
+
+                        ->form(function (TicketHistory $record) {
+                            $comments = $record->comments->map(function ($comment) {
+                                return [
+                                    'sender' => $comment->sender,
+                                    'comment' => $comment->comment,
+                                    'commented_at' => $comment->commented_at,
+                                ];
+                            })->toArray();  
+                            return [
+                                Grid::make(4)
+                                    ->schema([
+                                        TextInput::make('id')
+                                            ->label('Ticket ID')
+                                            ->default($record->id)
+                                            ->disabled()
+                                            ->required(),
+                                        TextInput::make('subject')
+                                            ->label('Concern')
+                                            ->default($record->subject)
+                                            ->disabled()
+                                            ->required(),
+                                    ]),
+                                Repeater::make('comments')
+                                    ->label('Comments')
+                                    ->extraAttributes([
+                                        'style' => 'max-height: 38vh; overflow-y: auto;',
+                                    ])
+                                    ->schema([
+                                        Grid::make(3)
+                                            ->schema([
+                                                TextInput::make('sender')
+                                                    ->label('Sender')
+                                                    ->disabled(),
+                                                TextInput::make('date_sent')
+                                                    ->label('Date Sent')
+                                                    ->default($record->created_at->format('M d, Y'))
+                                                    ->disabled()
+                                                    ->required(),
+                                                    TextInput::make('time_created')
+                                                    ->label('Time Created')
+                                                    ->default($record->created_at->format('g:i A'))
+                                                    ->disabled()
+                                                    ->required(),
+                                            ]),
+                                        Textarea::make('comment')
+                                            ->label('Description')
+                                            ->autosize()
+                                            ->disabled(),
+                                    ])
+                              
+
+
+                                    ->default(function () use ($record) {
+                                        return $record->comments->map(function ($comment) {
+                                            return [
+                                                'sender' => $comment->sender,
+                                                'comment' => $comment->comment,
+                                                'commented_at' => $comment->commented_at,
+                                            ];
+                                        })->toArray();
+                                    })
+                                    ->disabled(),
+
+                                    Card::make()
+                                    ->visible(empty($comments))
+                                    ->extraAttributes(['class' => 'd-flex justify-content-center align-items-center', 'style' => 'height: 100px;'])
+                                    ->schema([
+                                        Placeholder::make('')
+                                        ->content('No available comment')
+                                        ->extraAttributes(['style' => 'text-align: center; color: #808080; font-weight: bold; font-size: 15px;']),
+                                    ]), 
+                            ];
+                        }),
+                ]),
+            ])
 
             ->filters([
                 SelectFilter::make('status')
