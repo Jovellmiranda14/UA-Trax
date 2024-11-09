@@ -532,7 +532,7 @@ class TicketQueueResource extends Resource
                                                             ->options([
                                                                 'computer_issues' => 'Computer issues (e.g., malfunctioning hardware, software crashes)',
                                                                 'lab_equipment' => 'Lab equipment malfunction (e.g., broken microscopes, non-functioning lab equipment)',
-                                                                'other_devices' => 'Other Devices (e.g., Printer, Projector, and TV)',
+                                                                'Other_Devices' => 'Other Devices (e.g., Printer, Projector, and TV)',
                                                                 'repair' => 'Repair',
                                                                 'air_conditioning' => 'Air Conditioning',
                                                                 'plumbing' => 'Plumbing',
