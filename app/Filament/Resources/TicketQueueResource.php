@@ -477,11 +477,10 @@ class TicketQueueResource extends Resource
                             //     ->button()
                             //     ->close(),
 
-                            Tables\Actions\Modal\Actions\ButtonAction::make('discard')
-                                ->label('Close') 
-                                ->button()
-                                ->color('white')
-                                ->close(),
+                            Tables\Actions\Modal\Actions\ButtonAction::make('close')
+                            ->label('Close')
+                            ->button()
+                            ->close(),
                         ])
                         ->extraAttributes([
                             'class' => 'sticky-modal-header', // Add sticky header class
