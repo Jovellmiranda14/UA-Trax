@@ -12,5 +12,9 @@ class TicketComment extends Model
     {
         return $this->belongsTo(TicketsAccepted::class, 'ticket_id');
     }
+    public function ticketHistory()
+{
+    return $this->belongsTo(TicketHistory::class, 'ticket_history_id');
+}
 }
 
