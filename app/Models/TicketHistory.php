@@ -23,7 +23,8 @@ class TicketHistory extends Model
         'updated_at',
         'assigned',
         'attachment',
-        'accepted_at'
+        'accepted_at',
+        'commented_at'
     ];
 
     public function ticket()
@@ -35,4 +36,16 @@ class TicketHistory extends Model
     {
         return $this->belongsTo(User::class, 'user_id'); // Assuming you track `user_id` in the table
     }
+    public function resolvedComments()
+    {
+        return $this->hasMany(ResolvedComment::class, 'ticket_id', 'id');
+    }
+    public function ticketAccepted()
+    {
+        return $this->belongsTo(TicketsAccepted::class, 'ticket_id');
+    }
+    public function comments()
+{
+    return $this->hasMany(TicketComment::class, 'ticket_id');
+}  
 }
