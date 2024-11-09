@@ -173,25 +173,24 @@ class TicketObserver
             'OFFICE',
             'CONP',
         ];
+        $department = ['SAS', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE'];
+        $user = auth()->user();
         $admins = User::where(function ($query) use ($category, $dept_role) {
-            // If category is 'Laboratory and Equipment', apply department and role filters
-            $query->when($category === 'Laboratory and Equipment', function ($query) use ($dept_role) {
+            // For "Laboratory and Equipment" category, filter by department and role
+            if ($category === 'Laboratory and Equipment') {
                 if (!empty($dept_role)) {
-                    $query->whereIn('dept_role', $dept_role)
-                          ->whereIn('role', [
+                    $query->whereIn('role', [
                               User::EQUIPMENT_ADMIN_Omiss,
                               User::EQUIPMENT_ADMIN_labcustodian,
-                          ]);
+                    ]);
                 }
-            });
-        
-            // If category is 'Facility', apply role filters
-            $query->when($category === 'Facility', function ($query) {
+            } elseif ($category === 'Facility') {
+                // For "Facility" category, filter by specific roles
                 $query->whereIn('role', [
                     User::FACILITY_ADMIN,
                     User::FacilitySUPER_ADMIN,
                 ]);
-            });
+            }
         })->get();
 
         // Log notification details
