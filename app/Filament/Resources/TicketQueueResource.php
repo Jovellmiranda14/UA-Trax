@@ -12,6 +12,7 @@ use App\Notifications\TicketGrabbedNotification;
 use Filament\Notifications\Events\DatabaseNotificationsSent;
 use Filament\Forms;
 use Illuminate\Support\Facades\Storage;
+use Filament\Notifications\Actions\Action as NotificationAction;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -449,6 +450,10 @@ class TicketQueueResource extends Resource
                                 Notification::make()
                                     ->title('Admin accepted your ticket: (#' . $record->id . ')')
                                     ->body('Concern: "' . Str::words($record->subject, 10, '...') . '"')
+                                    ->actions([
+                                        NotificationAction::make('view')
+                                        ->label('View Ticket')
+                                    ])
                                     ->sendToDatabase($user);
 
                                 event(new DatabaseNotificationsSent($user));

@@ -21,6 +21,7 @@ class TicketHistory extends Model
         'created_at',
         'concern_type',
         'updated_at',
+         'type_of_issue',
         'assigned',
         'attachment',
         'accepted_at',

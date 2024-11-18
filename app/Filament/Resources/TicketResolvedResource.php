@@ -73,6 +73,7 @@ class TicketResolvedResource extends Resource
         // Check for Equipment Super Admin role
         if ($user->isEquipmentSuperAdmin()) {
             $query->whereIn('concern_type', ['Laboratory and Equipment'])
+                ->where('assigned', $user->name)
                 ->orderBy('concern_type', 'asc');
         }
 
@@ -88,8 +89,10 @@ class TicketResolvedResource extends Resource
 
         if ($user->isFacilityAdmin() || $user->isFacilitySuperAdmin()) {
             $query->where('concern_type', 'Facility')
+                ->where('assigned', $user->name)
                 ->orderBy('concern_type', 'asc');
         }
+        
 
         return $table
             ->query($query)

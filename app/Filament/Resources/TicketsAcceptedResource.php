@@ -12,6 +12,7 @@ use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Notifications\Actions\Action as NotificationAction;
 use Filament\Tables;
 use Filament\Tables\Table;
 use App\Notifications\TicketResolvedNotification;
@@ -101,7 +102,7 @@ class TicketsAcceptedResource extends Resource
         // Regular users see only their assigned tickets
         if ($user->role === 'user') {
 
-            $query = TicketsAccepted::query();
+             $query = TicketsAccepted::query()->where('name', $user->name);
         } else {
             // Admin users can see all tickets
             $query = TicketsAccepted::query()->where('assigned', $user->name);
@@ -609,6 +610,10 @@ class TicketsAcceptedResource extends Resource
                                 Notification::make()
                                 ->title('Admin commented on your ticket (#' . $record->id . ')')
                                 ->body('Comment: "' . Str::limit($comment->comment, 10) . '"')
+                                ->actions([
+                                        NotificationAction::make('view')
+                                    ->label('View Ticket')
+                                    ])
                                     ->sendToDatabase($RegularUser);
                                 event(new DatabaseNotificationsSent($RegularUser));
                             } else {
@@ -621,6 +626,10 @@ class TicketsAcceptedResource extends Resource
                                 Notification::make()
                                     ->title( $comment->sender. ' commented on your ticket (#' .  $record->id. ')')
                                     ->body('Comment: "' . Str::limit($comment->comment, 10) . '"')
+                                    ->actions([
+                                        NotificationAction::make('view')
+                                        ->label('View Ticket')
+                                    ])
                                     ->sendToDatabase($assignedAdmin);
                                 event(new DatabaseNotificationsSent($assignedAdmin));
                             } else {
@@ -809,6 +818,10 @@ class TicketsAcceptedResource extends Resource
                                 Notification::make()
                                 ->title('Admin resolved the Ticket: (#' . $record->id . ')')
                                 ->body('Concern: "' . Str::limit($record->subject, 10) . '"')
+                                 ->actions([
+                                        NotificationAction::make('view')
+                                        ->label('View Ticket')
+                                    ])
                                 ->sendToDatabase($user);
                                 event(new DatabaseNotificationsSent($user));
                             }

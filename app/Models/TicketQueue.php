@@ -21,6 +21,7 @@ class TicketQueue extends Model
         'status',
         'priority',
         'department',
+         'type_of_issue',
         'location',
         'assigned',
         'dept_role',

@@ -31,7 +31,7 @@ class Dashboard extends Page
             return 2; // Assign a sort order for these roles
         }
 
-        return null; // Hide or deprioritize the navigation for other roles
+        return 2; // Hide or deprioritize the navigation for other roles
     }
 
     public function getHeaderWidgets(): array

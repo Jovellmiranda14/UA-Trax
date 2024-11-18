@@ -409,7 +409,7 @@ class TicketHistoryResource extends Resource
                                                     FileUpload::make('attachment')
                                                         ->label('Attachment')
                                                         ->disabled()
-                                                        ->default(fn($record) => $record->created_at)
+                                                        ->default(fn($record) => $record->attachment)
                                                         ->required(),
                                                 ]),
                                         ]),
