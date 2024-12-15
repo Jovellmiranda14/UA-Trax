@@ -193,16 +193,10 @@ class TicketResource extends Resource
                                             ',
                                             'class' => 'hover-tooltip',
                                         ])
-                                        ->options(fn($get) => \App\Models\Location::query()
-                                        ->when($get('department'), fn($query, $department) => 
-                                            $query->where('department', $department) // Filter by selected department
-                                        )
-                                        ->pluck('room_no') // Get room numbers
-                                        ->mapWithKeys(fn($roomNo) => [$roomNo => $roomNo]) // Format options
-                                        ->toArray() // Convert to array for Select component
-                                    )
-                                        ->reactive() // Ensures the location field updates on department change
+                                        ->options(fn($get) => \App\Models\Department::where('code', '!=', 'PPGS')->pluck('name', 'code'))  // Exclude "PPGS"
+                                        ->reactive()  // Ensures the location field updates on department change
                                         ->required(),
+                                    
                                     
                                     Select::make('location')
                                         ->searchable()
