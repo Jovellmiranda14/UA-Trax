@@ -32,9 +32,9 @@ class Department extends Model
         self::COMM => 'SAS (AB COMM)',
         self::CONP => 'CONP',
         self::CRIM => 'SAS (CRIM)',
+        self::PSYCH => 'SAS (PSYCH)',
         self::OFFICE => 'OFFICE',
         self::PPGS => 'PPGS',
-        self::PSYCH => 'SAS (PSYCH)',
     ];
 
     /**
