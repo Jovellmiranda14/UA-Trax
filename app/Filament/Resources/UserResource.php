@@ -49,6 +49,7 @@ class UserResource extends Resource
                                     ->label('Email')
                                     ->email()
                                     ->required()
+                                    ->placeholder('username@ua.edu.ph')
                                     ->rule('regex:/^[a-zA-Z0-9._%+-]+@ua\.edu\.ph$/')
                                     ->maxLength(255),
 

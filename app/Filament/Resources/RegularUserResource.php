@@ -47,6 +47,8 @@ class RegularUserResource extends Resource
                                 Forms\Components\TextInput::make('email')
                                     ->label('Email')
                                     ->email()
+                                    ->placeholder('username@ua.edu.ph')
+                                    ->rule('regex:/^[a-zA-Z0-9._%+-]+@ua\.edu\.ph$/')
                                     ->required()
                                     ->maxLength(255),
 

@@ -48,6 +48,8 @@ class AdminUserResource extends Resource
                                     ->label('Email')
                                     ->extraAttributes(['style' => 'width: 250px;'])
                                     ->email()
+                                    ->placeholder('username@ua.edu.ph')
+                                    ->rule('regex:/^[a-zA-Z0-9._%+-]+@ua\.edu\.ph$/')
                                     ->required()
                                     ->maxLength(255),
 
