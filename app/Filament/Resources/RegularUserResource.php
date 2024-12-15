@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\RegularUserResource\Pages;
 
 use App\Models\User;
+use App\Models\Department;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,10 +19,10 @@ class RegularUserResource extends Resource
 {
     protected static ?int $navigationSort = 1;
     protected static ?string $model = User::class;
-    protected static ?string $navigationLabel = 'Regular user';
+    protected static ?string $navigationLabel = 'Users';
     //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Users';
+    protected static ?string $navigationGroup = 'Manage';
     // Uncomment the following method if you want to disable the creation of new Regular Users
     // public static function canCreate(): bool
     // {
@@ -61,7 +62,7 @@ class RegularUserResource extends Resource
                                 Forms\Components\Select::make('dept_role')
                                     ->label('Department')
                                     ->required()
-                                    ->options(User::Dept),
+                                    ->options(Department::Dept),
 
                                 Forms\Components\Select::make('position')
                                     ->label('Position')

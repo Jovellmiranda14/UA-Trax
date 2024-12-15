@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AdminUserResource\Pages;
 use App\Filament\Resources\AdminUserResource\RelationManagers;
+use App\Models\Department;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -21,10 +22,10 @@ use Filament\Forms\Components\TextInput;
 class AdminUserResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $navigationLabel = 'Admin user';
+    protected static ?string $navigationLabel = 'Admins';
 
     // protected static ?string $navigationGroupIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationGroup = 'Users';
+    protected static ?string $navigationGroup = 'Manage';
     protected static ?int $navigationSort = 2;
 
 
@@ -86,7 +87,7 @@ class AdminUserResource extends Resource
                                 Forms\Components\Select::make('dept_role')
                                     ->label('Department role')
                                     ->required()
-                                    ->options(User::Dept)
+                                    ->options(Department::Dept)
                                     ->reactive()
                                     ->visible(
                                         fn() => in_array(

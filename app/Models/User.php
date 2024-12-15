@@ -21,21 +21,8 @@ class User extends Authenticatable implements FilamentUser
     const EQUIPMENT_ADMIN_labcustodian = 'equipment_admin_labcustodian';
     const REGULAR_USER = 'user';
 
-    const SAS = 'SAS';
-
-    //SAS DEPTS
-    const PSYCH = 'SAS (PSYCH)';
-    const CRIM = 'SAS (CRIM)';
-    const COMM = 'SAS (AB COMM)';
-    const CEA = 'CEA';
-    const CONP = 'CONP';
-    const CITCLS = 'CITCLS';
-    const RSO = 'RSO';
-    const OFFICE = 'OFFICE';
-    const PPGS = 'PPGS';
-
     //Positions
-    const rso = 'RSO';
+    const RSO = 'RSO';
     const Faculty = 'Faculty';
     const Secretary = 'Secretary';
     const None = 'N/A';
@@ -43,7 +30,7 @@ class User extends Authenticatable implements FilamentUser
     const Pos = [
         self::Faculty => 'Faculty',
         self::None => 'N/A',
-        self::rso => 'RSO',
+        self::RSO => 'RSO',
         self::Secretary => 'Secretary',
     ];
     // Define the roles array using the constants
@@ -55,18 +42,6 @@ class User extends Authenticatable implements FilamentUser
         self::FacilitySUPER_ADMIN => 'Facility Super Admin',
         self::REGULAR_USER => 'Regular User',
     ];
-
-    const Dept = [
-        self::CEA => 'CEA',
-        self::CITCLS => 'CITCLS',
-        self::COMM => 'SAS (AB COMM)',
-        self::CONP => 'CONP',
-        self::CRIM => 'SAS (CRIM)',
-        self::OFFICE => 'OFFICE',
-        self::PPGS => 'PPGS',
-        self::PSYCH => 'SAS (PSYCH)',
-    ];
-
 
     public function canAccessPanel(Panel $panel): bool
     {
@@ -113,7 +88,7 @@ class User extends Authenticatable implements FilamentUser
         'dept_role',
         'position',
         'password',
-        'role' // Add this line if not already added
+        'role'
     ];
 
     /**
@@ -122,7 +97,7 @@ class User extends Authenticatable implements FilamentUser
      * @var array<int, string>
      */
     protected $hidden = [
-        // 'password',
+         'password',
         'remember_token',
     ];
 
@@ -145,5 +120,9 @@ class User extends Authenticatable implements FilamentUser
     public function ticketsAssigned()
     {
         return $this->hasMany(Ticket::class, 'assigned_to', 'id');
+    }
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'dept_role', 'code');
     }
 }
