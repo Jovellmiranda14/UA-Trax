@@ -11,20 +11,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->enum(
-                'role',
-                [
-                    'equipmentsuperadmin',
-                    'facilitysuperadmin',
-                    'facility_admin',
-                    'equipment_user',
-                    'equipment_admin_omiss',
-                    'equipment_admin_labcustodian',
-                    'user'
-                ]
-            )->default('user');
-            $table->enum('dept_role', ['SAS (PSYCH)', 'SAS (CRIM)', 'SAS (AB COMM)', 'CEA', 'CONP', 'CITCLS', 'OFFICE', 'PPGS']);
-            $table->enum('position', ['RSO', 'Faculty', 'Secretary', 'N/A']);
+            $table->string('role')->default('user');
+            $table->string('dept_role')->default('N/A');
+            $table->string('position')->default('N/A');
 
         });
     }

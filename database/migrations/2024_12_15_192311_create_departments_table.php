@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('departments', function (Blueprint $table) {
-            $table->id('department_id'); // Primary key explicitly named 'department_id'
+            $table->id();
             $table->string('name')->unique(); // Department name
             $table->string('code')->unique(); // Short code for the department
             $table->timestamps(); // Created at and Updated at columns
