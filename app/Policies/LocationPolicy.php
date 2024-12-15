@@ -14,18 +14,16 @@ class LocationPolicy
     public function viewAny(User $user): bool
     {
         return $user->isFacilityAdmin() ||
-        $user->isEquipmentSuperAdmin() ||
-        $user->isFacilitySuperAdmin() ||
-        $user->isEquipmentAdminOmiss() ||
-        $user->isEquipmentAdminlabcustodian();
+        $user->isFacilitySuperAdmin();
+
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, User $model): bool
+    public function view(User $user, Location $model): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin();
+        return  $user ->isFacilityAdmin() || $user ->isFacilitySuperAdmin();
     }
 
     /**
@@ -33,25 +31,23 @@ class LocationPolicy
      */
     public function create(User $user): bool
     {
-        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||
-        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian();
+        return $user ->isFacilityAdmin() || $user ->isFacilitySuperAdmin();
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, User $model): bool
+    public function update(User $user, Location $model): bool
     {
-        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||
-        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian();
+        return $user ->isFacilityAdmin() || $user ->isFacilitySuperAdmin();
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, User $model): bool
+    public function delete(User $user, Location $model): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin();
+        return $user ->isFacilityAdmin() || $user ->isFacilitySuperAdmin();
     }
 
     /**
@@ -59,7 +55,7 @@ class LocationPolicy
      */
     public function restore(User $user, User $model): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin();
+        return $user ->isFacilityAdmin() || $user ->isFacilitySuperAdmin();
     }
 
     /**
@@ -67,6 +63,6 @@ class LocationPolicy
      */
     public function forceDelete(User $user, User $model): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin();
+        return $user ->isFacilityAdmin() || $user ->isFacilitySuperAdmin();
     }
 }

@@ -10,6 +10,7 @@ class Location extends Model
     use HasFactory;
 
     protected $fillable = [
+        'department',
         'department_id', // Foreign key to departments table
         'building',
         'room_no',
@@ -19,10 +20,10 @@ class Location extends Model
     /**
      * Relationship to the Department model
      */
-    public function department()
-    {
-        return $this->belongsTo(Department::class, 'department_id', 'department_id');
-    }
+    // public function department()
+    // {
+    //     return $this->belongsTo(Department::class, 'department_id', 'department_id');
+    // }
 
     /**
      * Self-referencing relationship for parent location

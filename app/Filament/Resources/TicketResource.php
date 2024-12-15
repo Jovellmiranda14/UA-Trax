@@ -182,142 +182,41 @@ class TicketResource extends Resource
 
                                     ->schema([
                                         Select::make('department')
-                                            ->label('Area')
-                                            ->hint('Help')
-                                            ->hintIcon('heroicon-s-question-mark-circle' , 
-                                            tooltip: 'Select the area where the issue occurred, not your own department. For example, if a CONP member reports an issue in the CITCLS lab, choose CITCLS. Select OFFICE for issues outside these areas.')
-                                            ->extraAttributes([
-                                                'style' => '
-                                                    position: relative; 
-                                                    font-size: 0.500rem; 
-                                                    cursor: pointer;
-                                                ',
-                                                'class' => 'hover-tooltip',
-                                            ])
-                                             ->options([
-                                                'CEA' => 'CEA',
-                                                'CONP' => 'CONP',
-                                                'CITCLS' => 'CITCLS',
-                                                'SAS (AB COMM)' => 'SAS (AB COMM)',
-                                                'SAS (PSYCH)' => 'SAS (PSYCH)',
-                                                'SAS (CRIM)' => 'SAS (CRIM)',
-                                                'OFFICE' => 'OFFICES',
-                                            ])
-                                            ->reactive()
-                                            ->required(),
-
-                                        Select::make('location')
-                                            ->searchable()
-                                            ->label('Location')
-                                            ->options(fn($get) => collect([
-                                                'SAS (AB COMM)' => [
-                                                    'AUDIO VISUAL CENTER', 'DEMO ROOM',
-                                                    'DIRECTOR’S BOOTH', 'G201 - SPEECH LAB',
-                                                    'G208', 'RADIO STUDIO',
-                                                    'TV STUDIO',
-                                                ],
-
-                                                'CEA' => [
-                                                    'ARCHITECTURE DESIGN STUDIO', 'C200 - PHYSICS LAB',
-                                                    'C201 - PHYSICS LAB',  'C202 - PHYSICS LAB',
-                                                    'C203A', 'C203B',
-                                                    'RY302', 'RY303',
-                                                    'RY304', 'RY305',
-                                                    'RY306', 'RY307',
-                                                    'RY308', 'RY309',
-                                                ],
-
-                                                'CITCLS' => [
-                                                    'C204 - ROBOTICS LAB',  'C301 - CISCO LAB',
-                                                    'C302 - SPEECH LAB',    'P307','P308',
-                                                   'P310', 'P311', 'P312',
-                                                    'P309 - COMPUTER LAB 4','P310 - COMPUTER LAB 3',
-                                                    'P311 - COMPUTER LAB 2','P312 - COMPUTER LAB 1',
-                                                    'P313',
-                                                ],
-
-                                                'CONP' => [
-                                                    'G103 - NURSING LAB', 'G105 - NURSING LAB',
-                                                    'G107 - NURSING LAB',
-                                                    'NURSING ARTS LAB',
-                                                    'NURSING CONFERENCE ROOM',
-                                                    'PHARMACY LECTURE ROOM',
-                                                    'PHARMACY STOCKROOM',
-                                                ],
-
-                                                'SAS (CRIM)' => [
-                                                    'CRIME LAB',
-                                                    'CRIMINOLOGY LECTURE ROOM',
-                                                    'FORENSIC PHOTOGRAPHY ROOM',
-                                                    'MOOT COURT',
-                                                ],
-                                                'OFFICE' => [
-                                                    'PROPERTY CUSTODIAN',
-                                                    'PHYSICAL PLANT & GENERAL SERVICES',
-                                                    'EAMO',
-                                                    'DENTAL/MEDICAL CLINIC',
-                                                    'REGINA OFFICE',
-                                                    'QUALITY MANAGEMENT OFFICE',
-                                                    'OFFICE OF THE PRESIDENT',
-                                                    'VPA',
-                                                    'HUMAN RESOURCES & DEVELOPMENT',
-                                                    'CITCLS OFFICE',
-                                                    'CITCLS DEAN OFFICE',
-                                                    'CEA OFFICE',
-                                                    'HGU OFFICE',
-                                                    'VPAA',
-                                                    'RSO OFFICE',
-                                                    'SAS OFFICE',
-                                                    'SED OFFICE',
-                                                    'SBPA OFFICE',
-                                                    'CONP OFFICE',
-                                                    'CHTM OFFICE',
-                                                    'OFFICE OF STUDENT AFFAIRS',
-                                                    'UACSC OFFICE',
-                                                    'PREFECT OF DISCIPLINE',
-                                                    'RESEARCH PLANNING OFFICE',
-                                                    'CEO',
-                                                    'GUIDANCE & ADMISSION',
-                                                    'CMO',
-                                                    'ITRS',
-                                                    'REGISTRAR’S OFFICE',
-                                                    'PHOTO LAB',
-                                                    'BUSINESS OFFICE',
-                                                    'FINANCE OFFICE',
-                                                    'RMS OFFICE',
-                                                    'VPF',
-                                                    'AMPHITHEATER',
-                                                    'COLLEGE AVR',
-                                                    'LIBRARY MAIN LOBBY',
-                                                    'NSTP',
-                                                    'COLLEGE LIBRARY',
-                                                    'OMISS',
-                                                    'SOCIAL HALL',
-                                                    'QMO',
-                                                    'RPO',
-                                                    'BOOKSTORE',
-                                                    'HOTEL OFFICE/CAFE MARIA',
-                                                    'SPORTS OFFICE',
-                                                ],
-
-
-                                                'SAS (PSYCH)' => [
-                                                    'C100 - PHARMACY LAB',
-                                                    'C101 - BIOLOGY LAB/STOCKROOM',
-                                                    'C102',
-                                                    'C103 - CHEMISTRY LAB',
-                                                    'C104 - CHEMISTRY LAB',
-                                                    'C105 - CHEMISTRY LAB',
-                                                    'C106',
-                                                    'C303',
-                                                    'C304',
-                                                    'C305',
-                                                    'C306',
-                                                    'C307 - PSYCHOLOGY LAB',
-                                                ],
-                                            ][$get('department')] ?? [])->mapWithKeys(fn($value) => [$value => $value]))
-                                            ->required()
-                                            ->reactive(),
+                                        ->label('Area')
+                                        ->hint('Help')
+                                        ->hintIcon('heroicon-s-question-mark-circle', tooltip: 'Select the area where the issue occurred, not your own department. For example, if a CONP member reports an issue in the CITCLS lab, choose CITCLS. Select OFFICE for issues outside these areas.')
+                                        ->extraAttributes([
+                                            'style' => '
+                                                position: relative; 
+                                                font-size: 0.500rem; 
+                                                cursor: pointer;
+                                            ',
+                                            'class' => 'hover-tooltip',
+                                        ])
+                                        ->options(fn($get) => \App\Models\Location::query()
+                                        ->when($get('department'), fn($query, $department) => 
+                                            $query->where('department', $department) // Filter by selected department
+                                        )
+                                        ->pluck('room_no') // Get room numbers
+                                        ->mapWithKeys(fn($roomNo) => [$roomNo => $roomNo]) // Format options
+                                        ->toArray() // Convert to array for Select component
+                                    )
+                                        ->reactive() // Ensures the location field updates on department change
+                                        ->required(),
+                                    
+                                    Select::make('location')
+                                        ->searchable()
+                                        ->label('Location')
+                                        ->options(fn($get) => \App\Models\Location::query()
+                                            ->when($get('department'), fn($query, $department) => 
+                                                $query->where('department', $department) // Filter by selected department
+                                            )
+                                            ->pluck('room_no') // Get room numbers
+                                            ->mapWithKeys(fn($roomNo) => [$roomNo => $roomNo]) // Format options
+                                            ->toArray() // Convert to array for Select component
+                                        )
+                                        ->required()
+                                        ->reactive()
                                     ]),
                             ])
 
