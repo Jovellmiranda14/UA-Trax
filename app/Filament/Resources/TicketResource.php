@@ -113,8 +113,10 @@ class TicketResource extends Resource
                                                     }
                                                 };
                                             })
-                                            ->hintIcon('heroicon-s-question-mark-circle' , 
-                                            tooltip: 'Do not change the sender name.')
+                                            ->hintIcon(
+                                                'heroicon-s-question-mark-circle',
+                                                tooltip: 'Do not change the sender name.'
+                                            )
                                             ->extraAttributes([
                                                 'style' => '
                                                     position: relative; 
@@ -164,7 +166,7 @@ class TicketResource extends Resource
                                             ->required()
                                             ->extraAttributes(['style' => 'max-height: 80px; overflow-y: auto;'])
                                             ->visible(fn($get) => in_array($get('concern_type'), ['Laboratory and Equipment', 'Facility'])),
-                                           
+
                                         FileUpload::make('attachment')
                                             ->label('Upload a file (optional)')
                                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/tiff', 'image/JPEG', 'image/JPG', 'image/PNG'])
@@ -182,35 +184,41 @@ class TicketResource extends Resource
 
                                     ->schema([
                                         Select::make('department')
-                                        ->label('Area')
-                                        ->hint('Help')
-                                        ->hintIcon('heroicon-s-question-mark-circle', tooltip: 'Select the area where the issue occurred, not your own department. For example, if a CONP member reports an issue in the CITCLS lab, choose CITCLS. Select OFFICE for issues outside these areas.')
-                                        ->extraAttributes([
-                                            'style' => '
+                                            ->label('Area')
+                                            ->hint('Help')
+                                            ->hintIcon('heroicon-s-question-mark-circle', tooltip: 'Select the area where the issue occurred, not your own department. For example, if a CONP member reports an issue in the CITCLS lab, choose CITCLS. Select OFFICE for issues outside these areas.')
+                                            ->extraAttributes([
+                                                'style' => '
                                                 position: relative; 
                                                 font-size: 0.500rem; 
                                                 cursor: pointer;
                                             ',
-                                            'class' => 'hover-tooltip',
-                                        ])
-                                        ->options(fn($get) => \App\Models\Department::where('code', '!=', 'PPGS')->pluck('name', 'code'))  // Exclude "PPGS"
-                                        ->reactive()  // Ensures the location field updates on department change
-                                        ->required(),
-                                    
-                                    
-                                    Select::make('location')
-                                        ->searchable()
-                                        ->label('Location')
-                                        ->options(fn($get) => \App\Models\Location::query()
-                                            ->when($get('department'), fn($query, $department) => 
-                                                $query->where('department', $department) // Filter by selected department
+                                                'class' => 'hover-tooltip',
+                                            ])
+                                            ->options(fn($get) => \App\Models\Department::where('code', '!=', 'PPGS')->pluck('name', 'code'))  // Exclude "PPGS"
+                                            ->reactive()  // Ensures the location field updates on department change
+                                            ->required(),
+
+                                        Select::make('location')
+                                            ->searchable()
+                                            ->label('Location')
+                                            ->options(
+                                                fn($get) => \App\Models\Location::query()
+                                                    ->when(
+                                                        $get('department'),
+                                                        fn($query, $department) => $query->where('department', $department) // Filter by selected department
+                                                    )
+                                                    ->pluck('location') // Get room numbers with their corresponding IDs
+                                                    ->mapWithKeys(fn($roomNo) => [$roomNo => $roomNo]) // Format options
+                                                    ->toArray() // Convert to array for Select component
                                             )
-                                            ->pluck('room_no') // Get room numbers
-                                            ->mapWithKeys(fn($roomNo) => [$roomNo => $roomNo]) // Format options
-                                            ->toArray() // Convert to array for Select component
-                                        )
-                                        ->required()
-                                        ->reactive()
+                                            ->required()
+                                            ->reactive()
+                                            ->afterStateUpdated(fn($state, $set) => $set(
+                                                'priority',
+                                                \App\Models\Location::where('location', $state)->value('priority') // Fetch associated priority
+                                            )),
+
                                     ]),
                             ])
 
@@ -225,7 +233,7 @@ class TicketResource extends Resource
     public static function table(Table $table): Table
     {
         $user = auth()->user();
-       
+
         return $table
             // Pagination 
             // ->paginated([10, 25, 50, 100, 'all']) 
@@ -243,101 +251,48 @@ class TicketResource extends Resource
                     ->label('Concern')
                     ->limit(25)
                     ->searchable(),
-                    
+
                 Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
+                    ->sortable()
                     ->getStateUsing(function ($record) {
-                        switch ($record->location) {
-                            case 'OFFICE OF THE PRESIDENT': case 'CMO':
-                            case 'EAMO':                    case ' QUALITY MANAGEMENT OFFICE':
-                            case 'REGINA OFFICE':
-                                return 'High';
-
-                            case 'NURSING ARTS LAB':        case 'SBPA OFFICE':
-                            case 'VPAA':                    case 'PREFECT OF DISCIPLINE':
-                            case 'GUIDANCE & ADMISSION':    case 'CITCLS OFFICE':
-                            case 'CITCLS DEAN OFFICE':      case 'CEA OFFICE':
-                            case 'SAS OFFICE':              case 'SED OFFICE':
-                            case 'CONP OFFICE':             case 'CHTM OFFICE':
-                            case 'HGU OFFICE':
-                            case 'ITRS':                    case 'REGISTRAR’S OFFICE':
-                            case 'RPO':                     case 'COLLEGE LIBRARY':
-                            case 'VPF':                     case 'BUSINESS OFFICE':
-                            case 'FINANCE OFFICE':          case 'RMS OFFICE':
-                            case 'PROPERTY CUSTODIAN':      case 'BOOKSTORE':
-                            case 'VPA':                     case 'HUMAN RESOURCES & DEVELOPMENT':
-                            case 'DENTAL/MEDICAL CLINIC':   case 'PHYSICAL PLANT & GENERAL SERVICES':
-                            case 'OMISS':                   case 'HOTEL OFFICE/CAFE MARIA':
-                            case 'SPORTS OFFICE':           case 'QMO':
-                            case 'OFFICE OF STUDENT AFFAIRS': case  'RESEARCH PLANNING OFFICE':
-                                case'CEO':
-                                case 'SOCIAL HALL':
-                                return 'Moderate';
-
-
-                            case 'C100 - PHARMACY LAB':     case 'C101 - BIOLOGY LAB/STOCKROOM':
-                            case 'C102':                    case 'C103 - CHEMISTRY LAB':
-                            case 'C104 - CHEMISTRY LAB':    case 'C105 - CHEMISTRY LAB':
-                            case 'C106':                    case 'C303':
-                            case 'C304':                    case 'C305':
-                            case 'C306':                    case 'C307 - PSYCHOLOGY LAB':
-
-                            // SAS (AB COMM)
-                            case 'G201 - SPEECH LAB':       case 'RADIO STUDIO':
-                            case 'DIRECTOR’S BOOTH':        case 'AUDIO VISUAL CENTER':
-                            case 'TV STUDIO':               case 'G208':
-                            case 'DEMO ROOM':
-
-                            // SAS (Crim)
-                            case 'MOOT COURT':              case 'CRIMINOLOGY LECTURE ROOM':
-                            case 'FORENSIC PHOTOGRAPHY ROOM':  case 'CRIME LAB':
-
-                            // Other previously defined low priority locations
-                            case 'C200 - PHYSICS LAB':      case 'C201 - PHYSICS LAB':
-                            case 'C202 - PHYSICS LAB':      case 'C203A':
-                            case 'C203B':                   case 'ARCHITECTURE DESIGN STUDIO':
-                            case 'RY302':                   case 'RY303':
-                            case 'RY304':                   case 'RY305':
-                            case 'RY306':                   case 'RY307':
-                            case 'RY308':
-                            case 'PHARMACY LECTURE ROOM':   case 'RY309':
-                            case 'PHARMACY STOCKROOM':      case 'G103 - NURSING LAB':
-                            case 'G105 - NURSING LAB':      case 'G107 - NURSING LAB':
-                            case 'NURSING CONFERENCE ROOM': case 'C204 - ROBOTICS LAB':
-                            case 'C301 - CISCO LAB':        case 'C302 - SPEECH LAB':
-                            case 'P307':                    case 'P308':
-                            case 'P309':                    case 'P309 - COMPUTER LAB 4':
-                            case 'P310':                    case 'P310 - COMPUTER LAB 3':
-                            case 'P311':                    case 'P311 - COMPUTER LAB 2':
-                            case 'P312 - COMPUTER LAB 1':   case 'P312':
-                            case 'P313':                    case 'RSO OFFICE':
-                            case 'UACSC OFFICE':            case 'PHOTO LAB':
-                            case 'AMPHITHEATER':            case 'COLLEGE AVR':
-                            case 'LIBRARY MAIN LOBBY':      case 'NSTP':
-                                return 'Low';
-
-                            // Add more cases for other locations as needed
+                        // Fetch the priority from the related Location model
+                        return \App\Models\Location::where('location', $record->location)->value('priority');
+                    })
+                    ->color(function ($state, $record) {
+                        switch ($state) {
+                            case 'Urgent':
+                                return Color::Red;
+                            case 'High':
+                                return Color::Orange;
+                            case 'Moderate':
+                                return Color::Yellow;
+                            case 'Low':
+                                return Color::Blue;
+                            case 'Escalated':
+                                return Color::Purple;
                             default:
-                                return $record->priority;
+                                return null; // Default if no matching priority
                         }
                     })
-                    ->color(function ($state) {
-                        return match ($state) {
-                            'Urgent' => Color::Red,
-                            'High' => Color::Orange,
-                            'Moderate' => Color::Yellow,
-                            'Low' => Color::Blue,
-                            'Escalated' => Color::Purple,
-                            default => null,
-                        };
-                    })
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('department')
+
+
+
+
+
+
+                Tables\Columns\TextColumn::make('department')
                     ->label('Area')
                     ->searchable(),
+
+
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
+                    ->searchable()
+                    ->sortable()
                     ->searchable(),
+
 
                 Tables\Columns\ImageColumn::make('attachment')
                     ->label('Image')
@@ -356,8 +311,6 @@ class TicketResource extends Resource
                     ->formatStateUsing(fn() => Date::now()->format('Y-m-d H:i:s')) // Format date and time
                     ->sortable()
                     ->date(),
-
-
             ])
             ->defaultSort('id', 'desc')
             ->filters([

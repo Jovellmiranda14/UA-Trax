@@ -9,7 +9,9 @@ use App\Models\Location;
 use Filament\Forms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\Card;
+use Filament\Support\Colors\Color;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -31,7 +33,7 @@ class LocationResource extends Resource
                 Card::make('Location info') // Section for the location form
                     ->description('Register a new location to the system')
                     ->schema([
-                        Grid::make(3) // Three columns layout
+                        Grid::make(4) // Three columns layout
                             ->schema([
                                 Select::make('department')
                                     ->label('Department')
@@ -44,10 +46,16 @@ class LocationResource extends Resource
                                     ->required()
                                     ->placeholder('Enter building'),
 
-                                TextInput::make('room_no')
+                                TextInput::make('location')
                                     ->label('Room no.')
                                     ->required()
                                     ->placeholder('Enter room number'),
+                                Select::make('priority')
+                                    ->label('Priority')
+                                    ->required()
+                                    ->options(Location::Priority)
+                                    ->placeholder('Select priority'),
+
                             ]),
                     ]),
             ]);
@@ -71,13 +79,35 @@ class LocationResource extends Resource
                     ->searchable(),
 
                 // Column for Room Number
-                TextColumn::make('room_no')
+                TextColumn::make('location')
                     ->label('Room no.')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('priority')
+                    ->label('Priority')
+                    ->sortable()
+                    ->color(function ($state) {
+                        return match ($state) {
+                            'Urgent' => Color::Red,
+                            'High' => Color::Orange,
+                            'Moderate' => Color::Yellow,
+                            'Low' => Color::Blue,
+                            'Escalated' => Color::Purple,
+                            default => null,
+                        };
+                    })
+                    ->searchable()
             ])
             ->filters([
-                // You can add filters if needed (e.g., by department)
+                SelectFilter::make('department')
+                    ->label('Department')
+                    ->options(Department::Dept),
+            ])
+            ->actions([
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ]);
 
     }

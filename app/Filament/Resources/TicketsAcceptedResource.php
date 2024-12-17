@@ -151,141 +151,28 @@ class TicketsAcceptedResource extends Resource
                             default => null,
                         };
                     }),
-                Tables\Columns\TextColumn::make('priority')
+                    Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
+                    ->sortable()
                     ->getStateUsing(function ($record) {
-                        switch ($record->location) {
-                            case 'OFFICE OF THE PRESIDENT':
-                            case 'CMO':
-                            case 'EAMO':
-                            case ' QUALITY MANAGEMENT OFFICE':
-                            case 'REGINA OFFICE':
-                                return 'High';
-
-                            case 'NURSING ARTS LAB':
-                            case 'SBPA OFFICE':
-                            case 'VPAA':
-                            case 'PREFECT OF DISCIPLINE':
-                            case 'GUIDANCE & ADMISSION':
-                            case 'CITCLS OFFICE':
-                            case 'CITCLS DEAN OFFICE':
-                            case 'CEA OFFICE':
-                            case 'SAS OFFICE':
-                            case 'SED OFFICE':
-                            case 'CONP OFFICE':
-                            case 'CHTM OFFICE':
-                            case 'ITRS':
-                            case 'REGISTRAR’S OFFICE':
-                            case 'RPO':
-                            case 'COLLEGE LIBRARY':
-                            case 'VPF':
-                            case 'BUSINESS OFFICE':
-                            case 'FINANCE OFFICE':
-                            case 'RMS OFFICE':
-                            case 'PROPERTY CUSTODIAN':
-                            case 'BOOKSTORE':
-                            case 'VPA':
-                            case 'HUMAN RESOURCES & DEVELOPMENT':
-                            case 'DENTAL/MEDICAL CLINIC':
-                            case 'PHYSICAL PLANT & GENERAL SERVICES':
-                            case 'OMISS':
-                            case 'HOTEL OFFICE/CAFE MARIA':
-                            case 'SPORTS OFFICE':
-                            case 'QMO':
-                            case 'HGU OFFICE':
-                            case 'OFFICE OF STUDENT AFFAIRS':
-                            case  'RESEARCH PLANNING OFFICE':
-                            case 'CEO':
-                            case 'SOCIAL HALL':
-                                return 'Moderate';
-
-
-                            case 'C100 - PHARMACY LAB':
-                            case 'C101 - BIOLOGY LAB/STOCKROOM':
-                            case 'C102':
-                            case 'C103 - CHEMISTRY LAB':
-                            case 'C104 - CHEMISTRY LAB':
-                            case 'C105 - CHEMISTRY LAB':
-                            case 'C106':
-                            case 'C303':
-                            case 'C304':
-                            case 'C305':
-                            case 'C306':
-                            case 'C307 - PSYCHOLOGY LAB':
-
-                            // SAS (AB COMM)
-                            case 'G201 - SPEECH LAB':
-                            case 'RADIO STUDIO':
-                            case 'DIRECTOR’S BOOTH':
-                            case 'AUDIO VISUAL CENTER':
-                            case 'TV STUDIO':
-                            case 'G208':
-                            case 'DEMO ROOM':
-
-                            // SAS (Crim)
-                            case 'MOOT COURT':
-                            case 'CRIMINOLOGY LECTURE ROOM':
-                            case 'FORENSIC PHOTOGRAPHY ROOM':
-                            case 'CRIME LAB':
-
-                            // Other previously defined low priority locations
-                            case 'C200 - PHYSICS LAB':
-                            case 'C201 - PHYSICS LAB':
-                            case 'C202 - PHYSICS LAB':
-                            case 'C203A':
-                            case 'C203B':
-                            case 'ARCHITECTURE DESIGN STUDIO':
-                            case 'RY302':
-                            case 'RY303':
-                            case 'RY304':
-                            case 'RY305':
-                            case 'RY306':
-                            case 'RY307':
-                            case 'RY308':
-                            case 'RY309':
-                            case 'PHARMACY LECTURE ROOM':
-                            case 'PHARMACY STOCKROOM':
-                            case 'G103 - NURSING LAB':
-                            case 'G105 - NURSING LAB':
-                            case 'G107 - NURSING LAB':
-                            case 'NURSING CONFERENCE ROOM':
-                            case 'C204 - ROBOTICS LAB':
-                            case 'C301 - CISCO LAB':
-                            case 'C302 - SPEECH LAB':
-                            case 'P307':
-                            case 'P308':
-                            case 'P309':
-                            case 'P309 - COMPUTER LAB 4':
-                            case 'P310':
-                            case 'P310 - COMPUTER LAB 3':
-                            case 'P311':
-                            case 'P311 - COMPUTER LAB 2':
-                            case 'P312 - COMPUTER LAB 1':
-                            case 'P312':
-                            case 'P313':
-                            case 'RSO OFFICE':
-                            case 'UACSC OFFICE':
-                            case 'PHOTO LAB':
-                            case 'AMPHITHEATER':
-                            case 'COLLEGE AVR':
-                            case 'LIBRARY MAIN LOBBY':
-                            case 'NSTP':
-                                return 'Low';
-
-                            // Add more cases for other locations as needed
-                            default:
-                                return $record->priority;
-                        }
+                        // Fetch the priority from the related Location model
+                        return \App\Models\Location::where('location', $record->location)->value('priority');
                     })
-                    ->color(function ($state) {
-                        return match ($state) {
-                            'Urgent' => Color::Red,
-                            'High' => Color::Orange,
-                            'Moderate' => Color::Yellow,
-                            'Low' => Color::Blue,
-                            'Escalated' => Color::Purple,
-                            default => null,
-                        };
+                    ->color(function ($state, $record) {
+                        switch ($state) {
+                            case 'Urgent':
+                                return Color::Red;
+                            case 'High':
+                                return Color::Orange;
+                            case 'Moderate':
+                                return Color::Yellow;
+                            case 'Low':
+                                return Color::Blue;
+                            case 'Escalated':
+                                return Color::Purple;
+                            default:
+                                return null; // Default if no matching priority
+                        }
                     })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('department')
@@ -643,131 +530,8 @@ class TicketsAcceptedResource extends Resource
                         ->icon('heroicon-o-check')
                         ->action(function ($record) {
                             // Determine the priority based on the location
-                            $priority = 'Moderate'; // Default value
+                            $priority = $record->priority; // Default value
                 
-                            switch ($record->location) {
-                                case 'OFFICE OF THE PRESIDENT':
-                                case 'CMO':
-                                case 'EAMO':
-                                case 'QUALITY MANAGEMENT OFFICE':
-                                case 'REGINA OFFICE':
-                                    $priority = 'High';
-                                    break;
-
-                                case 'NURSING ARTS LAB':
-                                case 'SBPA OFFICE':
-                                case 'VPAA':
-                                case 'PREFECT OF DISCIPLINE':
-                                case 'GUIDANCE & ADMISSION':
-                                case 'CITCLS OFFICE':
-                                case 'CITCLS DEAN OFFICE':
-                                case 'CEA OFFICE':
-                                case 'SAS OFFICE':
-                                case 'SED OFFICE':
-                                case 'CONP OFFICE':
-                                case 'CHTM OFFICE':
-                                case 'ITRS':
-                                case 'REGISTRAR’S OFFICE':
-                                case 'RPO':
-                                case 'COLLEGE LIBRARY':
-                                case 'VPF':
-                                case 'BUSINESS OFFICE':
-                                case 'FINANCE OFFICE':
-                                case 'RMS OFFICE':
-                                case 'PROPERTY CUSTODIAN':
-                                case 'BOOKSTORE':
-                                case 'VPA':
-                                case 'HUMAN RESOURCES & DEVELOPMENT':
-                                case 'DENTAL/MEDICAL CLINIC':
-                                case 'PHYSICAL PLANT & GENERAL SERVICES':
-                                case 'OMISS':
-                                case 'HOTEL OFFICE/CAFE MARIA':
-                                case 'SPORTS OFFICE':
-                                case 'QMO':
-                                case 'HGU OFFICE':
-                                case 'OFFICE OF STUDENT AFFAIRS':
-                                case  'RESEARCH PLANNING OFFICE':
-                                    case 'CEO':
-                                        case 'SOCIAL HALL':
-                                    $priority = 'Moderate';
-                                    break;
-
-                                // Low priority locations
-                                case 'C100 - PHARMACY LAB':
-                                case 'C101 - BIOLOGY LAB/STOCKROOM':
-                                case 'C102':
-                                case 'C103 - CHEMISTRY LAB':
-                                case 'C104 - CHEMISTRY LAB':
-                                case 'C105 - CHEMISTRY LAB':
-                                case 'C106':
-                                case 'C303':
-                                case 'C304':
-                                case 'C305':
-                                case 'C306':
-                                case 'C307 - PSYCHOLOGY LAB':
-                                // SAS (AB COMM)
-                                case 'G201 - SPEECH LAB':
-                                case 'RADIO STUDIO':
-                                case 'DIRECTOR’S BOOTH':
-                                case 'AUDIO VISUAL CENTER':
-                                case 'TV STUDIO':
-                                case 'G208':
-                                case 'DEMO ROOM':
-                                // SAS (Crim)
-                                case 'MOOT COURT':
-                                case 'CRIMINOLOGY LECTURE ROOM':
-                                case 'FORENSIC PHOTOGRAPHY ROOM':
-                                case 'CRIME LAB':
-                                // Other previously defined low priority locations
-                                case 'C200 - PHYSICS LAB':
-                                case 'C201 - PHYSICS LAB':
-                                case 'C202 - PHYSICS LAB':
-                                case 'C203A':
-                                case 'C203B':
-                                case 'ARCHITECTURE DESIGN STUDIO':
-                                case 'RY302':
-                                case 'RY303':
-                                case 'RY304':
-                                case 'RY305':
-                                case 'RY306':
-                                case 'RY307':
-                                case 'RY308':
-                                case 'RY309':
-                                case 'PHARMACY LECTURE ROOM':
-                                case 'PHARMACY STOCKROOM':
-                                case 'G103 - NURSING LAB':
-                                case 'G105 - NURSING LAB':
-                                case 'G107 - NURSING LAB':
-                                case 'NURSING CONFERENCE ROOM':
-                                case 'C204 - ROBOTICS LAB':
-                                case 'C301 - CISCO LAB':
-                                case 'C302 - SPEECH LAB':
-                                case 'P307':
-                                case 'P308':
-                                case 'P309':
-                                case 'P309 - COMPUTER LAB 4':
-                                case 'P310':
-                                case 'P310 - COMPUTER LAB 3':
-                                case 'P311':
-                                case 'P311 - COMPUTER LAB 2':
-                                case 'P312 - COMPUTER LAB 1':
-                                case 'P312':
-                                case 'P313':
-                                case 'RSO OFFICE':
-                                case 'UACSC OFFICE':
-                                case 'PHOTO LAB':
-                                case 'AMPHITHEATER':
-                                case 'COLLEGE AVR':
-                                case 'LIBRARY MAIN LOBBY':
-                                case 'NSTP':
-                                    $priority = 'Low';
-                                    break;
-
-                                default:
-                                    $priority = 'Moderate'; // Handle unmatched cases
-                                    break;
-                            }
-
                             // Create a new entry in TicketsResolved
                             TicketResolved::create([
                                 'id' => $record->id,
