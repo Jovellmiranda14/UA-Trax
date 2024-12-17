@@ -107,5 +107,9 @@ class Ticket extends Model
     {
         return $this->hasOne(TicketQueue::class);
     }
+    public function location()
+    {
+        return $this->belongsTo(Location::class, 'priority', 'priority');
 
+    }
 }

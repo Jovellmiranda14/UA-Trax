@@ -12,8 +12,9 @@ return new class extends Migration {
         Schema::create('locations', function (Blueprint $table) {
             $table->id(); // Primary key for locations table
             $table->string('department');
-            $table->string('building')->nullable(); // Building field
-            $table->string('room_no'); // Room number field
+            $table->string('building')->nullable();
+            $table->string('location')->nullable();
+            $table->string('priority')->nullable(); // Room number field
             $table->timestamps(); // Created at and Updated at columns
         });
 
