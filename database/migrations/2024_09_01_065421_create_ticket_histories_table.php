@@ -12,6 +12,8 @@ return new class extends Migration {
     {
         Schema::create('ticket_histories', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->enum('concern_type', ['Laboratory and Equipment', 'Facility'])->nullable(false);
             $table->string('name')->nullable();
             $table->text('description')->nullable();

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique(); // Department name
             $table->string('code')->unique(); // Short code for the department
+            $table->string('building')->nullable(); 
             $table->timestamps(); // Created at and Updated at columns
         });
         

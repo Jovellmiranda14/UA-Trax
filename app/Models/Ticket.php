@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Observers\TicketObserver;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 // #[ObservedBy([TicketObserver::class])]
 class Ticket extends Model
 {
@@ -13,6 +14,7 @@ class Ticket extends Model
 
     // Define fillable attributes for mass assignment
     protected $fillable = [
+        'user_id',
         'type_of_issue',
         'concern_type',
         'name',
@@ -36,6 +38,7 @@ class Ticket extends Model
         });
 
         static::creating(function ($ticket) {
+            $ticket->user_id = Auth::id();
 
             $year = date('Y');
             $dateCreated = date('md');

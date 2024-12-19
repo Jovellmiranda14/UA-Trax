@@ -35,6 +35,8 @@ return new class extends Migration
             $table->string('attachment')->nullable();  
             $table->string('assigned')->nullable(); // Optional field
             $table->timestamps();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
