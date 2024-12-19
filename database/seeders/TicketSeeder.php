@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Ticket;
+use App\Models\Department;
 use App\Models\User;
 use Faker\Factory as Faker;
 
@@ -31,7 +32,7 @@ class TicketSeeder extends Seeder
         $priorities = ['High', 'Moderate', 'Low'];
         $concernTypes = ['Maintenance', 'IT Support', 'HR Issue', 'General Inquiry', 'Equipment Issue', 'Service Request', 'Security', 'Other'];
         $subjects = ['Broken equipment', 'Internet issue', 'Office maintenance', 'HR inquiry', 'System failure', 'Service request', 'Urgent support needed'];
-        $departments = USER::Dept;
+        $departments = Department::Dept;
 
         // Seed 10 tickets
         for ($i = 0; $i < 10; $i++) {

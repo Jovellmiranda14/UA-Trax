@@ -26,7 +26,7 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
-
+use Illuminate\Support\Facades\Auth;
 class ConcernSpectrum
 {
     const Gray = '#808080';
@@ -73,7 +73,7 @@ class TicketResolvedResource extends Resource
         // Check for Equipment Super Admin role
         if ($user->isEquipmentSuperAdmin()) {
             $query->whereIn('concern_type', ['Laboratory and Equipment'])
-                ->where('assigned', $user->name)
+                ->where('assigned_id', $user->assigned_id)
                 ->orderBy('concern_type', 'asc');
         }
 
@@ -82,14 +82,14 @@ class TicketResolvedResource extends Resource
         if ($user->isEquipmentAdminOmiss() || $user->isEquipmentAdminLabCustodian()) {
             // Adjust the query for 'Laboratory and Equipment' concerns and filter by user's department
             $query->whereIn('concern_type', ['Laboratory and Equipment'])
-                ->where('assigned', $user->name)
+                ->where('assigned_id', $user->assigned_id)
                 ->orderBy('concern_type', 'asc');
         }
 
 
         if ($user->isFacilityAdmin() || $user->isFacilitySuperAdmin()) {
             $query->where('concern_type', 'Facility')
-                ->where('assigned', $user->name)
+                ->where('assigned_id', $user->assigned_id)
                 ->orderBy('concern_type', 'asc');
         }
 

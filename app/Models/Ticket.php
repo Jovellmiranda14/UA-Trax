@@ -39,6 +39,7 @@ class Ticket extends Model
 
         static::creating(function ($ticket) {
             $ticket->user_id = Auth::id();
+            $ticket->name = Auth::user()->name;
 
             $year = date('Y');
             $dateCreated = date('md');

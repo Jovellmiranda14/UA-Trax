@@ -38,6 +38,8 @@ return new class extends Migration
             $table->string('assigned')->nullable(); 
             $table->enum('position', ['RSO', 'Faculty','Secretary', 'N/A']);
             $table->timestamp('accepted_at'); 
+            $table->unsignedBigInteger('assigned_id')->nullable();
+            $table->foreign('assigned_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();       
         });
     }

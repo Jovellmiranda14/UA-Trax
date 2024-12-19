@@ -11,7 +11,7 @@ use App\Models\TicketsAccepted;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\ButtonAction;
-
+use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
@@ -117,7 +117,7 @@ class TicketHistoryResource extends Resource
         }
         // For regular users, filter by the user's own tickets
         else {
-            $query->where('name', $user->name);  // Regular users query
+            $query->where('user_id', $user->id);   // Regular users query
         }
 
 

@@ -105,6 +105,7 @@ class TicketResource extends Resource
                                         TextInput::make('name')
                                             ->label('Sender')
                                             ->required()
+                                            ->disabled()
                                             ->rule(function () {
                                                 return function ($attribute, $value, $fail) {
                                                     if ($value !== auth()->user()?->name) {
@@ -237,7 +238,7 @@ class TicketResource extends Resource
         return $table
             // Pagination 
             // ->paginated([10, 25, 50, 100, 'all']) 
-            ->query(Ticket::query()->where('name', $user->name))
+            ->query(Ticket::query()->where('user_id', auth()->id()))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('Ticket ID')
@@ -277,22 +278,15 @@ class TicketResource extends Resource
                     })
                     ->searchable(),
 
-
-
-
-
-
                 Tables\Columns\TextColumn::make('department')
                     ->label('Area')
                     ->searchable(),
-
 
                 Tables\Columns\TextColumn::make('location')
                     ->label('Location')
                     ->searchable()
                     ->sortable()
                     ->searchable(),
-
 
                 Tables\Columns\ImageColumn::make('attachment')
                     ->label('Image')
@@ -304,7 +298,6 @@ class TicketResource extends Resource
                         return $record->attachment ? ['class' => 'clickable-image'] : [];
                     })
                     ->openUrlInNewTab(),
-
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Date Created')

@@ -7,6 +7,7 @@ use App\Models\Ticket;
 use App\Models\TicketQueue;
 use App\Models\TicketHistory;
 use App\Models\TicketsAccepted;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Notifications\TicketCreated;
 use Filament\Notifications\Notification;
@@ -38,7 +39,7 @@ class TicketObserver
         {
             // Fetch the related location data from the Location model
             $location = \App\Models\Location::where('location', $ticket->location)->first();
-        
+
             // Return only the priority value from the Location model or null if not found
             return $location ? $location->priority : null;
         }
@@ -102,6 +103,7 @@ class TicketObserver
         TicketHistory::updateOrCreate(
             ['id' => $ticket->id],
             [
+                'user_id' => Auth::id(),
                 'name' => $ticket->name,
                 'subject' => $ticket->subject,
                 'description' => $ticket->description,
@@ -120,6 +122,7 @@ class TicketObserver
 
         TicketQueue::create([
             'id' => $ticket->id,
+            'user_id' => Auth::id(),
             'name' => auth()->user()->name,
             'description' => $ticket->description,
             'type_of_issue' => $ticket->type_of_issue,

@@ -38,6 +38,8 @@ return new class extends Migration {
             $table->enum('dept_role', ['SAS (PSYCH)', 'SAS (CRIM)', 'SAS (AB COMM)', 'SAS', 'CEA', 'CONP', 'CITCLS', 'OFFICE', 'PPGS']);
             $table->enum('position', ['RSO', 'Faculty', 'Secretary', 'PPGS']);
             $table->string('assigned')->nullable();
+            $table->unsignedBigInteger('assigned_id')->nullable();
+            $table->foreign('assigned_id')->references('id')->on('users')->onDelete('cascade');
             $table->binary('attachment')->nullable();
         });
     }

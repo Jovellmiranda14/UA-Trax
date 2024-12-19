@@ -37,7 +37,7 @@ use Filament\Notifications\Events\DatabaseNotificationsSent;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
-
+use Illuminate\Support\Facades\Auth;
 
 class IssuePalette
 {
@@ -102,10 +102,10 @@ class TicketsAcceptedResource extends Resource
         // Regular users see only their assigned tickets
         if ($user->role === 'user') {
 
-             $query = TicketsAccepted::query()->where('name', $user->name);
+             $query = TicketsAccepted::query()->where('user_id',  auth()->id());
         } else {
             // Admin users can see all tickets
-            $query = TicketsAccepted::query()->where('assigned', $user->name);
+            $query = TicketsAccepted::query()->where('assigned_id', auth()->id());
         }
 
         return $table

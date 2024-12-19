@@ -38,6 +38,7 @@ use Filament\Forms\Components\Html;
 use Filament\Forms\Components\View;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 class UTicketColors
 {
     const Gray = '#808080';
@@ -197,6 +198,7 @@ class TicketQueueResource extends Resource
                             // Move the ticket to the "Tickets Accepted" list with additional modifications
                             TicketsAccepted::create([
                                 'id' => $record->id, // Keep the ticket ID
+                                'user_id' => $record->user_id, // Assuming $record contains the user object or the relationship
                                 'concern_type' => $record->concern_type,
                                 'type_of_issue' => $record->type_of_issue,
                                 'description' => $record->description,
@@ -210,12 +212,14 @@ class TicketQueueResource extends Resource
                                 'accepted_at' => now(),
                                 'attachment' => $record->attachment,
                                 'created_at' => $record->created_at,
+                                'assigned_id'=> Auth::id(),
                                 'assigned' => auth()->user()->name,
                             ]);
                             TicketHistory::where('id', $record->id)->update([
 
                                 'priority' => $record->priority,
                                 'status' => 'In progress',
+                                'assigned_id'=> Auth::id(),
                                 'assigned' => auth()->user()->name,
                                 'accepted_at' => now(),
                             ]);

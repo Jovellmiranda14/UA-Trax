@@ -37,6 +37,8 @@ return new class extends Migration
             $table->string('assigned')->nullable();
             $table->enum('dept_role', ['SAS (PSYCH)', 'SAS (CRIM)', 'SAS (AB COMM)', 'CEA', 'CONP', 'CITCLS', 'OFFICE', 'PPGS']);
             $table->timestamps();
+            $table->unsignedBigInteger('assigned_id')->nullable();
+            $table->foreign('assigned_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamp('resolved_at')->nullable();
             $table->timestamp('accepted_at')->nullable();
         });
