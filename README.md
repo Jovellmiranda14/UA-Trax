@@ -1,4 +1,12 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# UA-Trax Project - Capstone Project of the Good Boys
+**Managed by Jovell, Andrew, Uzrhein, and Aldwin**  
+Final Defense: 📅 *11/13/24*  
+Development started: August 08, 2024  
+Development ended: November 08, 2024
+
+<p align="center">
+  <img src="public/images/UATRAX-logo-wordmark-light-transparents.png" width="400" alt="UA-Trax Logo">
+</p>
 
 <p align="center">
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
@@ -28,17 +36,6 @@ Laravel has the most extensive and thorough [documentation](https://laravel.com/
 You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
 If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Instructions:
-- git clone https://github.com/Jovellmiranda/UA-Trax.git
-- cd UA-Trax
-- composer update
-- cp .env.example .env
-- php artisan key:generate
-- php artisan migrate
-- php artisan db:seed --class=UserSeeder
-- php artisan serve
-
 
 ## Laravel Sponsors
 
