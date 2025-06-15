@@ -39,6 +39,7 @@ If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Lar
 - php artisan db:seed --class=UserSeeder
 - php artisan db:seed --class=TicketSeeder
 - php artisan serve
+- php artisan queue:work
 
 
 ## Laravel Sponsors
