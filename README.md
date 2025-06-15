@@ -1,15 +1,11 @@
-<p align="center">
-  <a href="https://laravel.com" target="_blank">
-    <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
-  </a>
-</p>
+# UA-Trax Project - Capstone Project of the Good Boys
+**Managed by Jovell, Andrew, Uzrhein, and Aldwin**  
+Final Defense: 📅 *11/13/24*  
+Development started: August 08, 2024  
+Development ended: November 08, 2024
 
 <p align="center">
-  <strong>UA-Trax</strong> - A Web-Based Equipment and Facility Tracking System for University of the Assumption
-</p>
-
-<p align="center">
-  Built with ❤️ using Laravel, Livewire, Filament, and modern queue/job architecture.
+  <img src="public/images/UATRAX-logo-wordmark-light-transparents.png" width="400" alt="UA-Trax Logo">
 </p>
 
 ---
