@@ -3,13 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TicketsAcceptedResource\Pages;
-use App\Filament\Resources\TicketsAcceptedResource\RelationManagers;
 use App\Models\TicketsAccepted;
 use App\Models\TicketResolved;
-use App\Models\Ticket;
 use App\Models\TicketHistory;
 use App\Models\User;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Notifications\Actions\Action as NotificationAction;
@@ -37,7 +34,6 @@ use Filament\Notifications\Events\DatabaseNotificationsSent;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
-use Illuminate\Support\Facades\Auth;
 
 class IssuePalette
 {
@@ -60,10 +56,10 @@ class TicketsAcceptedResource extends Resource
         if (
             auth()->check() && (
                 auth()->user()->role === 'equipmentsuperadmin' ||
-                auth()->user()->role === 'facilitysuperadmin'  ||
+                auth()->user()->role === 'facilitysuperadmin' ||
                 auth()->user()->role === 'equipment_admin_labcustodian' ||
                 auth()->user()->role === 'equipment_admin_omiss' ||
-                auth()->user()->role === 'facility_admin' 
+                auth()->user()->role === 'facility_admin'
             )
         ) {
             return 'Tickets'; // Only visible to users with specific admin roles
@@ -102,14 +98,14 @@ class TicketsAcceptedResource extends Resource
         // Regular users see only their assigned tickets
         if ($user->role === 'user') {
 
-             $query = TicketsAccepted::query()->where('user_id',  auth()->id());
+            $query = TicketsAccepted::query()->where('user_id', auth()->id());
         } else {
             // Admin users can see all tickets
             $query = TicketsAccepted::query()->where('assigned_id', auth()->id());
         }
 
         return $table
-        ->query($query)
+            ->query($query)
             // Pagination
             ->columns([
                 Tables\Columns\TextColumn::make('id')
@@ -151,7 +147,7 @@ class TicketsAcceptedResource extends Resource
                             default => null,
                         };
                     }),
-                    Tables\Columns\TextColumn::make('priority')
+                Tables\Columns\TextColumn::make('priority')
                     ->label('Priority')
                     ->sortable()
                     ->getStateUsing(function ($record) {
@@ -319,12 +315,12 @@ class TicketsAcceptedResource extends Resource
                                                         ->label('Location')
                                                         ->disabled()
                                                         ->required(),
-                                                        DatePicker::make('created_at')
+                                                    DatePicker::make('created_at')
                                                         ->label('Date Created')
-                                                        
+
                                                         ->default(fn($record) => $record->created_at->format('M d, Y'))
                                                         ->disabled()
-                                                        ->required(),   
+                                                        ->required(),
                                                 ]),
                                         ]),
                                 ]),
@@ -349,7 +345,7 @@ class TicketsAcceptedResource extends Resource
                                     'comment' => $comment->comment,
                                     'commented_at' => $comment->commented_at,
                                 ];
-                            })->toArray();  
+                            })->toArray();
                             return [
                                 Grid::make(4)
                                     ->schema([
@@ -415,14 +411,14 @@ class TicketsAcceptedResource extends Resource
                                     })
                                     ->disabled(),
 
-                                    Card::make()
+                                Card::make()
                                     ->visible(empty($comments))
                                     ->extraAttributes(['class' => 'd-flex justify-content-center align-items-center', 'style' => 'height: 100px;'])
                                     ->schema([
                                         Placeholder::make('')
-                                        ->content('No available comment')
-                                        ->extraAttributes(['style' => 'text-align: center; color: #808080; font-weight: bold; font-size: 15px;']),
-                                    ]), 
+                                            ->content('No available comment')
+                                            ->extraAttributes(['style' => 'text-align: center; color: #808080; font-weight: bold; font-size: 15px;']),
+                                    ]),
                             ];
                         }),
 
@@ -495,11 +491,11 @@ class TicketsAcceptedResource extends Resource
                             if ($assignedAdmin) { // Check if the assigned admin exists
                                 $RegularUser->notify(new NewCommentNotification($comment));
                                 Notification::make()
-                                ->title('Admin commented on your ticket (#' . $record->id . ')')
-                                ->body('Comment: "' . Str::limit($comment->comment, 10) . '"')
-                                ->actions([
+                                    ->title('Admin commented on your ticket (#' . $record->id . ')')
+                                    ->body('Comment: "' . Str::limit($comment->comment, 10) . '"')
+                                    ->actions([
                                         NotificationAction::make('view')
-                                    ->label('View Ticket')
+                                            ->label('View Ticket')
                                     ])
                                     ->sendToDatabase($RegularUser);
                                 event(new DatabaseNotificationsSent($RegularUser));
@@ -511,11 +507,11 @@ class TicketsAcceptedResource extends Resource
                                 // Notify the regular user about the new comment
                                 // $assignedAdmin->notify(new NewCommentNotification($comment));
                                 Notification::make()
-                                    ->title( $comment->sender. ' commented on your ticket (#' .  $record->id. ')')
+                                    ->title($comment->sender . ' commented on your ticket (#' . $record->id . ')')
                                     ->body('Comment: "' . Str::limit($comment->comment, 10) . '"')
                                     ->actions([
                                         NotificationAction::make('view')
-                                        ->label('View Ticket')
+                                            ->label('View Ticket')
                                     ])
                                     ->sendToDatabase($assignedAdmin);
                                 event(new DatabaseNotificationsSent($assignedAdmin));
@@ -580,13 +576,13 @@ class TicketsAcceptedResource extends Resource
                             if ($user) {
                                 $user->notify(new TicketResolvedNotification($record));
                                 Notification::make()
-                                ->title('Admin resolved the Ticket: (#' . $record->id . ')')
-                                ->body('Concern: "' . Str::limit($record->subject, 10) . '"')
-                                 ->actions([
+                                    ->title('Admin resolved the Ticket: (#' . $record->id . ')')
+                                    ->body('Concern: "' . Str::limit($record->subject, 10) . '"')
+                                    ->actions([
                                         NotificationAction::make('view')
-                                        ->label('View Ticket')
+                                            ->label('View Ticket')
                                     ])
-                                ->sendToDatabase($user);
+                                    ->sendToDatabase($user);
                                 event(new DatabaseNotificationsSent($user));
                             }
 

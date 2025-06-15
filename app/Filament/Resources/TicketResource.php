@@ -4,34 +4,20 @@ namespace App\Filament\Resources;
 use Illuminate\Support\Facades\Date;
 use App\Filament\Resources\TicketResource\Pages;
 use App\Models\Ticket;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\FileUpload;
 use Filament\Support\Colors\Color;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Notifications\TicketCreated;
-use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\Filter;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Card;
-
-use Filament\Forms\Components\Button;
-use Filament\Forms\Components\Modal;
-
-use Filament\Support\Facades\FilamentColor;
 
 class TicketColors
 {
@@ -42,17 +28,9 @@ class TicketResource extends Resource
 {
     protected static ?string $navigationLabel = 'My tickets';
     protected static ?string $model = Ticket::class;
-    // protected static ?string $navigationIcon = 'heroicon-s-ticket';
-    // protected static ?string $label = 'Open tickets';
-    //protected static ?string $navigationGroup = 'Tickets';
     protected static ?int $navigationSort = 1;
 
     protected static ?string $pluralModelLabel = 'Open tickets';
-    // Disable Function
-    // public static function canCreate(): Bool
-    // {
-    //     return false;
-    // }
     public static function form(Form $form): Form
     {
         return $form

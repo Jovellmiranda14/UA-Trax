@@ -3,19 +3,14 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TicketResolvedResource\Pages;
-use App\Filament\Resources\TicketResolvedResource\RelationManagers;
 use App\Models\TicketResolved;
-use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Forms\Components\Card;
-use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
@@ -23,10 +18,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Support\Colors\Color;
-use Filament\Support\Facades\FilamentColor;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
-use Illuminate\Support\Facades\Auth;
 class ConcernSpectrum
 {
     const Gray = '#808080';
