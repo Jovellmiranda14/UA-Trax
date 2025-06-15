@@ -84,15 +84,6 @@ class TicketResource extends Resource
                                             ->label('Sender')
                                             ->required()
                                             ->disabled()
-                                            ->rule(function () {
-                                                return function ($attribute, $value, $fail) {
-                                                    if ($value !== auth()->user()?->name) {
-                                                        $fail('The entered name does not match your registered name.');
-                                                        // The name entered does not match our record
-                                                    }
-                                                };
-                                            })
-
                                             ->extraAttributes([
                                                 'style' => '
                                                     position: relative; 
@@ -211,8 +202,6 @@ class TicketResource extends Resource
         $user = auth()->user();
 
         return $table
-            // Pagination 
-            // ->paginated([10, 25, 50, 100, 'all']) 
             ->query(Ticket::query()->where('user_id', auth()->id()))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
