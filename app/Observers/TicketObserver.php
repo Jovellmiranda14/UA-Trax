@@ -6,13 +6,11 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Ticket;
 use App\Models\TicketQueue;
 use App\Models\TicketHistory;
-use App\Models\TicketsAccepted;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Notifications\TicketCreated;
 use Filament\Notifications\Notification;
 use Filament\Notifications\Events\DatabaseNotificationsSent;
-use App\Notifications\NewCommentNotification;
 use Illuminate\Support\Str;
 use Filament\Notifications\Actions\Action;
 class TicketObserver
@@ -32,15 +30,10 @@ class TicketObserver
             ->success();
 
 
-        // Notification::make()
-        // ->title('Created ticket successfully')
-        // ->send();
         function getPriorityByLocation($ticket)
         {
-            // Fetch the related location data from the Location model
             $location = \App\Models\Location::where('location', $ticket->location)->first();
 
-            // Return only the priority value from the Location model or null if not found
             return $location ? $location->priority : null;
         }
 

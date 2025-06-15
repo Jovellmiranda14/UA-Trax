@@ -14,7 +14,7 @@ class TicketQueue extends Model
 
     // Optionally define which attributes are mass-assignable
     protected $fillable = [
-        'user_id', 
+        'user_id',
         'id',
         'name',
         'subject',
@@ -22,7 +22,7 @@ class TicketQueue extends Model
         'status',
         'priority',
         'department',
-         'type_of_issue',
+        'type_of_issue',
         'location',
         'assigned',
         'dept_role',

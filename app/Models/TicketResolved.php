@@ -9,11 +9,11 @@ class TicketResolved extends Model
 {
     use HasFactory;
     protected $table = 'tickets_resolved';
-    
+
     protected $fillable = [
         'assigned_id',
         'id',
-        'user_id', 
+        'user_id',
         'name',
         'subject',
         'status',

@@ -10,7 +10,7 @@ class TicketHistory extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 
+        'user_id',
         'id',
         'name',
         'subject',
@@ -22,7 +22,7 @@ class TicketHistory extends Model
         'created_at',
         'concern_type',
         'updated_at',
-         'type_of_issue',
+        'type_of_issue',
         'assigned',
         'attachment',
         'accepted_at',
@@ -47,7 +47,7 @@ class TicketHistory extends Model
         return $this->belongsTo(TicketsAccepted::class, 'ticket_id');
     }
     public function comments()
-{
-    return $this->hasMany(TicketComment::class, 'ticket_id');
-}  
+    {
+        return $this->hasMany(TicketComment::class, 'ticket_id');
+    }
 }

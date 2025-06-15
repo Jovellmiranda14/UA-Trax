@@ -3,8 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class NewCommentNotification extends Notification
@@ -12,7 +10,7 @@ class NewCommentNotification extends Notification
     use Queueable;
 
     protected $comment;
-   
+
     /**
      * Create a new notification instance.
      *
@@ -25,7 +23,7 @@ class NewCommentNotification extends Notification
 
     public function via($notifiable)
     {
-        return [ 'database']; // You can also add 'mail' or other channels
+        return ['database'];
     }
 
 

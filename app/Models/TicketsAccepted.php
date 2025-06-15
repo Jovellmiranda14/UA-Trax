@@ -15,7 +15,7 @@ class TicketsAccepted extends Model
     // Optionally define which attributes are mass-assignable
     protected $fillable = [
         'assigned_id',
-        'user_id', 
+        'user_id',
         'id',
         'name',
         'subject',
@@ -37,16 +37,16 @@ class TicketsAccepted extends Model
         'commented_at'
     ];
     public function ticket()
-{
-    return $this->belongsTo(Ticket::class, 'id', 'id');
-}
-// public function assignedUser()
+    {
+        return $this->belongsTo(Ticket::class, 'id', 'id');
+    }
+    // public function assignedUser()
 // {
 //     return $this->belongsTo(User::class, 'assigned', 'id');
 // }
 
-public function comments()
-{
-    return $this->hasMany(TicketComment::class, 'ticket_id');
-}   
+    public function comments()
+    {
+        return $this->hasMany(TicketComment::class, 'ticket_id');
+    }
 }

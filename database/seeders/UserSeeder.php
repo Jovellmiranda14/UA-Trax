@@ -56,15 +56,14 @@ class UserSeeder extends Seeder
         ]);
         $deptRoles = Department::Dept;
         $positions = User::Pos;
-        // Create 10 random users using Faker
         for ($i = 0; $i < 10; $i++) {
             User::create([
                 'name' => $faker->name,
                 'email' => $faker->unique()->userName . '@ua.edu.ph',
-                'password' => Hash::make('password'), // Using the same password for simplicity
-                'dept_role' => $deptRoles[array_rand($deptRoles)], // Pick a random dept_role
-                'position' => $positions[array_rand($positions)], // Pick a random position
-                'role' => $faker->randomElement([ // Randomly select a valid role
+                'password' => Hash::make('password'),
+                'dept_role' => $deptRoles[array_rand($deptRoles)],
+                'position' => $positions[array_rand($positions)],
+                'role' => $faker->randomElement([
                     'user',
                     'facilitysuperadmin',
                     'facility_admin',
