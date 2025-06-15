@@ -114,10 +114,7 @@ class TicketResource extends Resource
                                                     }
                                                 };
                                             })
-                                            ->hintIcon(
-                                                'heroicon-s-question-mark-circle',
-                                                tooltip: 'Do not change the sender name.'
-                                            )
+
                                             ->extraAttributes([
                                                 'style' => '
                                                     position: relative; 
