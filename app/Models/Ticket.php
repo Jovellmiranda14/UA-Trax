@@ -94,12 +94,6 @@ class Ticket extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    // Department the ticket belongs to
-    // public function department()
-    // {
-    //     return $this->belongsTo(Department::class);
-    // }
-
     // Ticket history entries
     public function history()
     {
