@@ -12,8 +12,7 @@ return new class extends Migration {
     {
         Schema::create('ticket_histories', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->enum('concern_type', ['Laboratory and Equipment', 'Facility'])->nullable(false);
             $table->string('name')->nullable();
             $table->text('description')->nullable();
@@ -38,8 +37,7 @@ return new class extends Migration {
             $table->enum('dept_role', ['SAS (PSYCH)', 'SAS (CRIM)', 'SAS (AB COMM)', 'SAS', 'CEA', 'CONP', 'CITCLS', 'OFFICE', 'PPGS']);
             $table->enum('position', ['RSO', 'Faculty', 'Secretary', 'PPGS']);
             $table->string('assigned')->nullable();
-            $table->unsignedBigInteger('assigned_id')->nullable();
-            $table->foreign('assigned_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('assigned_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->binary('attachment')->nullable();
         });
     }
