@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Department;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DepartmentSeeder extends Seeder
 {
@@ -29,6 +30,7 @@ class DepartmentSeeder extends Seeder
         // Loop through the department constants and create records in the database
         foreach ($departments as $department) {
             Department::create([
+                'id' => Str::uuid(),
                 'name' => $department,
                 'code' => $department,  // You can use different codes if needed
             ]);
