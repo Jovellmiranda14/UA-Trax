@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('resolved_comments', function (Blueprint $table) {
-            $table->id();
+        Schema::create('TicketComment', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->foreignId('ticket_id')->constrained('tickets_resolved')->onDelete('cascade');
             $table->string('comment');
             $table->string('sender');
