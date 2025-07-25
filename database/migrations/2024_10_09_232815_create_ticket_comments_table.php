@@ -9,7 +9,7 @@ class CreateTicketCommentsTable extends Migration
     public function up()
     {
         Schema::create('ticket_comments', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignId('ticket_id')->constrained('tickets_accepted')->onDelete('cascade'); // Foreign key to the ticket
             $table->string('sender');
             $table->text('comment');
