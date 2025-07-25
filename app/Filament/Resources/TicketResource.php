@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Filament\Resources;
+use App\Models\Department;
+use App\Models\Location;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Date;
 use App\Filament\Resources\TicketResource\Pages;
 use App\Models\Ticket;
@@ -162,15 +166,15 @@ class TicketResource extends Resource
                                             ',
                                                 'class' => 'hover-tooltip',
                                             ])
-                                            ->options(fn($get) => \App\Models\Department::where('code', '!=', 'PPGS')->pluck('name', 'code'))  // Exclude "PPGS"
-                                            ->reactive()  // Ensures the location field updates on department change
+                                            ->options(fn($get) => Department::where('code', '!=', 'PPGS')->pluck('name', 'code'))  // Exclude "PPGS"
+                                            ->reactive()
                                             ->required(),
 
                                         Select::make('location')
                                             ->searchable()
                                             ->label('Location')
                                             ->options(
-                                                fn($get) => \App\Models\Location::query()
+                                                fn($get) => Location::query()
                                                     ->when(
                                                         $get('department'),
                                                         fn($query, $department) => $query->where('department', $department) // Filter by selected department
@@ -183,7 +187,7 @@ class TicketResource extends Resource
                                             ->reactive()
                                             ->afterStateUpdated(fn($state, $set) => $set(
                                                 'priority',
-                                                \App\Models\Location::where('location', $state)->value('priority') // Fetch associated priority
+                                                Location::where('location', $state)->value('priority') // Fetch associated priority
                                             )),
 
                                     ]),
@@ -242,17 +246,17 @@ class TicketResource extends Resource
                     })
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('department')
+                TextColumn::make('department')
                     ->label('Area')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('location')
+                TextColumn::make('location')
                     ->label('Location')
                     ->searchable()
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\ImageColumn::make('attachment')
+                ImageColumn::make('attachment')
                     ->label('Image')
                     ->size(50)
                     ->circular()
@@ -263,7 +267,7 @@ class TicketResource extends Resource
                     })
                     ->openUrlInNewTab(),
 
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label('Date Created')
                     ->formatStateUsing(fn() => Date::now()->format('Y-m-d H:i:s')) // Format date and time
                     ->sortable()
@@ -297,8 +301,6 @@ class TicketResource extends Resource
     {
         return [
             'index' => Pages\ListTickets::route('/'),
-            // 'create' => Pages\CreateTicket::route('/create'),
-            // 'edit' => Pages\EditTicket::route('/{record}/edit'),
         ];
     }
 

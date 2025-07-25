@@ -1,5 +1,4 @@
 <?php
-//Super Admin
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
@@ -17,7 +16,6 @@ class UserResource extends Resource
 {
     protected static ?string $navigationLabel = 'Superadmins';
     protected static ?string $model = User::class;
-    //protected static ?string $navigationIcon = 'heroicon-o-user';
     protected static ?string $navigationGroup = 'Manage';
     protected static ?int $navigationSort = 3;
     
