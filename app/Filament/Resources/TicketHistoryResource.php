@@ -3,15 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TicketHistoryResource\Pages;
-
 use App\Models\TicketHistory;
-use App\Models\TicketResolved;
-use App\Models\TicketsAccepted;
-
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\ButtonAction;
-use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
@@ -27,18 +22,9 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Filters\SelectFilter;
-
-
 use Filament\Forms\Components\Grid;
-
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
-
-
-// Admin = By Dept
-// User = Sarili 
-
-
 
 class UTicket
 {
@@ -55,7 +41,6 @@ class TicketHistoryResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        // Check if the authenticated user has one of the specific roles
         if (
             auth()->check() && (
                 auth()->user()->role === 'equipmentsuperadmin' ||
@@ -65,16 +50,12 @@ class TicketHistoryResource extends Resource
                 auth()->user()->role === 'facility_admin'
             )
         ) {
-            return 'Tickets'; // Only visible to users with specific admin roles
+            return 'Tickets'; 
         }
 
-        return null; // No navigation group for other users
+        return null;
     }
     protected static ?int $navigationSort = 4;
-    // protected static ?string $navigationIcon = 'heroicon-s-rectangle-stack';
-    // protected static ?string $navigationGroup = 'Users Account';
-
-    // Disable Function
 
     public static function canCreate(): bool
     {

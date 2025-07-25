@@ -10,6 +10,9 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 
 use Filament\Forms\Components\Grid;
@@ -20,8 +23,6 @@ class RegularUserResource extends Resource
     protected static ?int $navigationSort = 1;
     protected static ?string $model = User::class;
     protected static ?string $navigationLabel = 'Users';
-    //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
     protected static ?string $navigationGroup = 'Manage';
     // Uncomment the following method if you want to disable the creation of new Regular Users
     // public static function canCreate(): bool
@@ -75,7 +76,7 @@ class RegularUserResource extends Resource
                                     ->label('Role')
                                     ->required()
                                     ->disabled()
-                                    ->default('user'), // Default value for Regular User
+                                    ->default('user'),
                             ])
                     ])
             ]);
@@ -86,8 +87,6 @@ class RegularUserResource extends Resource
 
 
         return $table
-            // Pagination 
-            // ->paginated([10, 25, 50, 100, 'all']) 
             ->query(User::query()->where('role', 'user'))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
@@ -99,7 +98,7 @@ class RegularUserResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('dept_role')
-                    ->label('Department'), // Display the label for department role
+                    ->label('Department'),
 
                 Tables\Columns\TextColumn::make('position')
                     ->label('Position')
@@ -107,7 +106,7 @@ class RegularUserResource extends Resource
 
                 Tables\Columns\TextColumn::make('role')
                     ->label('Role')
-                    ->sortable(), // Display the label for role
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -120,12 +119,11 @@ class RegularUserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // Add filters here if needed
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
                 ]),
             ]);
 
@@ -142,9 +140,6 @@ class RegularUserResource extends Resource
     {
         return [
             'index' => Pages\ListRegularUsers::route('/'),
-            // Uncomment the following lines if you want to enable the create and edit pages
-            // 'create' => Pages\CreateRegularUser::route('/create'),
-            // 'edit' => Pages\EditRegularUser::route('/{record}/edit'),
         ];
     }
 }

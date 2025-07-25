@@ -8,6 +8,8 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Forms\Components\Card;
@@ -20,6 +22,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Support\Colors\Color;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Actions\ButtonAction;
 class ConcernSpectrum
 {
     const Gray = '#808080';
@@ -58,9 +61,8 @@ class TicketResolvedResource extends Resource
 
     public static function table(Table $table): Table
     {
-        $user = auth()->user(); // Retrieve the currently authenticated user
+        $user = auth()->user();
 
-        // Build the base query for TicketHistory
         $query = TicketResolved::query();
 
         // Check for Equipment Super Admin role
@@ -69,8 +71,6 @@ class TicketResolvedResource extends Resource
                 ->where('assigned_id', $user->assigned_id)
                 ->orderBy('concern_type', 'asc');
         }
-
-
 
         if ($user->isEquipmentAdminOmiss() || $user->isEquipmentAdminLabCustodian()) {
             // Adjust the query for 'Laboratory and Equipment' concerns and filter by user's department
@@ -85,7 +85,6 @@ class TicketResolvedResource extends Resource
                 ->where('assigned_id', $user->assigned_id)
                 ->orderBy('concern_type', 'asc');
         }
-
 
         return $table
             ->query($query)
@@ -132,10 +131,10 @@ class TicketResolvedResource extends Resource
                         };
                     })
                     ->searchable(),
-                Tables\Columns\TextColumn::make('priority')
+                TextColumn::make('priority')
                     ->label('Priority')
                     ->sortable()
-                    ->getStateUsing(function ($record) {
+                    ->getStateUsing(callback: function ($record) {
                         // Fetch the priority from the related Location model
                         return \App\Models\Location::where('location', $record->location)->value('priority');
                     })
@@ -177,14 +176,14 @@ class TicketResolvedResource extends Resource
                         return $record->attachment ? ['class' => 'clickable-image'] : [];
                     })
                     ->openUrlInNewTab(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label('Created on')
                     ->date()
                     ->sortable()
                     ->searchable(),
 
                 // Unfinished
-                Tables\Columns\TextColumn::make('accepted_at')
+                TextColumn::make('accepted_at')
                     ->label('Accepted on')
                     ->date()
                     ->sortable()
@@ -196,18 +195,18 @@ class TicketResolvedResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
+                ActionGroup::make([
                     ViewAction::make('View')
                         ->modalHeading('Ticket details')
                         ->modalSubHeading('')
                         ->modalActions([
-                            Tables\Actions\Modal\Actions\ButtonAction::make('close')
+                            ButtonAction::make('close')
                                 ->label('Close')
                                 ->button()
                                 ->close(),
                         ])
                         ->extraAttributes([
-                            'class' => 'sticky-modal-header', // Add sticky header class
+                            'class' => 'sticky-modal-header',
                         ])
                         ->form([
                             Card::make()
@@ -309,17 +308,11 @@ class TicketResolvedResource extends Resource
                         ->icon('heroicon-o-chat-bubble-left-right')
                         ->modalHeading('Comments')
                         ->modalActions([
-                            // Tables\Actions\Modal\Actions\ButtonAction::make('submit')
-                            //     ->label('Submit') 
-                            //     ->button()
-                            //     ->close(),
-
-                            Tables\Actions\Modal\Actions\ButtonAction::make('close')
+                            ButtonAction::make('close')
                                 ->label('Close')
                                 ->button()
                                 ->close(),
                         ])
-
 
                         ->form(function (TicketResolved $record) {
                             return [
