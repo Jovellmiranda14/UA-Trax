@@ -8,11 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class TicketQueue extends Model
 {
     use HasFactory;
-
-    // Optionally define the table name if it doesn't follow Laravel's conventions
     protected $table = 'ticket_queues'; // Make sure this matches your table name
 
-    // Optionally define which attributes are mass-assignable
     protected $fillable = [
         'user_id',
         'id',
