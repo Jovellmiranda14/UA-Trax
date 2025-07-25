@@ -1,22 +1,21 @@
 {
-  "name": "test-automation-framework",
-  "version": "1.0.0",
-  "description": "TestAutomationFramework",
-  "main": "index.js",
-  "scripts": {
-    "test": "cross-env test_env=local npx playwright test"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@playwright/test": "1.50.0",
-    "@types/node": "22.5.5",
-    "allure-commandline": "2.30.0",
-    "allure-playwright": "2.15.1",
-    "cross-env": "7.0.3",
-    "dayjs": "^1.11.13",
-    "dotenv": "16.4.5",
-    "fs": "^0.0.1-security"
-  }
+    "name": "playwright",
+    "version": "1.0.0",
+    "description": "Playwright test suite for UA-Trax",
+    "main": "index.js",
+    "type": "commonjs",
+    "scripts": {
+        "test": "npx playwright test",
+        "test:dev": "cross-env NODE_ENV=development BASE_URL=http://127.0.0.1:8000/ npx playwright test",
+        "test:staging": "cross-env NODE_ENV=staging BASE_URL=https://staging.example.com npx playwright test",
+        "test:prod": "cross-env NODE_ENV=production BASE_URL=https://uatrax.com npx playwright test",
+        "codegen": "cross-env BASE_URL=http://localhost:8000 npx playwright codegen $BASE_URL",
+        "debug": "cross-env DEBUG=pw:api npx playwright test"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "playwright": "^1.44.0",
+        "cross-env": "^7.0.3"
+    }
 }
