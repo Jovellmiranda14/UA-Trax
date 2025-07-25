@@ -10,7 +10,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('locations', function (Blueprint $table) {
-            $table->id(); // Primary key for locations table
+            $table->uuid('id')->primary(); // Primary key for locations table
             $table->string('department');
             $table->string('building')->nullable();
             $table->string('location')->nullable();

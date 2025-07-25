@@ -54,15 +54,15 @@ class TicketObserver
             if ($category === 'Laboratory and Equipment') {
                 if (!empty($dept_role)) {
                     $query->whereIn('role', [
-                        User::EQUIPMENT_ADMIN_Omiss,
-                        User::EQUIPMENT_ADMIN_labcustodian,
+                        User::equipment_admin_omiss,
+                        User::equipment_admin_labcustodian,
                     ]);
                 }
             } elseif ($category === 'Facility') {
                 // For "Facility" category, filter by specific roles
                 $query->whereIn('role', [
-                    User::FACILITY_ADMIN,
-                    User::FacilitySUPER_ADMIN,
+                    User::facility_admin,
+                    User::facility_super_admin,
                 ]);
             }
         })->get();

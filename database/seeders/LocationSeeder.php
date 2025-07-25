@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class LocationSeeder extends Seeder
 {
@@ -69,6 +70,7 @@ class LocationSeeder extends Seeder
         // Insert the data into the 'locations' table
         foreach ($locations as $location) {
             DB::table('locations')->insert([
+                'id' => Str::uuid(),
                 'department' => $location['department'],
                 'building' => $location['building'],
                 'priority' => $location['priority'],
