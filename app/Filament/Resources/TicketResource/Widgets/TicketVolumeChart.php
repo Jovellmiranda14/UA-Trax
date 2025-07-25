@@ -79,18 +79,18 @@ class TicketVolumeChart extends ChartWidget
 
         // Check user roles
         $isEquipmentRole = in_array($user->role, [
-            User::EquipmentSUPER_ADMIN,
-            User::EQUIPMENT_ADMIN_Omiss,
-            User::EQUIPMENT_ADMIN_labcustodian,
+            User::equipment_superadmin,
+            User::equipment_admin_omiss,
+            User::equipment_admin_labcustodian,
         ]);
         $isFacilityRole = in_array($user->role, [
-            User::FacilitySUPER_ADMIN,
-            User::FACILITY_ADMIN,
+            User::facility_super_admin,
+            User::facility_admin,
         ]);
 
         // Determine concern type based on role
         $concernType = $isEquipmentRole ? 'Laboratory and Equipment' : ($isFacilityRole ? 'Facility' : null);
-        if (!$concernType && $user->role !== User::REGULAR_USER) {
+        if (!$concernType && $user->role !== User::regular_user) {
             return []; // Return empty data if no matching concern type
         }
 
@@ -99,7 +99,7 @@ class TicketVolumeChart extends ChartWidget
             ->when($selectedDepartment && in_array($selectedDepartment, $this->getDepartmentFilters()), function ($query) use ($selectedDepartment) {
                 return $query->where('department', $selectedDepartment);
             })
-            ->when($user->role === User::REGULAR_USER, function ($query) use ($user) {
+            ->when($user->role === User::regular_user, function ($query) use ($user) {
                 return $query->where('name', $user->name);
             }, function ($query) use ($concernType) {
                 return $query->where('concern_type', $concernType);
@@ -118,10 +118,10 @@ class TicketVolumeChart extends ChartWidget
         $labels = $ticketData->map(fn(TrendValue $value) => \Carbon\Carbon::parse($value->date)->format($aggregationMethod === 'perMonth' ? 'M Y' : 'M j, Y'));
 
         // Set the color based on user role
-        if ($user->role === User::REGULAR_USER) {
+        if ($user->role === User::regular_user) {
             $lineColor = 'rgba(255, 255, 0, 0.2)'; // Yellow for Regular Users
             $borderColor = 'rgba(255, 255, 0, 1)';
-        } elseif (in_array($user->role, [User::FacilitySUPER_ADMIN, User::FACILITY_ADMIN])) {
+        } elseif (in_array($user->role, [User::facility_super_admin, User::facility_admin])) {
             $lineColor = 'rgba(255, 0, 0, 0.2)'; // Red for Facility Super Admin and Admin
             $borderColor = 'rgba(255, 0, 0, 1)';
         } else {

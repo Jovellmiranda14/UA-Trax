@@ -65,17 +65,17 @@ class TicketResolvedChart extends ChartWidget
 
         // Check user roles to determine concern type
         $isEquipmentRole = in_array($user->role, [
-            User::EquipmentSUPER_ADMIN,
-            User::EQUIPMENT_ADMIN_Omiss,
-            User::EQUIPMENT_ADMIN_labcustodian,
+            User::equipment_superadmin,
+            User::equipment_admin_omiss,
+            User::equipment_admin_labcustodian,
         ]);
 
         $isFacilityRole = in_array($user->role, [
-            User::FacilitySUPER_ADMIN,
-            User::FACILITY_ADMIN,
+            User::facility_super_admin,
+            User::facility_admin,
         ]);
 
-        $isRegularUser = $user->role === User::REGULAR_USER;
+        $isRegularUser = $user->role === User::regular_user;
 
         // Determine concern type based on role
         $concernType = null;

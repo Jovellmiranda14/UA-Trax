@@ -14,12 +14,12 @@ use Filament\Panel;
 class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
-    const FacilitySUPER_ADMIN = 'facilitysuperadmin';
-    const FACILITY_ADMIN = 'facility_admin';
-    const EquipmentSUPER_ADMIN = 'equipmentsuperadmin';
-    const EQUIPMENT_ADMIN_Omiss = 'equipment_admin_omiss';
-    const EQUIPMENT_ADMIN_labcustodian = 'equipment_admin_labcustodian';
-    const REGULAR_USER = 'user';
+    const facility_super_admin = 'facilitysuperadmin';
+    const facility_admin = 'facility_admin';
+    const equipment_superadmin = 'equipmentsuperadmin';
+    const equipment_admin_omiss = 'equipment_admin_omiss';
+    const equipment_admin_labcustodian = 'equipment_admin_labcustodian';
+    const regular_user = 'user';
 
     //Positions
     const RSO = 'RSO';
@@ -35,12 +35,12 @@ class User extends Authenticatable implements FilamentUser
     ];
     // Define the roles array using the constants
     const ROLES = [
-        self::EQUIPMENT_ADMIN_labcustodian => 'equipment_admin_labcustodian',
-        self::EQUIPMENT_ADMIN_Omiss => 'equipment_admin_omiss',
-        self::EquipmentSUPER_ADMIN => 'Equipment Super Admin',
-        self::FACILITY_ADMIN => 'Facility Admin',
-        self::FacilitySUPER_ADMIN => 'Facility Super Admin',
-        self::REGULAR_USER => 'Regular User',
+        self::equipment_admin_labcustodian => 'equipment_admin_labcustodian',
+        self::equipment_admin_omiss => 'equipment_admin_omiss',
+        self::equipment_superadmin => 'Equipment Super Admin',
+        self::facility_admin => 'Facility Admin',
+        self::facility_super_admin => 'Facility Super Admin',
+        self::regular_user => 'Regular User',
     ];
 
     public function canAccessPanel(Panel $panel): bool
@@ -55,27 +55,27 @@ class User extends Authenticatable implements FilamentUser
 
     public function isFacilitySuperAdmin()
     {
-        return $this->role == self::FacilitySUPER_ADMIN;
+        return $this->role == self::facility_super_admin;
     }
     public function isEquipmentSuperAdmin()
     {
-        return $this->role == self::EquipmentSUPER_ADMIN;
+        return $this->role == self::equipment_superadmin;
     }
     public function isFacilityAdmin()
     {
-        return $this->role == self::FACILITY_ADMIN;
+        return $this->role == self::facility_admin;
     }
     public function isRegularUser()
     {
-        return $this->role == self::REGULAR_USER;
+        return $this->role == self::regular_user;
     }
     public function isEquipmentAdminOmiss()
     {
-        return $this->role == self::EQUIPMENT_ADMIN_Omiss;
+        return $this->role == self::equipment_admin_omiss;
     }
     public function isEquipmentAdminlabcustodian()
     {
-        return $this->role == self::EQUIPMENT_ADMIN_labcustodian;
+        return $this->role == self::equipment_admin_labcustodian;
     }
     /**
      * The attributes that are mass assignable.

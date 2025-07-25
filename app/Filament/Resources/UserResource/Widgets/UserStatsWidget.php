@@ -13,9 +13,9 @@ class UserStatsWidget extends BaseWidget
     {
         return [
             Stat::make('Total Users', User::count()),
-            Stat::make('Total Super Admins', User::whereIn('role', [User::EquipmentSUPER_ADMIN, User::FacilitySUPER_ADMIN])->count()),
-            Stat::make('Total Equipment Super Admins', User::where('role', User::EquipmentSUPER_ADMIN)->count()),
-            Stat::make('Total Facility Super Admins', User::where('role', User::FacilitySUPER_ADMIN)->count()),
+            Stat::make('Total Super Admins', User::whereIn('role', [User::equipment_superadmin, User::facility_super_admin])->count()),
+            Stat::make('Total Equipment Super Admins', User::where('role', User::equipment_superadmin)->count()),
+            Stat::make('Total Facility Super Admins', User::where('role', User::facility_super_admin)->count()),
         ];
     }
 }
