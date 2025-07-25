@@ -4,7 +4,6 @@ Final Defense: 📅 *11/13/24*
 Development started: August 08, 2024  
 Development ended: November 08, 2024
 
-
 <p align="center">
   <img src="public/images/UATRAX-logo-wordmark-light-transparents.png" width="400" alt="UA-Trax Logo">
 </p>
@@ -73,7 +72,6 @@ Or, if you are using PHPUnit directly:
 ```
 
 ---
-
 ## 🔐 User Roles
 
 UA-Trax uses role-based access control, with the following roles:
@@ -84,6 +82,8 @@ UA-Trax uses role-based access control, with the following roles:
 * `Facility Admin`
 * `Facility Super Admin`
 * `Regular User`
+
+## Laravel Sponsors
 
 Each role has specific access to tickets, reports, and data views.
 
