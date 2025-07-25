@@ -386,7 +386,7 @@ class TicketsAcceptedResource extends Resource
                                                     ->default($record->created_at->format('M d, Y'))
                                                     ->disabled()
                                                     ->required(),
-                                                TextInput::make('time_sent')
+                                                TextInput::make('commented_at')
                                                     ->label('Time Sent')
                                                     ->default(now()->timezone('Asia/Manila')->format('g:i A'))
                                                     ->disabled()
@@ -424,22 +424,7 @@ class TicketsAcceptedResource extends Resource
 
                     Tables\Actions\Action::make('send_comment')
                         ->icon('heroicon-o-chat-bubble-left-ellipsis')
-                        // ->modalActions([
-                        //     Tables\Actions\Modal\Actions\ButtonAction::make('submit')
-                        //         ->label('Submit') 
-                        //         ->button()
-                        //         ->close(),
-
-                        //     Tables\Actions\Modal\Actions\ButtonAction::make('discard')
-                        //         ->label('Discard') 
-                        //         ->button()
-                        //         ->color('white')
-                        //         ->extraAttributes([
-                        //             'style' => 'color: black; border: 2px solid grey; ', 
-                        //         ])
-                        //         ->close(),
-                        // ])
-
+                        ->label('Send Comment')
                         ->form(function (TicketsAccepted $record) {
                             return [
                                 Grid::make(4)
@@ -476,20 +461,24 @@ class TicketsAcceptedResource extends Resource
                             ];
                         })
                         ->action(function (array $data, TicketsAccepted $record) {
-                            // Save the new comment to the database
+                            $authUser = auth()->user();
+
+                            // Save the comment
                             $comment = new TicketComment();
                             $comment->ticket_id = $record->id;
-                            $comment->sender = auth()->user()->name;
+                            $comment->sender = $authUser->name;
                             $comment->commented_at = now();
                             $comment->comment = $data['new_comment'];
                             $comment->save();
 
-                            // ------------ Notification ------------------------------------------------
+                            // Get involved users
                             $assignedAdmin = User::where('name', $record->assigned)->first();
-                            $RegularUser = User::where('name', $record->name)->first();
+                            $regularUser = User::where('name', $record->name)->first();
 
-                            if ($assignedAdmin) { // Check if the assigned admin exists
-                                $RegularUser->notify(new NewCommentNotification($comment));
+                            // Notify the *other* person
+                            if ($authUser->name === $record->assigned && $regularUser) {
+                                // Admin sent comment → notify user
+                                $regularUser->notify(new NewCommentNotification($comment));
                                 Notification::make()
                                     ->title('Admin commented on your ticket (#' . $record->id . ')')
                                     ->body('Comment: "' . Str::limit($comment->comment, 10) . '"')
@@ -497,17 +486,14 @@ class TicketsAcceptedResource extends Resource
                                         NotificationAction::make('view')
                                             ->label('View Ticket')
                                     ])
-                                    ->sendToDatabase($RegularUser);
-                                event(new DatabaseNotificationsSent($RegularUser));
-                            } else {
-                                Log::warning('No admin found for assigned record ID: ' . $record->assigned);
-                            }
+                                    ->sendToDatabase($regularUser);
+                                event(new DatabaseNotificationsSent($regularUser));
 
-                            if ($RegularUser) { // Check if the regular user exists
-                                // Notify the regular user about the new comment
-                                // $assignedAdmin->notify(new NewCommentNotification($comment));
+                            } elseif ($authUser->name === $record->name && $assignedAdmin) {
+                                // User sent comment → notify admin
+                                $assignedAdmin->notify(new NewCommentNotification($comment));
                                 Notification::make()
-                                    ->title($comment->sender . ' commented on your ticket (#' . $record->id . ')')
+                                    ->title($authUser->name . ' commented on ticket (#' . $record->id . ')')
                                     ->body('Comment: "' . Str::limit($comment->comment, 10) . '"')
                                     ->actions([
                                         NotificationAction::make('view')
@@ -516,12 +502,11 @@ class TicketsAcceptedResource extends Resource
                                     ->sendToDatabase($assignedAdmin);
                                 event(new DatabaseNotificationsSent($assignedAdmin));
                             } else {
-                                // Handle the case where the regular user is not found
-                                Log::warning('No regular user found for assigned record ID: ' . $record->assigned);
+                                Log::warning('Unable to determine recipient for comment on ticket ID: ' . $record->id);
                             }
                         }),
 
-                    Action::make('resolve')
+                    Tables\Actions\Action::make('resolve')
                         ->label('Resolve')
                         ->icon('heroicon-o-check')
                         ->action(function ($record) {
@@ -546,6 +531,7 @@ class TicketsAcceptedResource extends Resource
                                 'attachment' => $record->attachment,
                                 'created_at' => $record->created_at,
                                 'assigned' => auth()->user()->name,
+                                'assigned_id' => auth()->id(),
                             ]);
                             // Move comments to resolved_comments
                             $comments = TicketComment::where('ticket_id', $record->id)->get();
@@ -569,6 +555,7 @@ class TicketsAcceptedResource extends Resource
                                 'priority' => $record->priority,
                                 'status' => 'Resolved',
                                 'assigned' => auth()->user()->name,
+                                'assigned_id' => auth()->id(),
                             ]);
 
                             // Notify the user about the ticket resolution
