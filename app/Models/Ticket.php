@@ -4,10 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Observers\TicketObserver;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-// #[ObservedBy([TicketObserver::class])]
 class Ticket extends Model
 {
     use HasFactory;
