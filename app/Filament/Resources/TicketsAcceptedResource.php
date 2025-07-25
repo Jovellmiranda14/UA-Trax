@@ -14,7 +14,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use App\Notifications\TicketResolvedNotification;
 use Illuminate\Support\Str;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\TextInput;

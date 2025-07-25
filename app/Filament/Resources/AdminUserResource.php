@@ -1,30 +1,20 @@
 <?php
-//Amdin
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AdminUserResource\Pages;
-use App\Filament\Resources\AdminUserResource\RelationManagers;
 use App\Models\Department;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\User;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Card;
-use Filament\Forms\Components\TextInput;
-
-
 class AdminUserResource extends Resource
 {
     protected static ?string $model = User::class;
     protected static ?string $navigationLabel = 'Admins';
-
-    // protected static ?string $navigationGroupIcon = 'heroicon-o-user-group';
     protected static ?string $navigationGroup = 'Manage';
     protected static ?int $navigationSort = 2;
 

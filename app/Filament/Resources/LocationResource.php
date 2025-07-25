@@ -3,10 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\LocationResource\Pages;
-use App\Filament\Resources\LocationResource\RelationManagers;
 use App\Models\Department;
 use App\Models\Location;
-use Filament\Forms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Filters\SelectFilter;
@@ -17,8 +15,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Grid;
 class LocationResource extends Resource
 {
@@ -30,10 +26,10 @@ class LocationResource extends Resource
     {
         return $form
             ->schema([
-                Card::make('Location info') // Section for the location form
+                Card::make('Location info')
                     ->description('Register a new location to the system')
                     ->schema([
-                        Grid::make(4) // Three columns layout
+                        Grid::make(4)
                             ->schema([
                                 Select::make('department')
                                     ->label('Department')
@@ -124,8 +120,6 @@ class LocationResource extends Resource
     {
         return [
             'index' => Pages\ListLocations::route('/'),
-            // 'create' => Pages\CreateLocation::route('/create'),
-            //'edit' => Pages\EditLocation::route('/{record}/edit'),
         ];
     }
 }
