@@ -5,11 +5,8 @@ namespace App\Providers\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -17,8 +14,6 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Filament\Notifications\Livewire\DatabaseNotifications;
-use Illuminate\Support\Facades\Log;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -32,15 +27,11 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->emailVerification()
             ->id('admin')
-            // ->path('')
             ->brandLogo(asset('images/UATRAX-logo-wordmark-light-transparents.png'))
             ->brandLogoHeight('6rem')
             ->login()
             ->colors([
                 'primary' => '#4D68C9',
-                //     'warning' => Color::Red,
-                //     'info' => Color::Blue,
-                //     'success' => Color::Green,
             ])
             ->favicon(asset('images/UATRAX-logo-light-transparent.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
@@ -50,15 +41,9 @@ class AdminPanelProvider extends PanelProvider
 
             ->font('Plus Jakarta Sans')
             ->pages([
-                //Pages\Dashboard::class,
-                //  Pages\FacilityDashboard::class,
-                // Pages\EquipmentDashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                //Widgets\UserStatsWidget::class,
-                //Widgets\AccountWidget::class,
-                //Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
