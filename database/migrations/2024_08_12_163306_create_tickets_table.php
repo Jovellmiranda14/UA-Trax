@@ -14,13 +14,12 @@ return new class extends Migration {
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->enum('concern_type', ['Laboratory and Equipment', 'Facility'])->nullable(false);
             $table->string('subject')->nullable(false);
             $table->string('name');  // Fixed 'name' field
             $table->text('description'); // Changed to text for longer descriptions
-            $table->enum('department', ['SAS (PSYCH)', 'SAS (CRIM)', 'SAS (AB COMM)','CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
+            $table->enum('department', ['SAS (PSYCH)', 'SAS (CRIM)', 'SAS (AB COMM)', 'CEA', 'CONP', 'CITCLS', 'RSO', 'OFFICE']);
             $table->enum('type_of_issue', [
                 'repair',
                 'air_conditioning',
@@ -35,12 +34,11 @@ return new class extends Migration {
             $table->enum('status', ['Open', 'Resolved', 'In progress', 'Closed', 'On-Hold'])->default('Open');
             $table->enum('priority', ['Moderate', 'Urgent', 'Low', 'High', 'Escalated'])->default('Moderate');
             $table->string('location');
-             $table->enum('dept_role', [ 'SAS (PSYCH)', 'SAS (CRIM)', 'SAS (AB COMM)', 'CEA', 'CONP', 'CITCLS', 'OFFICE', 'PPGS']);
+            $table->enum('dept_role', ['SAS (PSYCH)', 'SAS (CRIM)', 'SAS (AB COMM)', 'CEA', 'CONP', 'CITCLS', 'OFFICE', 'PPGS']);
             $table->string('attachment')->nullable()->default('N/A');
             $table->string('assigned')->nullable();
             $table->enum('position', ['RSO', 'Faculty', 'Secretary', 'N/A']);
             $table->timestamps();
-            // $table->timestamp('updated_at')->change();
         });
 
     }
