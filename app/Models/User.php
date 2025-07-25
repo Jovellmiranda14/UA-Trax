@@ -14,55 +14,81 @@ use Filament\Panel;
 class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
-     const FacilitySUPER_ADMIN = 'facilitysuperadmin';
-     const EquipmentSUPER_ADMIN = 'equipmentsuperadmin';
-     const FACILITY_ADMIN = 'facility_user';
-     const EQUIPMENT_ADMIN = 'equipment_user';
-     const REGULAR_USER = 'user';
+    const facility_super_admin = 'facilitysuperadmin';
+    const facility_admin = 'facility_admin';
+    const equipment_superadmin = 'equipmentsuperadmin';
+    const equipment_admin_omiss = 'equipment_admin_omiss';
+    const equipment_admin_labcustodian = 'equipment_admin_labcustodian';
+    const regular_user = 'user';
 
+    //Positions
+    const RSO = 'RSO';
+    const Faculty = 'Faculty';
+    const Secretary = 'Secretary';
+    const None = 'N/A';
+
+    const Pos = [
+        self::Faculty => 'Faculty',
+        self::None => 'N/A',
+        self::RSO => 'RSO',
+        self::Secretary => 'Secretary',
+    ];
     // Define the roles array using the constants
     const ROLES = [
-         self::REGULAR_USER => 'Regular User',
-         self::FacilitySUPER_ADMIN => 'Faciltiy Super Admin',
-         self::EquipmentSUPER_ADMIN => 'Equipment Super Admin',
-         self::FACILITY_ADMIN => 'Facility User',
-         self::EQUIPMENT_ADMIN => 'Equipment User',
-     ];
-     public function canAccessPanel(Panel $panel): bool
+        self::equipment_admin_labcustodian => 'equipment_admin_labcustodian',
+        self::equipment_admin_omiss => 'equipment_admin_omiss',
+        self::equipment_superadmin => 'Equipment Super Admin',
+        self::facility_admin => 'Facility Admin',
+        self::facility_super_admin => 'Facility Super Admin',
+        self::regular_user => 'Regular User',
+    ];
+
+    public function canAccessPanel(Panel $panel): bool
     {
-        return $this->isFacilitySuperAdmin() || 
-        $this->isEquipmentSuperAdmin() || 
-        $this->isFaciltyAdmin() || 
-        $this->isEquipmentAdmin() || 
-        $this->isRegularUser();
+        return $this->isFacilitySuperAdmin() ||
+            $this->isEquipmentSuperAdmin() ||
+            $this->isFacilityAdmin() ||
+            $this->isEquipmentAdminOmiss() ||
+            $this->isEquipmentAdminlabcustodian() ||
+            $this->isRegularUser();
     }
 
-    public function isFacilitySuperAdmin(){
-        return $this->role == self::FacilitySUPER_ADMIN;
+    public function isFacilitySuperAdmin()
+    {
+        return $this->role == self::facility_super_admin;
     }
-    public function isEquipmentSuperAdmin(){
-        return $this->role == self::EquipmentSUPER_ADMIN;
+    public function isEquipmentSuperAdmin()
+    {
+        return $this->role == self::equipment_superadmin;
     }
-    public function isFaciltyAdmin(){
-        return $this->role == self::FACILITY_ADMIN;
+    public function isFacilityAdmin()
+    {
+        return $this->role == self::facility_admin;
     }
-    public function isEquipmentAdmin(){
-        return $this->role == self::EQUIPMENT_ADMIN;
+    public function isRegularUser()
+    {
+        return $this->role == self::regular_user;
     }
-    public function isRegularUser(){
-        return $this->role == self::REGULAR_USER;
+    public function isEquipmentAdminOmiss()
+    {
+        return $this->role == self::equipment_admin_omiss;
     }
-    
+    public function isEquipmentAdminlabcustodian()
+    {
+        return $this->role == self::equipment_admin_labcustodian;
+    }
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 
-        'email', 
-        'password', 
-        'role' // Add this line if not already added
+        'name',
+        'email',
+        'dept_role',
+        'position',
+        'password',
+        'role'
     ];
 
     /**
@@ -86,5 +112,17 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function ticketsCreated()
+    {
+        return $this->hasMany(Ticket::class, 'created_by', 'id');
+    }
+    public function ticketsAssigned()
+    {
+        return $this->hasMany(Ticket::class, 'assigned_to', 'id');
+    }
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'dept_role', 'code');
     }
 }

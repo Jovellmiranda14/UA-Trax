@@ -5,11 +5,8 @@ namespace App\Providers\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -17,7 +14,6 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Filament\Auth\Login;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -25,33 +21,30 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->databaseNotifications()
+            ->topNavigation()
+            ->profile()
+            ->passwordReset()
+            ->emailVerification()
             ->id('admin')
-            ->path('user')
-             ->brandLogo(asset('images/UATRAX-logo-dark-transparent.png'))
-            ->login(Login::class) 
+            ->brandLogo(asset('images/UATRAX-logo-wordmark-light-transparents.png'))
+            ->brandLogoHeight('6rem')
+            ->login()
             ->colors([
-                'primary' => Color::Green,
-            //     'warning' => Color::Red,
-            //     'info' => Color::Blue,
-            //     'success' => Color::Green,
+                'primary' => '#4D68C9',
             ])
-            ->favicon(asset('images/UATRAX-logo-dark-transparent.png'))
+            ->favicon(asset('images/UATRAX-logo-light-transparent.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             // Wag cocooment
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages') 
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             // Wag cocooment
 
-            
-            // ->pages([
-            //     Pages\Dashboard::class,
-            //      Pages\FacilityDashboard::class,
-            //     Pages\EquipmentDashboard::class,
-            // ])
-            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            // ->widgets([
-            //     Widgets\AccountWidget::class,
-            //     Widgets\FilamentInfoWidget::class,
-            // ])
+            ->font('Plus Jakarta Sans')
+            ->pages([
+            ])
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->widgets([
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -66,6 +59,5 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
-            
     }
 }

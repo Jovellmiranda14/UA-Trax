@@ -12,15 +12,16 @@ class TicketPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFaciltyAdmin() || $user -> isEquipmentAdmin();
+        return $user->isRegularUser();
     }
-    
+
     /**
      * Determine whether the user can view the ticket.
      */
     public function view(User $user, Ticket $ticket): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||$user -> isFaciltyAdmin() || $user -> isEquipmentAdmin();
+        return $user->isRegularUser();
+        // $ticket->email === $user->email;
     }
 
     /**
@@ -28,15 +29,17 @@ class TicketPolicy
      */
     public function create(User $user): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin();
+        return $user ->isFacilityAdmin() || $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||
+        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian() || $user->isRegularUser();
     }
-
+    
     /**
      * Determine whether the user can update the ticket.
      */
     public function update(User $user, Ticket $ticket): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin();
+        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||
+        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian();
     }
 
     /**
@@ -44,7 +47,8 @@ class TicketPolicy
      */
     public function delete(User $user, Ticket $ticket): bool
     {
-        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin();
+        return $user ->isEquipmentSuperAdmin() || $user ->isFacilitySuperAdmin() ||
+        $user ->isEquipmentAdminOmiss() || $user -> isEquipmentAdminlabcustodian();
     }
 
     // Add more methods as needed...

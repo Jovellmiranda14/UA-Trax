@@ -1,0 +1,45 @@
+/* Make Ticket Details scrollable */
+.ticket-details-card {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.place-of-issues-card {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.sticky-modal-header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 10;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.hover-tooltip::after {
+    content: "Help"; /* Tooltip text */
+    position: absolute;
+    display: none; /* Hidden by default */
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.hover-tooltip:hover::after {
+    display: block; /* Show on hover */
+}

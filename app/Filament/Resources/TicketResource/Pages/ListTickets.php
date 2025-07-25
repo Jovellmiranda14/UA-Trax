@@ -5,6 +5,14 @@ namespace App\Filament\Resources\TicketResource\Pages;
 use App\Filament\Resources\TicketResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\FileUpload;
+use Illuminate\Support\Facades\Auth;
 
 class ListTickets extends ListRecords
 {
@@ -13,7 +21,10 @@ class ListTickets extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
-        ];
-    }
+            Actions\CreateAction::make('Tickets')
+                ->label('Create new ticket')
+                // ->modalHeading('Create New Ticket')
+                // ->modalDescription('Please fill out the form below to create a new ticket.')
+        ];    
+            }
 }
