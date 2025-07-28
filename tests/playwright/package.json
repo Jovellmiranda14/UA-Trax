@@ -15,7 +15,12 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "playwright": "^1.44.0",
-        "cross-env": "^7.0.3"
+        "@playwright/test": "^1.54.1",
+        "cross-env": "^7.0.3",
+        "playwright": "^1.44.0"
+    },
+    "dependencies": {
+        "dayjs": "^1.11.13",
+        "dotenv": "^17.2.1"
     }
 }
