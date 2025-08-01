@@ -1,0 +1,26 @@
+{
+    "name": "playwright",
+    "version": "1.0.0",
+    "description": "Playwright test suite for UA-Trax",
+    "main": "index.js",
+    "type": "commonjs",
+    "scripts": {
+        "test": "npx playwright test",
+        "test:dev": "cross-env NODE_ENV=development BASE_URL=http://127.0.0.1:8000/ npx playwright test",
+        "test:staging": "cross-env NODE_ENV=staging BASE_URL=https://staging.example.com npx playwright test",
+        "test:prod": "cross-env NODE_ENV=production BASE_URL=https://uatrax.com npx playwright test",
+        "codegen": "cross-env BASE_URL=http://localhost:8000 npx playwright codegen $BASE_URL",
+        "debug": "cross-env DEBUG=pw:api npx playwright test"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@playwright/test": "^1.54.1",
+        "cross-env": "^7.0.3",
+        "playwright": "^1.44.0"
+    },
+    "dependencies": {
+        "dayjs": "^1.11.13",
+        "dotenv": "^17.2.1"
+    }
+}

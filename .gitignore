@@ -18,8 +18,9 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-/playwright/node_modules/
-/playwright/.env
-/playwright/.env.*.local
-/playwright/test-results/
-/playwright/playwright-report/
+/tests/playwright/node_modules/
+/tests/playwright/.env
+/tests/playwright/convert-line-endings.js
+/tests/playwright/.env.*.local
+/tests/playwright/test-results/
+/tests/playwright/playwright-report/

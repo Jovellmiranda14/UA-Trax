@@ -5,7 +5,10 @@ const { defineConfig, devices } = require("@playwright/test");
  * https://github.com/motdotla/dotenv
  */
 require("dotenv").config({
-  path: `./.env.${process.env.test_env}`,
+  path: process.env.test_env ? `./.env.${process.env.test_env}` : "./.env",
+  // debug: true,
+  quiet: true,
+  // override: true,
 });
 
 /**
