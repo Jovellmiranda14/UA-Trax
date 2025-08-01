@@ -144,10 +144,6 @@ class Helpers {
         const img = await this.page.screenshot({ path: filename, type: "png", animations: "disabled" });
         // Attach screenshot to test scenario
         await testInfo.attach(`${screenshotName}_${counter}`, { body: img, contentType: 'image/png' });
-
-        if (deleteAfterDelay) {
-            this.deleteFileAfterDelay(filename, 60000); // 60000 ms = 1 minute
-        }
     }
 
     /**
@@ -156,28 +152,6 @@ class Helpers {
      */
     async generateCurrentDatetime() {
         return dayjs().format('YYYYMMDDHHmmss');
-    }
-
-    /**
-     * Deletes a file after a specified delay.
-     * This is useful for cleaning up temporary files like screenshots.
-     * @param {string} filePath - The full path to the file to be deleted.
-     * @param {number} delayMs - The delay in milliseconds before deleting the file.
-     */
-    deleteFileAfterDelay(filePath, delayMs) {
-        console.log(`Scheduling deletion of file: ${filePath} in ${delayMs / 1000} seconds.`);
-        setTimeout(() => {
-            try {
-                if (fs.existsSync(filePath)) {
-                    fs.unlinkSync(filePath);
-                    console.log(`Successfully deleted file: ${filePath}`);
-                } else {
-                    console.log(`File not found for deletion (it might have been deleted already): ${filePath}`);
-                }
-            } catch (error) {
-                console.error(`Error deleting file ${filePath}:`, error.message);
-            }
-        }, delayMs);
     }
 }
 
