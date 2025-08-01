@@ -11,4 +11,5 @@ export const loginSelectors = {
     label_SignIn: '//h1[normalize-space(text())="Sign in"]',
     loginButton: '//button[@type="submit"]',
     Img_logo: `//img[@alt='UA-Trax logo']`,
+    Logo_afterLogin: `(//img[@alt='UA-Trax logo'])[1]`,
 }
